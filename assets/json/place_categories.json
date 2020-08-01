@@ -1,0 +1,70 @@
+[
+    {
+        "category_name": "Beaches",
+        "image_path": "assets/icons/beach.png"
+    },
+    {
+        "category_name": "National Parks",
+        "image_path": "assets/icons/national-park.png"
+    },
+    {
+        "category_name": "Mountains",
+        "image_path": "assets/icons/mountain.png"
+    },
+    {
+        "category_name": "Forests",
+        "image_path": "assets/icons/forest.png"
+    },
+    {
+        "category_name": "Waterfalls",
+        "image_path": "assets/icons/river.png"
+    },
+    {
+        "category_name": "Lakes",
+        "image_path": "assets/icons/trees.png"
+    },
+    {
+        "category_name": "Historical Places",
+        "image_path": "assets/icons/historical.png"
+    },
+    {
+        "category_name": "Ancient Temples",
+        "image_path": "assets/icons/temple.png"
+    },
+    {
+        "category_name": "Museums",
+        "image_path": "assets/icons/museum.png"
+    },
+    {
+        "category_name": "Theme Parks",
+        "image_path": "assets/icons/theme-park.png"
+    },
+    {
+        "category_name": "Zoos and Aquaria",
+        "image_path": "assets/icons/zoo.png"
+    },
+    {
+        "category_name": "Botanical Gardens",
+        "image_path": "assets/icons/botnical_gardens.png"
+    },
+    {
+        "category_name": "Water sports & scuba diving destinations",
+        "image_path": "assets/icons/dive.png"
+    },
+    {
+        "category_name": "Medical and Meditations",
+        "image_path": "assets/icons/meditaion.png"
+    },
+    {
+        "category_name": "Adventure",
+        "image_path": "assets/icons/hike.png"
+    },
+    {
+        "category_name": "Authentic & Local",
+        "image_path": "assets/icons/local.png"
+    },
+    {
+        "category_name": "Agri",
+        "image_path": "assets/icons/agri.png"
+    }
+]

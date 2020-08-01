@@ -1,0 +1,54 @@
+[
+    {
+        "service": "Resturants",
+        "image_path": "assets/icons/resturant.png"
+    },
+    {
+        "service": "Places",
+        "image_path": "assets/icons/place.png"
+    },
+    {
+        "service": "Groceries & markets",
+        "image_path": "assets/icons/grocery.png"
+    },
+    {
+        "service": "Events",
+        "image_path": "assets/icons/events.png"
+    },
+    {
+        "service": "Apparel & fashions",
+        "image_path": "assets/icons/apparel.png"
+    },
+    {
+        "service": "Vehicle services",
+        "image_path": "assets/icons/vehicle.png"
+    },
+    {
+        "service": "Bars & night-life",
+        "image_path": "assets/icons/bar.png"
+    },
+    {
+        "service": "Hotels & stayings",
+        "image_path": "assets/icons/hotel.png"
+    },
+    {
+        "service": "Education & stationeries",
+        "image_path": "assets/icons/tution.png"
+    },
+    {
+        "service": "Electronics & repairs",
+        "image_path": "assets/icons/electronics.png"
+    },
+    {
+        "service": "Beauty salons & products",
+        "image_path": "assets/icons/salon.png"
+    },
+    {
+        "service": "Properties & renting",
+        "image_path": "assets/icons/property.png"
+    },
+    {
+        "service": "Home & furnitures",
+        "image_path": "assets/icons/furniture.png"
+    }
+]
