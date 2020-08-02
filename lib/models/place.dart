@@ -6,6 +6,7 @@ class Place {
   String placeName;
   String intialImage;
   String aboutThePlace;
+  String district;
   double latitude;
   double longitude;
   String entranceFee;
@@ -19,6 +20,7 @@ class Place {
       this.placeName,
       this.intialImage,
       this.aboutThePlace,
+      this.district,
       this.latitude,
       this.longitude,
       this.entranceFee,
@@ -33,6 +35,7 @@ class Place {
         placeName: doc['placeName'],
         intialImage: doc['intialImage'],
         aboutThePlace: doc['aboutThePlace'],
+        district: doc['district'],
         latitude: doc['latitude'],
         longitude: doc['longitude'],
         entranceFee: doc['entranceFee'],

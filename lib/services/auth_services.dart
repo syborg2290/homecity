@@ -53,13 +53,11 @@ class AuthServcies {
   }
 
   createUserInDatabaseSe(
-    String uid,
-    String username,
-    String email,
-  ) async {
+      String uid, String username, String email, String district) async {
     await userRef.document(uid).setData({
       "id": uid,
       "username": username,
+      "district": district,
       "userPhotoUrl": null,
       "thumbnailUserPhotoUrl": null,
       "aboutYou": null,

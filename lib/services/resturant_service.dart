@@ -24,6 +24,7 @@ class ResturantService {
     List serviceType,
     String specialHolidayshoursOfClosing,
     List menu,
+    String district,
   ) async {
     var uuid = Uuid();
     DocumentReference docRe = await resturantsRef.add({
@@ -32,6 +33,7 @@ class ResturantService {
       "restName": restname,
       "aboutRest": about,
       "initialImage": initialImage,
+      "district": district,
       "address": address,
       "latitude": latitude,
       "longitude": longitude,

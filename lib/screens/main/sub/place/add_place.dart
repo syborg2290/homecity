@@ -49,6 +49,34 @@ class _AddPlaceState extends State<AddPlace> {
   PlaceService _placeService = PlaceService();
   ProgressDialog pr;
   String currentUserId;
+  String selectedDistrict = "Colombo";
+  var _districtsList = [
+    "Ampara",
+    "Anuradhapura",
+    "Badulla",
+    "Batticaloa",
+    "Colombo",
+    "Galle",
+    "Gampaha",
+    "Hambantota",
+    "Jaffna",
+    "Kalutara",
+    "Kandy",
+    "Kegalle",
+    "Kilinochchi",
+    "Kurunegala",
+    "Mannar",
+    "Matale",
+    "Matara",
+    "Moneragala",
+    "Mullaitivu",
+    "Nuwara Eliya",
+    "Polonnaruwa",
+    "Puttalam",
+    "Ratnapura",
+    "Trincomalee",
+    "Vavuniya"
+  ];
 
   @override
   void initState() {
@@ -98,30 +126,35 @@ class _AddPlaceState extends State<AddPlace> {
     if (intialImage != null) {
       if (_placeName.text.trim() != "") {
         if (_aboutThePlace.text.trim() != null) {
-          if (latitude != null) {
-            pr.show();
+          if (selectedDistrict != null) {
+            if (latitude != null) {
+              pr.show();
 
-            String initialImageUpload = await _placeService
-                .uploadImagePlace(await compressImageFile(intialImage, 80));
+              String initialImageUpload = await _placeService
+                  .uploadImagePlace(await compressImageFile(intialImage, 80));
 
-            String placeId = await _placeService.addPlace(
-              currentUserId,
-              _placeName.text.trim(),
-              initialImageUpload,
-              _aboutThePlace.text.trim(),
-              latitude,
-              longitude,
-              _fee.text.trim(),
-              closingDays,
-              _specialHolidaysAndHoursController.text.trim(),
-            );
-            await _services.addService(
-                _placeName.text.trim(), placeId, widget.type, "Places");
-            pr.hide().whenComplete(() {
-              Navigator.pop(context);
-            });
+              String placeId = await _placeService.addPlace(
+                currentUserId,
+                _placeName.text.trim(),
+                initialImageUpload,
+                _aboutThePlace.text.trim(),
+                latitude,
+                longitude,
+                _fee.text.trim(),
+                closingDays,
+                _specialHolidaysAndHoursController.text.trim(),
+                selectedDistrict,
+              );
+              await _services.addService(
+                  _placeName.text.trim(), placeId, widget.type, "Places");
+              pr.hide().whenComplete(() {
+                Navigator.pop(context);
+              });
+            } else {
+              GradientSnackBar.showMessage(context, "Please pin the location");
+            }
           } else {
-            GradientSnackBar.showMessage(context, "Please pin the location");
+            GradientSnackBar.showMessage(context, "Please select a district");
           }
         } else {
           GradientSnackBar.showMessage(
@@ -404,6 +437,57 @@ class _AddPlaceState extends State<AddPlace> {
                         color: Pallete.mainAppColor,
                       )),
                 ),
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Divider(),
+            Container(
+              width: width * 0.89,
+              decoration:
+                  BoxDecoration(borderRadius: BorderRadius.circular(10)),
+              child: FormField<String>(
+                builder: (FormFieldState<String> state) {
+                  return InputDecorator(
+                    decoration: InputDecoration(
+                      labelText: "District",
+                      hintText: 'District',
+                      labelStyle:
+                          TextStyle(fontSize: 18, color: Colors.grey.shade500),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(3),
+                        borderSide: BorderSide(
+                          color: Colors.grey.shade500,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(3),
+                          borderSide: BorderSide(
+                            color: Pallete.mainAppColor,
+                          )),
+                    ),
+                    isEmpty: selectedDistrict == '',
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        value: selectedDistrict,
+                        isDense: true,
+                        onChanged: (String newValue) {
+                          setState(() {
+                            selectedDistrict = newValue;
+                            state.didChange(newValue);
+                          });
+                        },
+                        items: _districtsList.map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
             SizedBox(

@@ -65,6 +65,34 @@ class _AddResturantState extends State<AddResturant> {
   ResturantService _resturantService = ResturantService();
   ProgressDialog pr;
   String currentUserId;
+  String selectedDistrict = "Colombo";
+  var _districtsList = [
+    "Ampara",
+    "Anuradhapura",
+    "Badulla",
+    "Batticaloa",
+    "Colombo",
+    "Galle",
+    "Gampaha",
+    "Hambantota",
+    "Jaffna",
+    "Kalutara",
+    "Kandy",
+    "Kegalle",
+    "Kilinochchi",
+    "Kurunegala",
+    "Mannar",
+    "Matale",
+    "Matara",
+    "Moneragala",
+    "Mullaitivu",
+    "Nuwara Eliya",
+    "Polonnaruwa",
+    "Puttalam",
+    "Ratnapura",
+    "Trincomalee",
+    "Vavuniya"
+  ];
 
   @override
   void initState() {
@@ -232,77 +260,83 @@ class _AddResturantState extends State<AddResturant> {
   done() async {
     if (intialImage != null) {
       if (_restName.text.trim() != "") {
-        if (_address.text.trim() != "") {
-          if (latitude != null) {
-            if (_telephone1.text != "") {
-              if (foodTakeTypes.isNotEmpty) {
-                if (openController.text != "" && closeController.text != "") {
-                  pr.show();
-                  List menuUpload = [];
-                  if (menu.isNotEmpty) {
-                    for (var item in menu) {
-                      String downUrl = await _resturantService.uploadImageRest(
-                          await compressImageFile(item["initialImage"], 80));
-                      var obj = {
-                        "initialImage": downUrl,
-                        "item_type": item["item_type"],
-                        "item_name": item["item_name"],
-                        "price": item["price"],
-                        "portion_count": item["portion_count"],
-                        "about": item["about"],
-                        "foodTake": item["foodTake"],
-                        "foodTimes": item["foodTimes"],
-                      };
-                      menuUpload.add(json.encode(obj));
+        if (selectedDistrict != null) {
+          if (_address.text.trim() != "") {
+            if (latitude != null) {
+              if (_telephone1.text != "") {
+                if (foodTakeTypes.isNotEmpty) {
+                  if (openController.text != "" && closeController.text != "") {
+                    pr.show();
+                    List menuUpload = [];
+                    if (menu.isNotEmpty) {
+                      for (var item in menu) {
+                        String downUrl = await _resturantService
+                            .uploadImageRest(await compressImageFile(
+                                item["initialImage"], 80));
+                        var obj = {
+                          "initialImage": downUrl,
+                          "item_type": item["item_type"],
+                          "item_name": item["item_name"],
+                          "price": item["price"],
+                          "portion_count": item["portion_count"],
+                          "about": item["about"],
+                          "foodTake": item["foodTake"],
+                          "foodTimes": item["foodTimes"],
+                        };
+                        menuUpload.add(json.encode(obj));
+                      }
                     }
+
+                    String initialImageUpload =
+                        await _resturantService.uploadImageRest(
+                            await compressImageFile(intialImage, 80));
+
+                    String restId = await _resturantService.addResturant(
+                      currentUserId,
+                      _restName.text.trim(),
+                      _aboutTheRest.text.trim(),
+                      initialImageUpload,
+                      _address.text.trim(),
+                      latitude,
+                      longitude,
+                      _email.text.trim(),
+                      _website.text.trim(),
+                      closingDays,
+                      close,
+                      open,
+                      _telephone1.text.trim(),
+                      _telephone2.text.trim(),
+                      foodTakeTypes,
+                      _specialHolidaysAndHoursController.text.trim(),
+                      menuUpload,
+                      selectedDistrict,
+                    );
+                    await _services.addService(_restName.text.trim(), restId,
+                        widget.type, widget.type);
+                    pr.hide().whenComplete(() {
+                      Navigator.pop(context);
+                    });
+                  } else {
+                    GradientSnackBar.showMessage(
+                        context, "Open and close time is required");
                   }
-
-                  String initialImageUpload =
-                      await _resturantService.uploadImageRest(
-                          await compressImageFile(intialImage, 80));
-
-                  String restId = await _resturantService.addResturant(
-                    currentUserId,
-                    _restName.text.trim(),
-                    _aboutTheRest.text.trim(),
-                    initialImageUpload,
-                    _address.text.trim(),
-                    latitude,
-                    longitude,
-                    _email.text.trim(),
-                    _website.text.trim(),
-                    closingDays,
-                    close,
-                    open,
-                    _telephone1.text.trim(),
-                    _telephone2.text.trim(),
-                    foodTakeTypes,
-                    _specialHolidaysAndHoursController.text.trim(),
-                    menuUpload,
-                  );
-                  await _services.addService(
-                      _restName.text.trim(), restId, widget.type, widget.type);
-                  pr.hide().whenComplete(() {
-                    Navigator.pop(context);
-                  });
                 } else {
                   GradientSnackBar.showMessage(
-                      context, "Open and close time is required");
+                      context, "Resturant type of service is required");
                 }
               } else {
                 GradientSnackBar.showMessage(
-                    context, "Resturant type of service is required");
+                    context, "Resturant telephone number is required");
               }
             } else {
-              GradientSnackBar.showMessage(
-                  context, "Resturant telephone number is required");
+              GradientSnackBar.showMessage(context, "Please pin the location");
             }
           } else {
-            GradientSnackBar.showMessage(context, "Please pin the location");
+            GradientSnackBar.showMessage(
+                context, "Resturant address is required");
           }
         } else {
-          GradientSnackBar.showMessage(
-              context, "Resturant address is required");
+          GradientSnackBar.showMessage(context, "Please select a district");
         }
       } else {
         GradientSnackBar.showMessage(context, "Resturant name is required");
@@ -583,6 +617,56 @@ class _AddResturantState extends State<AddResturant> {
               ),
             ),
             Divider(),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              width: width * 0.89,
+              decoration:
+                  BoxDecoration(borderRadius: BorderRadius.circular(10)),
+              child: FormField<String>(
+                builder: (FormFieldState<String> state) {
+                  return InputDecorator(
+                    decoration: InputDecoration(
+                      labelText: "District",
+                      hintText: 'District',
+                      labelStyle:
+                          TextStyle(fontSize: 18, color: Colors.grey.shade500),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(3),
+                        borderSide: BorderSide(
+                          color: Colors.grey.shade500,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(3),
+                          borderSide: BorderSide(
+                            color: Pallete.mainAppColor,
+                          )),
+                    ),
+                    isEmpty: selectedDistrict == '',
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        value: selectedDistrict,
+                        isDense: true,
+                        onChanged: (String newValue) {
+                          setState(() {
+                            selectedDistrict = newValue;
+                            state.didChange(newValue);
+                          });
+                        },
+                        items: _districtsList.map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
             SizedBox(
               height: 20,
             ),

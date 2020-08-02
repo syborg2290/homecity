@@ -8,6 +8,7 @@ class Resturant {
   String initialImage;
   double latitude;
   double longitude;
+  String district;
   String address;
   String email;
   String website;
@@ -27,6 +28,7 @@ class Resturant {
     this.restName,
     this.aboutRest,
     this.initialImage,
+    this.district,
     this.address,
     this.latitude,
     this.longitude,
@@ -50,6 +52,7 @@ class Resturant {
       restName: doc['restName'],
       aboutRest: doc['aboutRest'],
       initialImage: doc['initialImage'],
+      district: doc['district'],
       address: doc['address'],
       latitude: doc['latitude'],
       longitude: doc['longitude'],

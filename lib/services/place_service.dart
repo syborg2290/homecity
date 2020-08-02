@@ -16,6 +16,7 @@ class PlaceService {
     String entranceFee,
     List daysOfUn,
     String specialUn,
+    String district,
   ) async {
     var uuid = Uuid();
     DocumentReference docRe = await placesRef.add({
@@ -24,6 +25,7 @@ class PlaceService {
       "placeName": placeName,
       "intialImage": intialImage,
       "aboutThePlace": about,
+      "district": district,
       "latitude": latitude,
       "longitude": longitude,
       "entranceFee": entranceFee,
@@ -33,8 +35,7 @@ class PlaceService {
     });
     return docRe.documentID;
   }
-  
-  
+
   Future<String> uploadImagePlace(File imageFile) async {
     var uuid = Uuid();
     StorageUploadTask uploadTask = storageRef
@@ -48,8 +49,7 @@ class PlaceService {
   Future<String> uploadImagePlaceThumbnail(File imageFile) async {
     var uuid = Uuid();
     StorageUploadTask uploadTask = storageRef
-        .child(
-            "place/place_image_thumbnail/user_${uuid.v1().toString()}.jpg")
+        .child("place/place_image_thumbnail/user_${uuid.v1().toString()}.jpg")
         .putFile(imageFile);
     StorageTaskSnapshot storageSnapshot = await uploadTask.onComplete;
     String downloadURL = await storageSnapshot.ref.getDownloadURL();
@@ -71,13 +71,10 @@ class PlaceService {
     var uuid = Uuid();
     String path = uuid.v1().toString() + new DateTime.now().toString();
     StorageUploadTask uploadTask = storageRef
-        .child(
-            "place/place_videoThumb/user_$path${uuid.v1().toString()}.jpg")
+        .child("place/place_videoThumb/user_$path${uuid.v1().toString()}.jpg")
         .putFile(video);
     StorageTaskSnapshot storageSnapshot = await uploadTask.onComplete;
     String downloadURL = await storageSnapshot.ref.getDownloadURL();
     return downloadURL;
   }
-  
-  
 }
