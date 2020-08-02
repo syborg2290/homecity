@@ -9,3 +9,5 @@ final DateTime timestamp = DateTime.now();
 final userRef = Firestore.instance.collection('user');
 final servicesRef = Firestore.instance.collection('services');
 final resturantsRef = Firestore.instance.collection('resturants');
+final placesRef = Firestore.instance.collection('places');
+final groceriesRef = Firestore.instance.collection('groceries');

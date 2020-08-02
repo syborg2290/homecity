@@ -64,6 +64,7 @@ flutter:
     - assets/logo.png
     - assets/profilephoto.png
     - assets/resturant_back.png
+    - assets/place_background.png
     
     - assets/icons/eye_open.png
     - assets/icons/eye_close.png

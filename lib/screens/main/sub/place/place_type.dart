@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:nearby/screens/main/sub/place/add_place.dart';
 import 'package:nearby/utils/pallete.dart';
 
 class PlaceType extends StatefulWidget {
@@ -68,7 +69,14 @@ class _PlaceTypeState extends State<PlaceType> {
                   shrinkWrap: true,
                   children: List.generate(myData.length, (index) {
                     return GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AddPlace(
+                                      type: myData[index]['category_name'],
+                                    )));
+                      },
                       child: Padding(
                         padding: EdgeInsets.only(
                           left: 5,
