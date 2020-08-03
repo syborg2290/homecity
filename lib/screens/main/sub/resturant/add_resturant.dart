@@ -616,7 +616,6 @@ class _AddResturantState extends State<AddResturant> {
                 ),
               ),
             ),
-            Divider(),
             SizedBox(
               height: 20,
             ),
@@ -739,7 +738,6 @@ class _AddResturantState extends State<AddResturant> {
                 ),
               ),
             ),
-            Divider(),
             SizedBox(
               height: 20,
             ),
@@ -854,7 +852,6 @@ class _AddResturantState extends State<AddResturant> {
                 ),
               ),
             ),
-            Divider(),
             SizedBox(
               height: 10,
             ),
@@ -993,7 +990,6 @@ class _AddResturantState extends State<AddResturant> {
             SizedBox(
               height: 20,
             ),
-            Divider(),
             Text(
               "* Mention days of closing your resturant",
               textAlign: TextAlign.center,
@@ -1191,7 +1187,6 @@ class _AddResturantState extends State<AddResturant> {
             SizedBox(
               height: 20,
             ),
-            Divider(),
             GestureDetector(
               onTap: () async {
                 List menuCard = await Navigator.push(
@@ -1232,6 +1227,42 @@ class _AddResturantState extends State<AddResturant> {
                           child: Text("Add menu card",
                               style: TextStyle(
                                   fontSize: 18, color: Colors.grey.shade500)),
+                        ),
+                      ],
+                    ),
+                  ))),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            GestureDetector(
+              onTap: () async {},
+              child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: Colors.grey.shade500,
+                      )),
+                  width: width * 0.89,
+                  height: height * 0.09,
+                  child: Center(
+                      child: Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.3,
+                    ),
+                    child: Row(
+                      children: <Widget>[
+                        Image.asset(
+                          'assets/icons/album.png',
+                          width: 30,
+                          height: 30,
+                          color: Colors.grey.shade800,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text("Gallery",
+                              style: TextStyle(
+                                  fontSize: 18, color: Colors.grey.shade800)),
                         ),
                       ],
                     ),

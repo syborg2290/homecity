@@ -42,6 +42,7 @@ dependencies:
   timeago: ^2.0.26
   uuid: ^2.2.0
   flutter_video_compress: ^0.3.7+8
+  date_picker_timeline: ^1.2.0
   
 
 dev_dependencies:
@@ -64,6 +65,7 @@ flutter:
     - assets/logo.png
     - assets/profilephoto.png
     - assets/resturant_back.png
+    - assets/events_back.png
     - assets/groc_back.jpg
     - assets/place_background.png
     
@@ -143,8 +145,22 @@ flutter:
     - assets/icons/beverages.png
     - assets/icons/meatgroc.png
     
+    - assets/icons/award.png
+    - assets/icons/cleanup.png
+    - assets/icons/conference.png
+    - assets/icons/help.png
+    - assets/icons/launch.png
+    - assets/icons/meetup.png
+    - assets/icons/music.png
+    - assets/icons/parties.png
+    - assets/icons/seminar.png
+    - assets/icons/sports.png
+    - assets/icons/tradeshow.png
+    - assets/icons/workshop.png
+    
     - assets/json/services.json
     - assets/json/map_style.json
+    - assets/json/event_type.json
     - assets/json/grocery_item_types.json
     - assets/json/place_categories.json
 

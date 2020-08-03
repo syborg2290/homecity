@@ -1,62 +1,47 @@
-import 'dart:convert';
 import 'dart:io';
 
+import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:nearby/screens/main/sub/grocery/grocery_item_types.dart';
 import 'package:nearby/services/auth_services.dart';
-import 'package:nearby/services/grocery_service.dart';
 import 'package:nearby/services/services_service.dart';
-import 'package:nearby/utils/compress_media.dart';
-import 'package:nearby/utils/flush_bars.dart';
 import 'package:nearby/utils/image_cropper.dart';
 import 'package:nearby/utils/maps/locationMap.dart';
 import 'package:nearby/utils/media_picker/gallery_pick.dart';
 import 'package:nearby/utils/pallete.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:intl/intl.dart' as dd;
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:intl/intl.dart' as dd;
 
-class AddGrocery extends StatefulWidget {
-  AddGrocery({Key key}) : super(key: key);
+class AddEvent extends StatefulWidget {
+  final String type;
+  AddEvent({this.type, Key key}) : super(key: key);
 
   @override
-  _AddGroceryState createState() => _AddGroceryState();
+  _AddEventState createState() => _AddEventState();
 }
 
-class _AddGroceryState extends State<AddGrocery> {
+class _AddEventState extends State<AddEvent> {
   File intialImage;
-  TextEditingController _grocName = TextEditingController();
-  TextEditingController _about = TextEditingController();
-  TextEditingController _address = TextEditingController();
-  TextEditingController _email = TextEditingController();
-  TextEditingController _loaction = TextEditingController();
+  TextEditingController _eventTitle = TextEditingController();
+  TextEditingController _eventDetails = TextEditingController();
+  TextEditingController _location = TextEditingController();
+  TextEditingController _fee = TextEditingController();
   TextEditingController _telephone1 = TextEditingController();
   TextEditingController _telephone2 = TextEditingController();
-  TextEditingController openController = TextEditingController();
-  TextEditingController closeController = TextEditingController();
-  TextEditingController _specialHolidaysAndHoursController =
-      TextEditingController();
+  TextEditingController _email = TextEditingController();
+  TextEditingController _startTime = TextEditingController();
   double latitude;
   double longitude;
-  List<int> closingDays = [];
-  List<String> selectedClosingDays = [];
-  List<String> daysOfAWeek = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday"
-  ];
-  final format = dd.DateFormat("HH:mm");
-  DateTime open;
-  DateTime close;
+  Services _services = Services();
+  AuthServcies _authServcies = AuthServcies();
   ProgressDialog pr;
   String currentUserId;
+  final format = dd.DateFormat("HH:mm");
+  DateTime heldOn;
+  DateTime startTime;
   String selectedDistrict = "Colombo";
   var _districtsList = [
     "Ampara",
@@ -85,10 +70,6 @@ class _AddGroceryState extends State<AddGrocery> {
     "Trincomalee",
     "Vavuniya"
   ];
-  List grocItems = [];
-  Services _services = Services();
-  GroceryService _groceryService = GroceryService();
-  AuthServcies _authServcies = AuthServcies();
 
   @override
   void initState() {
@@ -118,7 +99,7 @@ class _AddGroceryState extends State<AddGrocery> {
             child: Column(
               children: <Widget>[
                 SpinKitPouringHourglass(color: Pallete.mainAppColor),
-                Text("Creating grocery or market...",
+                Text("Creating event...",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Color.fromRGBO(129, 165, 168, 1),
@@ -134,156 +115,7 @@ class _AddGroceryState extends State<AddGrocery> {
     );
   }
 
-  done() async {
-    if (intialImage != null) {
-      if (_grocName.text.trim() != "") {
-        if (selectedDistrict != null) {
-          if (_address.text.trim() != "") {
-            if (latitude != null) {
-              if (_telephone1.text != "") {
-                if (openController.text != "" && closeController.text != "") {
-                  pr.show();
-                  List itemsUpload = [];
-                  if (grocItems.isNotEmpty) {
-                    for (var item in grocItems) {
-                      String downUrl = await _groceryService.uploadImageGroc(
-                          await compressImageFile(item["initialImage"], 80));
-                      var obj = {
-                        "initialImage": downUrl,
-                        "item_type": item["item_type"],
-                        "item_name": item["item_name"],
-                        "price": item["price"],
-                        "about": item["about"],
-                        "brand": item["brand"],
-                      };
-                      itemsUpload.add(json.encode(obj));
-                    }
-                  }
-
-                  String initialImageUpload =
-                      await _groceryService.uploadImageGroc(
-                          await compressImageFile(intialImage, 80));
-
-                  String restId = await _groceryService.addGrocery(
-                    currentUserId,
-                    _grocName.text.trim(),
-                    _about.text.trim(),
-                    initialImageUpload,
-                    _address.text.trim(),
-                    latitude,
-                    longitude,
-                    _email.text.trim(),
-                    closingDays,
-                    close,
-                    open,
-                    _telephone1.text.trim(),
-                    _telephone2.text.trim(),
-                    _specialHolidaysAndHoursController.text.trim(),
-                    itemsUpload,
-                    selectedDistrict,
-                  );
-                  await _services.addService(_grocName.text.trim(), restId,
-                      "Grocery", "Groceries & markets");
-                  pr.hide().whenComplete(() {
-                    Navigator.pop(context);
-                  });
-                } else {
-                  GradientSnackBar.showMessage(
-                      context, "Open and close time is required");
-                }
-              } else {
-                GradientSnackBar.showMessage(
-                    context, "Grocery telephone number is required");
-              }
-            } else {
-              GradientSnackBar.showMessage(context, "Please pin the location");
-            }
-          } else {
-            GradientSnackBar.showMessage(
-                context, "Grocery address is required");
-          }
-        } else {
-          GradientSnackBar.showMessage(context, "Please select a district");
-        }
-      } else {
-        GradientSnackBar.showMessage(context, "Grocery name is required");
-      }
-    } else {
-      GradientSnackBar.showMessage(context, "Initial image is required");
-    }
-  }
-
-  Widget openAndClose(double width, double height, bool isOpen,
-      TextEditingController _controller) {
-    return Padding(
-      padding: EdgeInsets.only(
-        top: height * 0.01,
-      ),
-      child: Center(
-        child: Container(
-          width: width * 0.4,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: Colors.grey.shade500,
-              width: 1,
-            ),
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.white,
-                spreadRadius: 5,
-                blurRadius: 7,
-                offset: Offset(0, 3), // changes position of shadow
-              ),
-            ],
-          ),
-          child: Padding(
-            padding: EdgeInsets.only(
-              top: height * 0.01,
-              bottom: height * 0.01,
-              // right: width * 0.4,
-            ),
-            child: Center(
-              child: DateTimeField(
-                format: format,
-                controller: _controller,
-                onChanged: (value) {
-                  if (isOpen) {
-                    setState(() {
-                      open = value;
-                    });
-                  } else {
-                    setState(() {
-                      close = value;
-                    });
-                  }
-                },
-                textAlign: TextAlign.center,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: isOpen ? 'Open At' : 'Close At',
-                  hintStyle: TextStyle(
-                    color: Colors.grey.shade500,
-                    fontSize: 18,
-                  ),
-                ),
-                onShowPicker: (context, currentValue) async {
-                  final time = await showTimePicker(
-                    context: context,
-                    initialTime:
-                        TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
-                  );
-
-                  return DateTimeField.convert(time);
-                },
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  done() async {}
 
   @override
   Widget build(BuildContext context) {
@@ -292,6 +124,7 @@ class _AddGroceryState extends State<AddGrocery> {
 
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -316,7 +149,7 @@ class _AddGroceryState extends State<AddGrocery> {
         ),
         centerTitle: false,
         title: Text(
-          "Add new grocery or market",
+          widget.type,
           style: TextStyle(
               color: Colors.grey[700],
               fontFamily: "Roboto",
@@ -353,7 +186,7 @@ class _AddGroceryState extends State<AddGrocery> {
                 ? Stack(
                     children: <Widget>[
                       Image.asset(
-                        'assets/groc_back.jpg',
+                        'assets/events_back.png',
                         height: height * 0.3,
                         width: width,
                         fit: BoxFit.cover,
@@ -369,7 +202,7 @@ class _AddGroceryState extends State<AddGrocery> {
                           children: <Widget>[
                             Center(
                                 child: Text(
-                              "* Add initial image for new grocery",
+                              "* Add initial image for the event",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.white,
@@ -510,9 +343,9 @@ class _AddGroceryState extends State<AddGrocery> {
             Container(
               width: width * 0.89,
               child: TextField(
-                controller: _grocName,
+                controller: _eventTitle,
                 decoration: InputDecoration(
-                  labelText: "* Name of the grocery or market",
+                  labelText: "* Title of the event",
                   labelStyle:
                       TextStyle(fontSize: 18, color: Colors.grey.shade500),
                   enabledBorder: OutlineInputBorder(
@@ -535,10 +368,10 @@ class _AddGroceryState extends State<AddGrocery> {
             Container(
               width: width * 0.89,
               child: TextField(
-                controller: _about,
-                maxLines: 3,
+                controller: _eventDetails,
+                maxLines: 8,
                 decoration: InputDecoration(
-                  labelText: "About the grocery or market",
+                  labelText: "More details",
                   labelStyle:
                       TextStyle(fontSize: 18, color: Colors.grey.shade500),
                   enabledBorder: OutlineInputBorder(
@@ -555,10 +388,10 @@ class _AddGroceryState extends State<AddGrocery> {
                 ),
               ),
             ),
-            Divider(),
             SizedBox(
               height: 20,
             ),
+            Divider(),
             Container(
               width: width * 0.89,
               decoration:
@@ -612,9 +445,31 @@ class _AddGroceryState extends State<AddGrocery> {
             Container(
               width: width * 0.89,
               child: TextField(
-                controller: _address,
+                readOnly: true,
+                onTap: () async {
+                  List<double> locationCo = [];
+                  locationCo.add(latitude);
+                  locationCo.add(longitude);
+                  List<double> locationCoord = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => LocationMap(
+                                isFromFeed: false,
+                                locationCoord:
+                                    latitude == null ? null : locationCo,
+                              )));
+                  if (locationCoord != null) {
+                    setState(() {
+                      latitude = locationCoord[0];
+                      longitude = locationCoord[1];
+                      _location.text = "Location pinned";
+                    });
+                  }
+                },
+                controller: _location,
+                keyboardType: TextInputType.text,
                 decoration: InputDecoration(
-                  labelText: "* Address of the grocery or market",
+                  labelText: "* location",
                   labelStyle:
                       TextStyle(fontSize: 18, color: Colors.grey.shade500),
                   enabledBorder: OutlineInputBorder(
@@ -637,37 +492,22 @@ class _AddGroceryState extends State<AddGrocery> {
             Container(
               width: width * 0.89,
               child: TextField(
-                readOnly: true,
-                onTap: () async {
-                  List<double> locationCo = [];
-                  locationCo.add(latitude);
-                  locationCo.add(longitude);
-                  List<double> locationCoord = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => LocationMap(
-                                isFromFeed: false,
-                                locationCoord:
-                                    latitude == null ? null : locationCo,
-                              )));
-                  if (locationCoord != null) {
-                    setState(() {
-                      latitude = locationCoord[0];
-                      longitude = locationCoord[1];
-                      _loaction.text = "Location pinned";
-                    });
-                  }
-                },
-                controller: _loaction,
-                keyboardType: TextInputType.text,
+                controller: _fee,
+                keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  labelText: "* location",
+                  labelText: "Any Entrance fee per person",
                   labelStyle:
                       TextStyle(fontSize: 18, color: Colors.grey.shade500),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                     borderSide: BorderSide(
                       color: Colors.grey.shade500,
+                    ),
+                  ),
+                  suffix: Text(
+                    "LKR",
+                    style: TextStyle(
+                      color: Colors.black,
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
@@ -678,7 +518,6 @@ class _AddGroceryState extends State<AddGrocery> {
                 ),
               ),
             ),
-            Divider(),
             SizedBox(
               height: 20,
             ),
@@ -763,7 +602,7 @@ class _AddGroceryState extends State<AddGrocery> {
               height: 20,
             ),
             Text(
-              "* Mention days of closing of your grocery",
+              "* Select date of event will be held on",
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.black.withOpacity(0.5),
@@ -773,146 +612,25 @@ class _AddGroceryState extends State<AddGrocery> {
             SizedBox(
               height: 10,
             ),
-            SizedBox(
-                height: height * 0.1,
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    left: 10,
-                    right: 10,
-                  ),
-                  child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: daysOfAWeek.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            if (daysOfAWeek[index] == "Monday") {
-                              if (selectedClosingDays.contains("Monday")) {
-                                setState(() {
-                                  closingDays.remove(1);
-                                  selectedClosingDays.remove("Monday");
-                                });
-                              } else {
-                                setState(() {
-                                  closingDays.add(1);
-                                  selectedClosingDays.add("Monday");
-                                });
-                              }
-                            }
-                            if (daysOfAWeek[index] == "Tuesday") {
-                              if (selectedClosingDays.contains("Tuesday")) {
-                                setState(() {
-                                  closingDays.remove(2);
-                                  selectedClosingDays.remove("Tuesday");
-                                });
-                              } else {
-                                setState(() {
-                                  closingDays.add(2);
-                                  selectedClosingDays.add("Tuesday");
-                                });
-                              }
-                            }
-                            if (daysOfAWeek[index] == "Wednesday") {
-                              if (selectedClosingDays.contains("Wednesday")) {
-                                setState(() {
-                                  closingDays.remove(3);
-                                  selectedClosingDays.remove("Wednesday");
-                                });
-                              } else {
-                                setState(() {
-                                  closingDays.add(3);
-                                  selectedClosingDays.add("Wednesday");
-                                });
-                              }
-                            }
-                            if (daysOfAWeek[index] == "Thursday") {
-                              if (selectedClosingDays.contains("Thursday")) {
-                                setState(() {
-                                  closingDays.remove(4);
-                                  selectedClosingDays.remove("Thursday");
-                                });
-                              } else {
-                                setState(() {
-                                  closingDays.add(4);
-                                  selectedClosingDays.add("Thursday");
-                                });
-                              }
-                            }
-                            if (daysOfAWeek[index] == "Friday") {
-                              if (selectedClosingDays.contains("Friday")) {
-                                setState(() {
-                                  closingDays.remove(5);
-                                  selectedClosingDays.remove("Friday");
-                                });
-                              } else {
-                                setState(() {
-                                  closingDays.add(5);
-                                  selectedClosingDays.add("Friday");
-                                });
-                              }
-                            }
-                            if (daysOfAWeek[index] == "Saturday") {
-                              if (selectedClosingDays.contains("Saturday")) {
-                                setState(() {
-                                  closingDays.remove(6);
-                                  selectedClosingDays.remove("Saturday");
-                                });
-                              } else {
-                                setState(() {
-                                  closingDays.add(6);
-                                  selectedClosingDays.add("Saturday");
-                                });
-                              }
-                            }
-                            if (daysOfAWeek[index] == "Sunday") {
-                              if (selectedClosingDays.contains("Sunday")) {
-                                setState(() {
-                                  closingDays.remove(7);
-                                  selectedClosingDays.remove("Sunday");
-                                });
-                              } else {
-                                setState(() {
-                                  closingDays.add(7);
-                                  selectedClosingDays.add("Sunday");
-                                });
-                              }
-                            }
-                          },
-                          child: Container(
-                            width: width * 0.3,
-                            height: height * 0.1,
-                            child: Card(
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              color: selectedClosingDays
-                                      .contains(daysOfAWeek[index])
-                                  ? Colors.red
-                                  : Colors.white,
-                              child: Center(
-                                child: Text(daysOfAWeek[index],
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: selectedClosingDays
-                                              .contains(daysOfAWeek[index])
-                                          ? Colors.white
-                                          : Colors.black,
-                                      fontSize: 17,
-                                    )),
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              elevation: 5,
-                              margin: EdgeInsets.all(10),
-                            ),
-                          ),
-                        );
-                      }),
-                )),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: DatePicker(
+                DateTime.now(),
+                initialSelectedDate: DateTime.now(),
+                selectionColor: Colors.black,
+                selectedTextColor: Colors.white,
+                onDateChange: (date) {
+                  setState(() {
+                    heldOn = date;
+                  });
+                },
+              ),
+            ),
             SizedBox(
               height: 20,
             ),
             Text(
-              "* Open and close time of your grocery",
+              "* Start time of the event",
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.black.withOpacity(0.5),
@@ -922,87 +640,60 @@ class _AddGroceryState extends State<AddGrocery> {
             SizedBox(
               height: 10,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                openAndClose(width, height, true, openController),
-                openAndClose(width, height, false, closeController),
-              ],
-            ),
-            SizedBox(
-              height: 20,
-            ),
             Container(
               width: width * 0.89,
-              child: TextField(
-                controller: _specialHolidaysAndHoursController,
-                maxLines: 3,
-                keyboardType: TextInputType.text,
-                decoration: InputDecoration(
-                  labelText: "Special holidays and hours of closing",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
-                    ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: Colors.grey.shade500,
+                  width: 1,
+                ),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.white,
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: Offset(0, 3), // changes position of shadow
                   ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
+                ],
+              ),
+              child: Padding(
+                padding: EdgeInsets.only(
+                  top: height * 0.01,
+                  bottom: height * 0.01,
+                  // right: width * 0.4,
+                ),
+                child: Center(
+                  child: DateTimeField(
+                    format: format,
+                    controller: _startTime,
+                    onChanged: (value) {
+                      setState(() {
+                        startTime = value;
+                      });
+                    },
+                    textAlign: TextAlign.center,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: '* Start At',
+                      hintStyle: TextStyle(
+                        color: Colors.grey.shade500,
+                        fontSize: 18,
+                      ),
+                    ),
+                    onShowPicker: (context, currentValue) async {
+                      final time = await showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay.fromDateTime(
+                            currentValue ?? DateTime.now()),
+                      );
+
+                      return DateTimeField.convert(time);
+                    },
+                  ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            GestureDetector(
-              onTap: () async {
-                List itemList = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => GroceryItemType(
-                              items: grocItems,
-                            )));
-                if (itemList != null) {
-                  setState(() {
-                    grocItems = itemList;
-                  });
-                }
-              },
-              child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: Colors.grey.shade500,
-                      )),
-                  width: width * 0.89,
-                  height: height * 0.09,
-                  child: Center(
-                      child: Padding(
-                    padding: EdgeInsets.only(
-                      left: width * 0.25,
-                    ),
-                    child: Row(
-                      children: <Widget>[
-                        Image.asset(
-                          'assets/icons/canned-food.png',
-                          width: 30,
-                          height: 30,
-                          color: Colors.grey.shade800,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text("Add items",
-                              style: TextStyle(
-                                  fontSize: 18, color: Colors.grey.shade500)),
-                        ),
-                      ],
-                    ),
-                  ))),
             ),
             SizedBox(
               height: 20,

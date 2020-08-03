@@ -108,7 +108,7 @@ class _AddMenuState extends State<AddMenu> {
           child: Column(
             children: <Widget>[
               SizedBox(
-                height: 20,
+                height: 50,
               ),
               Container(
                 child: Column(

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:nearby/screens/main/sub/events/events_type.dart';
 import 'package:nearby/screens/main/sub/grocery/add_grocery.dart';
 import 'package:nearby/screens/main/sub/place/place_type.dart';
 import 'package:nearby/screens/main/sub/resturant/add_resturant.dart';
@@ -94,55 +95,59 @@ class _SelectCategoryState extends State<SelectCategory> {
                               MaterialPageRoute(
                                   builder: (context) => AddGrocery()));
                         }
+
+                        if (myData[index]['service'] == "Events") {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EventType()));
+                        }
                       },
                       child: Padding(
-                        padding: EdgeInsets.only(
-                          left: 5,
-                          right: 5,
+                        padding: EdgeInsets.all(
+                          10,
                         ),
                         child: Container(
-                          width: width * 0.25,
+                          width: width * 0.2,
                           height: height * 0.1,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10.0),
+                              border: Border.all(
+                                color: Pallete.mainAppColor,
+                                width: 1,
+                              )),
                           child: Card(
                             clipBehavior: Clip.antiAliasWithSaveLayer,
-                            child: Container(
-                              width: width * 0.25,
-                              height: height * 0.1,
-                              child: Column(
-                                children: <Widget>[
-                                  Column(
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(
-                                          myData[index]['service'],
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: Pallete.mainAppColor,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                      Center(
-                                        child: Image.asset(
-                                          myData[index]['image_path'],
-                                          width: 80,
-                                          height: 80,
-                                          color: Pallete.mainAppColor,
-                                          fit: BoxFit.contain,
-                                        ),
-                                      ),
-                                    ],
+                            child: Column(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    myData[index]['service'],
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Pallete.mainAppColor,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ],
-                              ),
+                                ),
+                                Center(
+                                  child: Image.asset(
+                                    myData[index]['image_path'],
+                                    width: 80,
+                                    height: 80,
+                                    color: Pallete.mainAppColor,
+                                    fit: BoxFit.contain,
+                                  ),
+                                ),
+                              ],
                             ),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.0),
                             ),
                             elevation: 5,
-                            margin: EdgeInsets.all(5),
+                            margin: EdgeInsets.all(0),
                           ),
                         ),
                       ),

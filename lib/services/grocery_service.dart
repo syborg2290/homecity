@@ -25,7 +25,7 @@ class GroceryService {
     String district,
   ) async {
     var uuid = Uuid();
-    DocumentReference docRe = await resturantsRef.add({
+    DocumentReference docRe = await groceriesRef.add({
       "id": uuid.v1().toString() + new DateTime.now().toString(),
       "ownerId": ownerId,
       "grocName": grocname,

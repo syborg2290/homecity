@@ -442,7 +442,6 @@ class _AddPlaceState extends State<AddPlace> {
             SizedBox(
               height: 20,
             ),
-            Divider(),
             Container(
               width: width * 0.89,
               decoration:
@@ -568,9 +567,6 @@ class _AddPlaceState extends State<AddPlace> {
                       )),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 20,
             ),
             SizedBox(
               height: 20,
@@ -758,6 +754,42 @@ class _AddPlaceState extends State<AddPlace> {
                       )),
                 ),
               ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            GestureDetector(
+              onTap: () async {},
+              child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: Colors.grey.shade500,
+                      )),
+                  width: width * 0.89,
+                  height: height * 0.09,
+                  child: Center(
+                      child: Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.3,
+                    ),
+                    child: Row(
+                      children: <Widget>[
+                        Image.asset(
+                          'assets/icons/album.png',
+                          width: 30,
+                          height: 30,
+                          color: Colors.grey.shade800,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text("Gallery",
+                              style: TextStyle(
+                                  fontSize: 18, color: Colors.grey.shade800)),
+                        ),
+                      ],
+                    ),
+                  ))),
             ),
             SizedBox(
               height: 20,

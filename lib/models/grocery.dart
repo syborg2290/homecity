@@ -18,6 +18,7 @@ class Grocery {
   Timestamp openingTime;
   String specialHolidayshoursOfClosing;
   List items;
+  List gallery;
   Timestamp timestamp;
 
   Grocery({
@@ -38,6 +39,7 @@ class Grocery {
     this.openingTime,
     this.specialHolidayshoursOfClosing,
     this.items,
+    this.gallery,
     this.timestamp,
   });
 
@@ -60,6 +62,7 @@ class Grocery {
       telephone2: doc['telephone2'],
       specialHolidayshoursOfClosing: doc['specialHolidayshoursOfClosing'],
       items: doc['items'],
+      gallery: doc['gallery'],
       timestamp: doc['timestamp'],
     );
   }

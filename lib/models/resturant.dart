@@ -20,6 +20,7 @@ class Resturant {
   Timestamp openingTime;
   String specialHolidayshoursOfClosing;
   List menu;
+  List gallery;
   Timestamp timestamp;
 
   Resturant({
@@ -42,6 +43,7 @@ class Resturant {
     this.serviceType,
     this.specialHolidayshoursOfClosing,
     this.menu,
+    this.gallery,
     this.timestamp,
   });
 
@@ -66,6 +68,7 @@ class Resturant {
       serviceType: doc['serviceType'],
       specialHolidayshoursOfClosing: doc['specialHolidayshoursOfClosing'],
       menu: doc['menu'],
+      gallery: doc['gallery'],
       timestamp: doc['timestamp'],
     );
   }

@@ -111,44 +111,42 @@ class _MainCategoryState extends State<MainCategory> {
                           child: Container(
                             width: width * 0.28,
                             height: height * 0.17,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0),
+                                border: Border.all(
+                                  color: Pallete.mainAppColor,
+                                  width: 1,
+                                )),
                             child: Card(
                               clipBehavior: Clip.antiAliasWithSaveLayer,
-                              child: Container(
-                                width: width * 0.28,
-                                height: height * 0.17,
-                                child: Column(
-                                  children: <Widget>[
-                                    Column(
-                                      children: <Widget>[
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text(
-                                            myData[index]['service'],
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: Pallete.mainAppColor,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                        Image.asset(
-                                          myData[index]['image_path'],
-                                          width: 50,
-                                          height: 50,
-                                          color: Pallete.mainAppColor,
-                                          fit: BoxFit.contain,
-                                        ),
-                                      ],
+                              child: Column(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      myData[index]['service'],
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Pallete.mainAppColor,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                  Image.asset(
+                                    myData[index]['image_path'],
+                                    width: 50,
+                                    height: 50,
+                                    color: Pallete.mainAppColor,
+                                    fit: BoxFit.contain,
+                                  ),
+                                ],
                               ),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
-                              elevation: 5,
-                              margin: EdgeInsets.all(5),
+                              elevation: 2,
+                              margin: EdgeInsets.all(0),
                             ),
                           ),
                         ),
