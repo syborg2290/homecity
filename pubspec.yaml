@@ -64,6 +64,7 @@ flutter:
     - assets/logo.png
     - assets/profilephoto.png
     - assets/resturant_back.png
+    - assets/groc_back.jpg
     - assets/place_background.png
     
     - assets/icons/eye_open.png
@@ -82,6 +83,7 @@ flutter:
     - assets/icons/vehicle.png
     - assets/icons/tution.png
     - assets/icons/apparel.png
+    - assets/icons/constru.png
     - assets/icons/salon.png
     - assets/icons/electronics.png
     - assets/icons/left-arrow.png
@@ -127,8 +129,23 @@ flutter:
     - assets/icons/trees.png
     - assets/icons/zoo.png
     
+    - assets/icons/baby_products.png
+    - assets/icons/bread.png
+    - assets/icons/canned-food.png
+    - assets/icons/detergent.png
+    - assets/icons/flour.png
+    - assets/icons/ice-cream.png
+    - assets/icons/medicine.png
+    - assets/icons/milk.png
+    - assets/icons/soap.png
+    - assets/icons/toilet-paper.png
+    - assets/icons/vegetable.png
+    - assets/icons/beverages.png
+    - assets/icons/meatgroc.png
+    
     - assets/json/services.json
     - assets/json/map_style.json
+    - assets/json/grocery_item_types.json
     - assets/json/place_categories.json
 
   

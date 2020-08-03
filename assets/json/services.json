@@ -50,5 +50,9 @@
     {
         "service": "Home & furnitures",
         "image_path": "assets/icons/furniture.png"
+    },
+    {
+        "service": "Construction materials & services",
+        "image_path": "assets/icons/constru.png"
     }
 ]

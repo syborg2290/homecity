@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:nearby/screens/main/sub/resturant/menu_items_form.dart';
+import 'package:nearby/screens/main/sub/grocery/grocery_items_form.dart';
 import 'package:nearby/utils/pallete.dart';
 
-class DisplayMenuItemInMake extends StatefulWidget {
+class ItemView extends StatefulWidget {
   final List items;
-  DisplayMenuItemInMake({this.items, Key key}) : super(key: key);
+  ItemView({this.items, Key key}) : super(key: key);
 
   @override
-  _DisplayMenuItemInMakeState createState() => _DisplayMenuItemInMakeState();
+  _ItemViewState createState() => _ItemViewState();
 }
 
-class _DisplayMenuItemInMakeState extends State<DisplayMenuItemInMake> {
+class _ItemViewState extends State<ItemView> {
   List items = [];
   bool isLoading = true;
 
@@ -61,7 +61,7 @@ class _DisplayMenuItemInMakeState extends State<DisplayMenuItemInMake> {
             ),
             centerTitle: false,
             title: Text(
-              "New items",
+              "Items",
               style: TextStyle(
                   color: Colors.grey[700],
                   fontFamily: "Roboto",
@@ -85,8 +85,8 @@ class _DisplayMenuItemInMakeState extends State<DisplayMenuItemInMake> {
                           var obj = await Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => MenuItemForm(
-                                        itemType: items[index]["item_type"],
+                                  builder: (context) => GroceryItemsForm(
+                                        type: items[index]['item_type'],
                                         obj: items[index],
                                       )));
                           if (obj != null) {
@@ -187,6 +187,7 @@ class _DisplayMenuItemInMakeState extends State<DisplayMenuItemInMake> {
                                             style: TextStyle(
                                               fontSize: 18,
                                               color: Colors.white,
+                                              fontWeight: FontWeight.bold,
                                             ),
                                           ),
                                         ],

@@ -1,0 +1,67 @@
+[
+    {
+        "category_name": "Beverages",
+        "eg": "coffee/tea,juice,soda,alocohol",
+        "image_path": "assets/icons/beverages.png"
+    },
+    {
+        "category_name": "Bread/Bakery",
+        "eg": "sandwich loaves,dinner rolls,tortillas,bagels",
+        "image_path": "assets/icons/bread.png"
+    },
+    {
+        "category_name": "Canned/Jarred Goods",
+        "eg": "vegetables,spaghetti sauce,ketchup",
+        "image_path": "assets/icons/canned-food.png"
+    },
+    {
+        "category_name": "Dairy",
+        "eg": "cheeses, eggs, milk, yogurt, butter",
+        "image_path": "assets/icons/milk.png"
+    },
+    {
+        "category_name": "Dry/Baking Goods",
+        "eg": "cereals, flour, sugar, pasta, mixes",
+        "image_path": "assets/icons/flour.png"
+    },
+    {
+        "category_name": "Frozen Foods",
+        "eg": "waffles, vegetables, individual meals, ice cream",
+        "image_path": "assets/icons/ice-cream.png"
+    },
+    {
+        "category_name": "Meat",
+        "eg": "lunch meat, poultry, beef, pork",
+        "image_path": "assets/icons/meatgroc.png"
+    },
+    {
+        "category_name": "Produce",
+        "eg": "fruits, vegetables",
+        "image_path": "assets/icons/vegetable.png"
+    },
+    {
+        "category_name": "Cleaners",
+        "eg": "all- purpose, laundry detergent, dishwashing liquid/detergent",
+        "image_path": "assets/icons/detergent.png"
+    },
+    {
+        "category_name": "Paper Goods",
+        "eg": "paper towels, toilet paper, aluminum foil, sandwich bags",
+        "image_path": "assets/icons/toilet-paper.png"
+    },
+    {
+        "category_name": "Personal Care",
+        "eg": "shampoo, soap, hand soap, shaving cream",
+        "image_path": "assets/icons/soap.png"
+    },
+    {
+        "category_name": "Healthcare",
+        "eg": "medicine",
+        "image_path": "assets/icons/medicine.png"
+    },
+    {
+        "category_name": "Other",
+        "eg": "baby items, pet items, batteries, greeting cards",
+        "image_path": "assets/icons/baby_products.png"
+    }
+]
