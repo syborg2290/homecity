@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:nearby/screens/main/sub/resturant/add_menu.dart';
+import 'package:nearby/screens/main/sub/resturant/resturant_gallery.dart';
 import 'package:nearby/services/auth_services.dart';
 import 'package:nearby/services/resturant_service.dart';
 import 'package:nearby/services/services_service.dart';
@@ -42,6 +43,7 @@ class _AddResturantState extends State<AddResturant> {
   TextEditingController closeController = TextEditingController();
   TextEditingController _specialHolidaysAndHoursController =
       TextEditingController();
+  TextEditingController _banner = TextEditingController();
   double latitude;
   double longitude;
   List foodTakeTypes = ["Any"];
@@ -93,6 +95,7 @@ class _AddResturantState extends State<AddResturant> {
     "Trincomalee",
     "Vavuniya"
   ];
+  List gallery = [];
 
   @override
   void initState() {
@@ -260,83 +263,128 @@ class _AddResturantState extends State<AddResturant> {
   done() async {
     if (intialImage != null) {
       if (_restName.text.trim() != "") {
-        if (selectedDistrict != null) {
-          if (_address.text.trim() != "") {
-            if (latitude != null) {
-              if (_telephone1.text != "") {
-                if (foodTakeTypes.isNotEmpty) {
-                  if (openController.text != "" && closeController.text != "") {
-                    pr.show();
-                    List menuUpload = [];
-                    if (menu.isNotEmpty) {
-                      for (var item in menu) {
-                        String downUrl = await _resturantService
-                            .uploadImageRest(await compressImageFile(
-                                item["initialImage"], 80));
-                        var obj = {
-                          "initialImage": downUrl,
-                          "item_type": item["item_type"],
-                          "item_name": item["item_name"],
-                          "price": item["price"],
-                          "portion_count": item["portion_count"],
-                          "about": item["about"],
-                          "foodTake": item["foodTake"],
-                          "foodTimes": item["foodTimes"],
-                        };
-                        menuUpload.add(json.encode(obj));
+        if (_banner.text.trim() != "") {
+          if (selectedDistrict != null) {
+            if (_address.text.trim() != "") {
+              if (latitude != null) {
+                if (_telephone1.text != "") {
+                  if (foodTakeTypes.isNotEmpty) {
+                    if (openController.text != "" &&
+                        closeController.text != "") {
+                      pr.show();
+                      List uploadGallery = [];
+                      if (gallery.isNotEmpty) {
+                        for (var ele in gallery) {
+                          if (ele["type"] == "image") {
+                            String downUrl =
+                                await _resturantService.uploadImageRest(
+                                    await compressImageFile(ele["media"], 80));
+                            String thumbUrl = await _resturantService
+                                .uploadImageRestThumbnail(
+                                    await compressImageFile(ele["media"], 40));
+                            var obj = {
+                              "url": downUrl,
+                              "thumb": thumbUrl,
+                              "type": "image",
+                            };
+                            uploadGallery.add(obj);
+                          } else {
+                            String downUrl =
+                                await _resturantService.uploadVideoToRest(
+                                    await compressVideoFile(ele["media"]));
+                            String thumbUrl =
+                                await _resturantService.uploadVideoToRestThumb(
+                                    await getThumbnailForVideo(ele["media"]));
+                            var obj = {
+                              "url": downUrl,
+                              "thumb": thumbUrl,
+                              "type": "video",
+                            };
+                            uploadGallery.add(json.encode(obj));
+                          }
+                        }
                       }
+                      List menuUpload = [];
+                      if (menu.isNotEmpty) {
+                        for (var item in menu) {
+                          String downUrl = await _resturantService
+                              .uploadImageRest(await compressImageFile(
+                                  item["initialImage"], 80));
+                          var obj = {
+                            "initialImage": downUrl,
+                            "item_type": item["item_type"],
+                            "item_name": item["item_name"],
+                            "price": item["price"],
+                            "portion_count": item["portion_count"],
+                            "about": item["about"],
+                            "foodTake": item["foodTake"],
+                            "foodTimes": item["foodTimes"],
+                          };
+                          menuUpload.add(json.encode(obj));
+                        }
+                      }
+
+                      String initialImageUpload =
+                          await _resturantService.uploadImageRest(
+                              await compressImageFile(intialImage, 80));
+
+                      String restId = await _resturantService.addResturant(
+                        currentUserId,
+                        _restName.text.trim(),
+                        _aboutTheRest.text.trim(),
+                        initialImageUpload,
+                        _address.text.trim(),
+                        latitude,
+                        longitude,
+                        _email.text.trim(),
+                        _website.text.trim(),
+                        closingDays,
+                        close,
+                        open,
+                        _telephone1.text.trim(),
+                        _telephone2.text.trim(),
+                        foodTakeTypes,
+                        _specialHolidaysAndHoursController.text.trim(),
+                        menuUpload,
+                        selectedDistrict,
+                        uploadGallery,
+                      );
+                      await _services.addService(_restName.text.trim(), restId,
+                          widget.type, widget.type);
+                      await _resturantService.addMainBanner(
+                          _restName.text.trim(),
+                          initialImageUpload,
+                          restId,
+                          _banner.text.trim(),
+                          _address.text.trim());
+                      pr.hide().whenComplete(() {
+                        Navigator.pop(context);
+                      });
+                    } else {
+                      GradientSnackBar.showMessage(
+                          context, "Open and close time is required");
                     }
-
-                    String initialImageUpload =
-                        await _resturantService.uploadImageRest(
-                            await compressImageFile(intialImage, 80));
-
-                    String restId = await _resturantService.addResturant(
-                      currentUserId,
-                      _restName.text.trim(),
-                      _aboutTheRest.text.trim(),
-                      initialImageUpload,
-                      _address.text.trim(),
-                      latitude,
-                      longitude,
-                      _email.text.trim(),
-                      _website.text.trim(),
-                      closingDays,
-                      close,
-                      open,
-                      _telephone1.text.trim(),
-                      _telephone2.text.trim(),
-                      foodTakeTypes,
-                      _specialHolidaysAndHoursController.text.trim(),
-                      menuUpload,
-                      selectedDistrict,
-                    );
-                    await _services.addService(_restName.text.trim(), restId,
-                        widget.type, widget.type);
-                    pr.hide().whenComplete(() {
-                      Navigator.pop(context);
-                    });
                   } else {
                     GradientSnackBar.showMessage(
-                        context, "Open and close time is required");
+                        context, "Resturant type of service is required");
                   }
                 } else {
                   GradientSnackBar.showMessage(
-                      context, "Resturant type of service is required");
+                      context, "Resturant telephone number is required");
                 }
               } else {
                 GradientSnackBar.showMessage(
-                    context, "Resturant telephone number is required");
+                    context, "Please pin the location");
               }
             } else {
-              GradientSnackBar.showMessage(context, "Please pin the location");
+              GradientSnackBar.showMessage(
+                  context, "Resturant address is required");
             }
           } else {
-            GradientSnackBar.showMessage(
-                context, "Resturant address is required");
+            GradientSnackBar.showMessage(context, "Please select a district");
           }
         } else {
-          GradientSnackBar.showMessage(context, "Please select a district");
+          GradientSnackBar.showMessage(context, "Banner title is required");
         }
       } else {
         GradientSnackBar.showMessage(context, "Resturant name is required");
@@ -574,6 +622,31 @@ class _AddResturantState extends State<AddResturant> {
                 controller: _restName,
                 decoration: InputDecoration(
                   labelText: "* Name of the resturant",
+                  labelStyle:
+                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                      color: Colors.grey.shade500,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(
+                        color: Pallete.mainAppColor,
+                      )),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              width: width * 0.89,
+              child: TextField(
+                controller: _banner,
+                decoration: InputDecoration(
+                  labelText: "* Provide a title for the banner",
                   labelStyle:
                       TextStyle(fontSize: 18, color: Colors.grey.shade500),
                   enabledBorder: OutlineInputBorder(
@@ -1236,7 +1309,19 @@ class _AddResturantState extends State<AddResturant> {
               height: 20,
             ),
             GestureDetector(
-              onTap: () async {},
+              onTap: () async {
+                List reGallery = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => RestGallery(
+                              gallery: gallery,
+                            )));
+                if (reGallery != null) {
+                  setState(() {
+                    gallery = reGallery;
+                  });
+                }
+              },
               child: Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),

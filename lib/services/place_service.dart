@@ -17,6 +17,7 @@ class PlaceService {
     List daysOfUn,
     String specialUn,
     String district,
+    List gallery,
   ) async {
     var uuid = Uuid();
     DocumentReference docRe = await placesRef.add({
@@ -31,9 +32,28 @@ class PlaceService {
       "entranceFee": entranceFee,
       "daysOfUnavailable": daysOfUn,
       "specialUnavailable": specialUn,
+      "gallery": gallery,
       "timestamp": timestamp
     });
     return docRe.documentID;
+  }
+
+  addMainBanner(
+    String placeName,
+    String initialImage,
+    String placeId,
+    String title,
+  ) async {
+    var uuid = Uuid();
+    await mainBannerRef.add({
+      "id": uuid.v1().toString() + new DateTime.now().toString(),
+      "placeId": placeId,
+      "title": title,
+      "type": "place",
+      "placeName": placeName,
+      "intialImage": initialImage,
+      "timestamp": timestamp,
+    });
   }
 
   Future<String> uploadImagePlace(File imageFile) async {

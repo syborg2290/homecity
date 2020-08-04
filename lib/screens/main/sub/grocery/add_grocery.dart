@@ -5,6 +5,7 @@ import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:nearby/screens/main/sub/grocery/groc_gallery.dart';
 import 'package:nearby/screens/main/sub/grocery/grocery_item_types.dart';
 import 'package:nearby/services/auth_services.dart';
 import 'package:nearby/services/grocery_service.dart';
@@ -29,6 +30,7 @@ class AddGrocery extends StatefulWidget {
 class _AddGroceryState extends State<AddGrocery> {
   File intialImage;
   TextEditingController _grocName = TextEditingController();
+  TextEditingController _banner = TextEditingController();
   TextEditingController _about = TextEditingController();
   TextEditingController _address = TextEditingController();
   TextEditingController _email = TextEditingController();
@@ -86,6 +88,7 @@ class _AddGroceryState extends State<AddGrocery> {
     "Vavuniya"
   ];
   List grocItems = [];
+  List gallery = [];
   Services _services = Services();
   GroceryService _groceryService = GroceryService();
   AuthServcies _authServcies = AuthServcies();
@@ -137,73 +140,117 @@ class _AddGroceryState extends State<AddGrocery> {
   done() async {
     if (intialImage != null) {
       if (_grocName.text.trim() != "") {
-        if (selectedDistrict != null) {
-          if (_address.text.trim() != "") {
-            if (latitude != null) {
-              if (_telephone1.text != "") {
-                if (openController.text != "" && closeController.text != "") {
-                  pr.show();
-                  List itemsUpload = [];
-                  if (grocItems.isNotEmpty) {
-                    for (var item in grocItems) {
-                      String downUrl = await _groceryService.uploadImageGroc(
-                          await compressImageFile(item["initialImage"], 80));
-                      var obj = {
-                        "initialImage": downUrl,
-                        "item_type": item["item_type"],
-                        "item_name": item["item_name"],
-                        "price": item["price"],
-                        "about": item["about"],
-                        "brand": item["brand"],
-                      };
-                      itemsUpload.add(json.encode(obj));
+        if (_banner.text.trim() != "") {
+          if (selectedDistrict != null) {
+            if (_address.text.trim() != "") {
+              if (latitude != null) {
+                if (_telephone1.text != "") {
+                  if (openController.text != "" && closeController.text != "") {
+                    pr.show();
+                    List uploadGallery = [];
+                    if (gallery.isNotEmpty) {
+                      for (var ele in gallery) {
+                        if (ele["type"] == "image") {
+                          String downUrl =
+                              await _groceryService.uploadImageGroc(
+                                  await compressImageFile(ele["media"], 80));
+                          String thumbUrl =
+                              await _groceryService.uploadImageGrocThumbnail(
+                                  await compressImageFile(ele["media"], 40));
+                          var obj = {
+                            "url": downUrl,
+                            "thumb": thumbUrl,
+                            "type": "image",
+                          };
+                          uploadGallery.add(obj);
+                        } else {
+                          String downUrl =
+                              await _groceryService.uploadVideoToGroc(
+                                  await compressVideoFile(ele["media"]));
+                          String thumbUrl =
+                              await _groceryService.uploadVideoToGrocThumb(
+                                  await getThumbnailForVideo(ele["media"]));
+                          var obj = {
+                            "url": downUrl,
+                            "thumb": thumbUrl,
+                            "type": "video",
+                          };
+                          uploadGallery.add(json.encode(obj));
+                        }
+                      }
                     }
+                    List itemsUpload = [];
+                    if (grocItems.isNotEmpty) {
+                      for (var item in grocItems) {
+                        String downUrl = await _groceryService.uploadImageGroc(
+                            await compressImageFile(item["initialImage"], 80));
+                        var obj = {
+                          "initialImage": downUrl,
+                          "item_type": item["item_type"],
+                          "item_name": item["item_name"],
+                          "price": item["price"],
+                          "about": item["about"],
+                          "brand": item["brand"],
+                        };
+                        itemsUpload.add(json.encode(obj));
+                      }
+                    }
+
+                    String initialImageUpload =
+                        await _groceryService.uploadImageGroc(
+                            await compressImageFile(intialImage, 80));
+
+                    String grocId = await _groceryService.addGrocery(
+                      currentUserId,
+                      _grocName.text.trim(),
+                      _about.text.trim(),
+                      initialImageUpload,
+                      _address.text.trim(),
+                      latitude,
+                      longitude,
+                      _email.text.trim(),
+                      closingDays,
+                      close,
+                      open,
+                      _telephone1.text.trim(),
+                      _telephone2.text.trim(),
+                      _specialHolidaysAndHoursController.text.trim(),
+                      itemsUpload,
+                      selectedDistrict,
+                      uploadGallery,
+                    );
+                    await _services.addService(_grocName.text.trim(), grocId,
+                        "Grocery", "Groceries & markets");
+                    await _groceryService.addMainBanner(
+                        _grocName.text.trim(),
+                        _address.text.trim(),
+                        initialImageUpload,
+                        grocId,
+                        _banner.text.trim());
+                    pr.hide().whenComplete(() {
+                      Navigator.pop(context);
+                    });
+                  } else {
+                    GradientSnackBar.showMessage(
+                        context, "Open and close time is required");
                   }
-
-                  String initialImageUpload =
-                      await _groceryService.uploadImageGroc(
-                          await compressImageFile(intialImage, 80));
-
-                  String restId = await _groceryService.addGrocery(
-                    currentUserId,
-                    _grocName.text.trim(),
-                    _about.text.trim(),
-                    initialImageUpload,
-                    _address.text.trim(),
-                    latitude,
-                    longitude,
-                    _email.text.trim(),
-                    closingDays,
-                    close,
-                    open,
-                    _telephone1.text.trim(),
-                    _telephone2.text.trim(),
-                    _specialHolidaysAndHoursController.text.trim(),
-                    itemsUpload,
-                    selectedDistrict,
-                  );
-                  await _services.addService(_grocName.text.trim(), restId,
-                      "Grocery", "Groceries & markets");
-                  pr.hide().whenComplete(() {
-                    Navigator.pop(context);
-                  });
                 } else {
                   GradientSnackBar.showMessage(
-                      context, "Open and close time is required");
+                      context, "Grocery telephone number is required");
                 }
               } else {
                 GradientSnackBar.showMessage(
-                    context, "Grocery telephone number is required");
+                    context, "Please pin the location");
               }
             } else {
-              GradientSnackBar.showMessage(context, "Please pin the location");
+              GradientSnackBar.showMessage(
+                  context, "Grocery address is required");
             }
           } else {
-            GradientSnackBar.showMessage(
-                context, "Grocery address is required");
+            GradientSnackBar.showMessage(context, "Please select a district");
           }
         } else {
-          GradientSnackBar.showMessage(context, "Please select a district");
+          GradientSnackBar.showMessage(context, "Banner title is required");
         }
       } else {
         GradientSnackBar.showMessage(context, "Grocery name is required");
@@ -513,6 +560,31 @@ class _AddGroceryState extends State<AddGrocery> {
                 controller: _grocName,
                 decoration: InputDecoration(
                   labelText: "* Name of the grocery or market",
+                  labelStyle:
+                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                      color: Colors.grey.shade500,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(
+                        color: Pallete.mainAppColor,
+                      )),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              width: width * 0.89,
+              child: TextField(
+                controller: _banner,
+                decoration: InputDecoration(
+                  labelText: "* Provide a title for the banner",
                   labelStyle:
                       TextStyle(fontSize: 18, color: Colors.grey.shade500),
                   enabledBorder: OutlineInputBorder(
@@ -1008,7 +1080,19 @@ class _AddGroceryState extends State<AddGrocery> {
               height: 20,
             ),
             GestureDetector(
-              onTap: () async {},
+              onTap: () async {
+                List reGallery = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => GrocGallery(
+                              gallery: gallery,
+                            )));
+                if (reGallery != null) {
+                  setState(() {
+                    gallery = reGallery;
+                  });
+                }
+              },
               child: Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:date_picker_timeline/date_picker_timeline.dart';
@@ -5,8 +6,12 @@ import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:nearby/screens/main/sub/events/event_gallery.dart';
 import 'package:nearby/services/auth_services.dart';
+import 'package:nearby/services/event_services.dart';
 import 'package:nearby/services/services_service.dart';
+import 'package:nearby/utils/compress_media.dart';
+import 'package:nearby/utils/flush_bars.dart';
 import 'package:nearby/utils/image_cropper.dart';
 import 'package:nearby/utils/maps/locationMap.dart';
 import 'package:nearby/utils/media_picker/gallery_pick.dart';
@@ -26,6 +31,7 @@ class AddEvent extends StatefulWidget {
 class _AddEventState extends State<AddEvent> {
   File intialImage;
   TextEditingController _eventTitle = TextEditingController();
+  TextEditingController _address = TextEditingController();
   TextEditingController _eventDetails = TextEditingController();
   TextEditingController _location = TextEditingController();
   TextEditingController _fee = TextEditingController();
@@ -37,12 +43,14 @@ class _AddEventState extends State<AddEvent> {
   double longitude;
   Services _services = Services();
   AuthServcies _authServcies = AuthServcies();
+  EventServices _eventServices = EventServices();
   ProgressDialog pr;
   String currentUserId;
   final format = dd.DateFormat("HH:mm");
   DateTime heldOn;
   DateTime startTime;
   String selectedDistrict = "Colombo";
+  List gallery = [];
   var _districtsList = [
     "Ampara",
     "Anuradhapura",
@@ -115,7 +123,111 @@ class _AddEventState extends State<AddEvent> {
     );
   }
 
-  done() async {}
+  done() async {
+    if (intialImage != null) {
+      if (_eventTitle.text.trim() != "") {
+        if (_address.text.trim() != "") {
+          if (selectedDistrict != null) {
+            if (latitude != null) {
+              if (_telephone1.text.trim() != "") {
+                if (heldOn != null) {
+                  if (startTime != null) {
+                    pr.show();
+                    List uploadGallery = [];
+                    if (gallery.isNotEmpty) {
+                      for (var ele in gallery) {
+                        if (ele["type"] == "image") {
+                          String downUrl =
+                              await _eventServices.uploadImageEvent(
+                                  await compressImageFile(ele["media"], 80));
+                          String thumbUrl =
+                              await _eventServices.uploadImageEventThumbnail(
+                                  await compressImageFile(ele["media"], 40));
+                          var obj = {
+                            "url": downUrl,
+                            "thumb": thumbUrl,
+                            "type": "image",
+                          };
+                          uploadGallery.add(obj);
+                        } else {
+                          String downUrl =
+                              await _eventServices.uploadVideoToEvent(
+                                  await compressVideoFile(ele["media"]));
+                          String thumbUrl =
+                              await _eventServices.uploadVideoToEventThumb(
+                                  await getThumbnailForVideo(ele["media"]));
+                          var obj = {
+                            "url": downUrl,
+                            "thumb": thumbUrl,
+                            "type": "video",
+                          };
+                          uploadGallery.add(json.encode(obj));
+                        }
+                      }
+                    }
+                    String initialImageUpload =
+                        await _eventServices.uploadImageEvent(
+                            await compressImageFile(intialImage, 80));
+
+                    String eventId = await _eventServices.addEvent(
+                      currentUserId,
+                      _eventTitle.text.trim(),
+                      _eventDetails.text.trim(),
+                      initialImageUpload,
+                      _address.text.trim(),
+                      latitude,
+                      longitude,
+                      _email.text.trim(),
+                      _fee.text.trim(),
+                      heldOn,
+                      startTime,
+                      _telephone1.text.trim(),
+                      _telephone2.text.trim(),
+                      uploadGallery,
+                      selectedDistrict,
+                    );
+                    await _services.addService(_eventDetails.text.trim(),
+                        eventId, widget.type, "Events");
+                    await _eventServices.addMainBanner(
+                      _eventTitle.text.trim(),
+                      _eventDetails.text.trim(),
+                      initialImageUpload,
+                      _fee.text.trim(),
+                      heldOn,
+                      startTime,
+                      eventId,
+                    );
+                    pr.hide().whenComplete(() {
+                      Navigator.pop(context);
+                    });
+                  } else {
+                    GradientSnackBar.showMessage(
+                        context, "Event start time is required");
+                  }
+                } else {
+                  GradientSnackBar.showMessage(
+                      context, "Event date is required");
+                }
+              } else {
+                GradientSnackBar.showMessage(
+                    context, "Telephone number is required");
+              }
+            } else {
+              GradientSnackBar.showMessage(context, "Please pin the location");
+            }
+          } else {
+            GradientSnackBar.showMessage(context, "District is required");
+          }
+        } else {
+          GradientSnackBar.showMessage(context, "Address is required");
+        }
+      } else {
+        GradientSnackBar.showMessage(context, "Event title is required");
+      }
+    } else {
+      GradientSnackBar.showMessage(context, "Initial image is required");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -391,7 +503,31 @@ class _AddEventState extends State<AddEvent> {
             SizedBox(
               height: 20,
             ),
-            Divider(),
+            Container(
+              width: width * 0.89,
+              child: TextField(
+                controller: _address,
+                decoration: InputDecoration(
+                  labelText: "* Address",
+                  labelStyle:
+                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                      color: Colors.grey.shade500,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(
+                        color: Pallete.mainAppColor,
+                      )),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
             Container(
               width: width * 0.89,
               decoration:
@@ -699,7 +835,19 @@ class _AddEventState extends State<AddEvent> {
               height: 20,
             ),
             GestureDetector(
-              onTap: () async {},
+              onTap: () async {
+                List reGallery = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EventGallery(
+                              gallery: gallery,
+                            )));
+                if (reGallery != null) {
+                  setState(() {
+                    gallery = reGallery;
+                  });
+                }
+              },
               child: Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),

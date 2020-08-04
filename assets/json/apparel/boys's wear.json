@@ -1,0 +1,70 @@
+[
+    {
+        "category_name": "Denim",
+        "image_path": "assets/icons/music.png"
+    },
+    {
+        "category_name": "Shirt",
+        "image_path": "assets/icons/meetup.png"
+    },
+    {
+        "category_name": "Pant",
+        "image_path": "assets/icons/sports.png"
+    },
+    {
+        "category_name": "T-Shirt",
+        "image_path": "assets/icons/seminar.png"
+    },
+    {
+        "category_name": "Shorts",
+        "image_path": "assets/icons/seminar.png"
+    },
+    {
+        "category_name": "Hoodies",
+        "image_path": "assets/icons/conference.png"
+    },
+    {
+        "category_name": "Kurta",
+        "image_path": "assets/icons/tradeshow.png"
+    },
+    {
+        "category_name": "Shoes",
+        "image_path": "assets/icons/launch.png"
+    },
+    {
+        "category_name": "Slippers",
+        "image_path": "assets/icons/launch.png"
+    },
+    {
+        "category_name": "Bags & Luggage",
+        "image_path": "assets/icons/launch.png"
+    },
+    {
+        "category_name": "Belts",
+        "image_path": "assets/icons/award.png"
+    },
+    {
+        "category_name": "Hats & Caps",
+        "image_path": "assets/icons/help.png"
+    },
+    {
+        "category_name": "Inner Wear",
+        "image_path": "assets/icons/help.png"
+    },
+    {
+        "category_name": "Socks",
+        "image_path": "assets/icons/help.png"
+    },
+    {
+        "category_name": "Sports wear",
+        "image_path": "assets/icons/help.png"
+    },
+    {
+        "category_name": "Watches",
+        "image_path": "assets/icons/help.png"
+    },
+    {
+        "category_name": "Sunglasses",
+        "image_path": "assets/icons/help.png"
+    }
+]

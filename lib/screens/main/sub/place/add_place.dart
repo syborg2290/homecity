@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:nearby/screens/main/sub/place/place_gallery.dart';
 import 'package:nearby/services/auth_services.dart';
 import 'package:nearby/services/place_service.dart';
 import 'package:nearby/services/services_service.dart';
@@ -29,6 +31,7 @@ class _AddPlaceState extends State<AddPlace> {
   TextEditingController _aboutThePlace = TextEditingController();
   TextEditingController _location = TextEditingController();
   TextEditingController _fee = TextEditingController();
+  TextEditingController _banner = TextEditingController();
   double latitude;
   double longitude;
   List<int> closingDays = [];
@@ -77,6 +80,7 @@ class _AddPlaceState extends State<AddPlace> {
     "Trincomalee",
     "Vavuniya"
   ];
+  List gallery = [];
 
   @override
   void initState() {
@@ -125,40 +129,79 @@ class _AddPlaceState extends State<AddPlace> {
   done() async {
     if (intialImage != null) {
       if (_placeName.text.trim() != "") {
-        if (_aboutThePlace.text.trim() != null) {
-          if (selectedDistrict != null) {
-            if (latitude != null) {
-              pr.show();
+        if (_banner.text.trim() != "") {
+          if (_aboutThePlace.text.trim() != null) {
+            if (selectedDistrict != null) {
+              if (latitude != null) {
+                pr.show();
 
-              String initialImageUpload = await _placeService
-                  .uploadImagePlace(await compressImageFile(intialImage, 80));
+                List uploadGallery = [];
+                if (gallery.isNotEmpty) {
+                  for (var ele in gallery) {
+                    if (ele["type"] == "image") {
+                      String downUrl = await _placeService.uploadImagePlace(
+                          await compressImageFile(ele["media"], 80));
+                      String thumbUrl =
+                          await _placeService.uploadImagePlaceThumbnail(
+                              await compressImageFile(ele["media"], 40));
+                      var obj = {
+                        "url": downUrl,
+                        "thumb": thumbUrl,
+                        "type": "image",
+                      };
+                      uploadGallery.add(obj);
+                    } else {
+                      String downUrl = await _placeService.uploadVideoToPlace(
+                          await compressVideoFile(ele["media"]));
+                      String thumbUrl =
+                          await _placeService.uploadVideoToPlaceThumb(
+                              await getThumbnailForVideo(ele["media"]));
+                      var obj = {
+                        "url": downUrl,
+                        "thumb": thumbUrl,
+                        "type": "video",
+                      };
+                      uploadGallery.add(json.encode(obj));
+                    }
+                  }
+                }
 
-              String placeId = await _placeService.addPlace(
-                currentUserId,
-                _placeName.text.trim(),
-                initialImageUpload,
-                _aboutThePlace.text.trim(),
-                latitude,
-                longitude,
-                _fee.text.trim(),
-                closingDays,
-                _specialHolidaysAndHoursController.text.trim(),
-                selectedDistrict,
-              );
-              await _services.addService(
-                  _placeName.text.trim(), placeId, widget.type, "Places");
-              pr.hide().whenComplete(() {
-                Navigator.pop(context);
-              });
+                String initialImageUpload = await _placeService
+                    .uploadImagePlace(await compressImageFile(intialImage, 80));
+
+                String placeId = await _placeService.addPlace(
+                  currentUserId,
+                  _placeName.text.trim(),
+                  initialImageUpload,
+                  _aboutThePlace.text.trim(),
+                  latitude,
+                  longitude,
+                  _fee.text.trim(),
+                  closingDays,
+                  _specialHolidaysAndHoursController.text.trim(),
+                  selectedDistrict,
+                  uploadGallery,
+                );
+                await _services.addService(
+                    _placeName.text.trim(), placeId, widget.type, "Places");
+                await _placeService.addMainBanner(_placeName.text.trim(),
+                    initialImageUpload, placeId, _banner.text.trim());
+                pr.hide().whenComplete(() {
+                  Navigator.pop(context);
+                });
+              } else {
+                GradientSnackBar.showMessage(
+                    context, "Please pin the location");
+              }
             } else {
-              GradientSnackBar.showMessage(context, "Please pin the location");
+              GradientSnackBar.showMessage(context, "Please select a district");
             }
           } else {
-            GradientSnackBar.showMessage(context, "Please select a district");
+            GradientSnackBar.showMessage(
+                context, "Give a small description about the place");
           }
         } else {
-          GradientSnackBar.showMessage(
-              context, "Give a small description about the place");
+          GradientSnackBar.showMessage(context, "Banner title is required");
         }
       } else {
         GradientSnackBar.showMessage(context, "Place name is required");
@@ -397,6 +440,31 @@ class _AddPlaceState extends State<AddPlace> {
                 controller: _placeName,
                 decoration: InputDecoration(
                   labelText: "* Name of the place",
+                  labelStyle:
+                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                      color: Colors.grey.shade500,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(
+                        color: Pallete.mainAppColor,
+                      )),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              width: width * 0.89,
+              child: TextField(
+                controller: _banner,
+                decoration: InputDecoration(
+                  labelText: "* Provide a title for the banner",
                   labelStyle:
                       TextStyle(fontSize: 18, color: Colors.grey.shade500),
                   enabledBorder: OutlineInputBorder(
@@ -759,7 +827,19 @@ class _AddPlaceState extends State<AddPlace> {
               height: 20,
             ),
             GestureDetector(
-              onTap: () async {},
+              onTap: () async {
+                List reGallery = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PlaceGallery(
+                              gallery: gallery,
+                            )));
+                if (reGallery != null) {
+                  setState(() {
+                    gallery = reGallery;
+                  });
+                }
+              },
               child: Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),

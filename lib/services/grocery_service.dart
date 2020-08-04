@@ -23,6 +23,7 @@ class GroceryService {
     String specialHolidayshoursOfClosing,
     List items,
     String district,
+    List gallery,
   ) async {
     var uuid = Uuid();
     DocumentReference docRe = await groceriesRef.add({
@@ -43,9 +44,30 @@ class GroceryService {
       "telephone2": telephone2,
       "specialHolidayshoursOfClosing": specialHolidayshoursOfClosing,
       "items": items,
+      "gallery": gallery,
       "timestamp": timestamp,
     });
     return docRe.documentID;
+  }
+
+  addMainBanner(
+    String grocname,
+    String address,
+    String initialImage,
+    String groceryId,
+    String title,
+  ) async {
+    var uuid = Uuid();
+    await mainBannerRef.add({
+      "id": uuid.v1().toString() + new DateTime.now().toString(),
+      "groceryId": groceryId,
+      "title": title,
+      "type": "grocery",
+      "grocname": grocname,
+      "intialImage": initialImage,
+      "address": address,
+      "timestamp": timestamp,
+    });
   }
 
   Future<String> uploadImageGroc(File imageFile) async {

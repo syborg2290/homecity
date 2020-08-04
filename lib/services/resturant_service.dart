@@ -25,6 +25,7 @@ class ResturantService {
     String specialHolidayshoursOfClosing,
     List menu,
     String district,
+    List gallery,
   ) async {
     var uuid = Uuid();
     DocumentReference docRe = await resturantsRef.add({
@@ -47,9 +48,30 @@ class ResturantService {
       "serviceType": serviceType,
       "specialHolidayshoursOfClosing": specialHolidayshoursOfClosing,
       "menu": menu,
+      "gallery": gallery,
       "timestamp": timestamp,
     });
     return docRe.documentID;
+  }
+
+  addMainBanner(
+    String restName,
+    String initialImage,
+    String restId,
+    String title,
+    String address,
+  ) async {
+    var uuid = Uuid();
+    await mainBannerRef.add({
+      "id": uuid.v1().toString() + new DateTime.now().toString(),
+      "resturantId": restId,
+      "title": title,
+      "type": "resturant",
+      "address": address,
+      "resturantName": restName,
+      "intialImage": initialImage,
+      "timestamp": timestamp,
+    });
   }
 
   Future<String> uploadImageRest(File imageFile) async {

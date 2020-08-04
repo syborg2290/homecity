@@ -1,0 +1,98 @@
+[
+    {
+        "category_name": "Casual Shirts",
+        "image_path": "assets/icons/music.png"
+    },
+    {
+        "category_name": "Formal Shirt",
+        "image_path": "assets/icons/cleanup.png"
+    },
+    {
+        "category_name": "Polo T-Shirt",
+        "image_path": "assets/icons/meetup.png"
+    },
+    {
+        "category_name": "Round Neck T-shirt",
+        "image_path": "assets/icons/sports.png"
+    },
+    {
+        "category_name": "V-Neck T-Shirt",
+        "image_path": "assets/icons/seminar.png"
+    },
+    {
+        "category_name": "Hoodies",
+        "image_path": "assets/icons/conference.png"
+    },
+    {
+        "category_name": "Men’s Kurta",
+        "image_path": "assets/icons/tradeshow.png"
+    },
+    {
+        "category_name": "Casual Trousers",
+        "image_path": "assets/icons/workshop.png"
+    },
+    {
+        "category_name": "Jeans",
+        "image_path": "assets/icons/meetup.png"
+    },
+    {
+        "category_name": "Shorts",
+        "image_path": "assets/icons/meetup.png"
+    },
+    {
+        "category_name": "Formal Trousers",
+        "image_path": "assets/icons/parties.png"
+    },
+    {
+        "category_name": "Joggers",
+        "image_path": "assets/icons/launch.png"
+    },
+    {
+        "category_name": "Shoes",
+        "image_path": "assets/icons/launch.png"
+    },
+    {
+        "category_name": "Slippers",
+        "image_path": "assets/icons/launch.png"
+    },
+    {
+        "category_name": "Bags & Luggage",
+        "image_path": "assets/icons/launch.png"
+    },
+    {
+        "category_name": "Belts",
+        "image_path": "assets/icons/award.png"
+    },
+    {
+        "category_name": "Hats & Caps",
+        "image_path": "assets/icons/help.png"
+    },
+    {
+        "category_name": "Inner Wear",
+        "image_path": "assets/icons/help.png"
+    },
+    {
+        "category_name": "Socks",
+        "image_path": "assets/icons/help.png"
+    },
+    {
+        "category_name": "Tie",
+        "image_path": "assets/icons/help.png"
+    },
+    {
+        "category_name": "Wallet",
+        "image_path": "assets/icons/help.png"
+    },
+    {
+        "category_name": "Sports wear",
+        "image_path": "assets/icons/help.png"
+    },
+    {
+        "category_name": "Watches",
+        "image_path": "assets/icons/help.png"
+    },
+    {
+        "category_name": "Sunglasses",
+        "image_path": "assets/icons/help.png"
+    }
+]

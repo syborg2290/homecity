@@ -1,0 +1,98 @@
+[
+    {
+        "category_name": "Blouse",
+        "image_path": "assets/icons/music.png"
+    },
+    {
+        "category_name": "Dresses",
+        "image_path": "assets/icons/cleanup.png"
+    },
+    {
+        "category_name": "Long Tops",
+        "image_path": "assets/icons/meetup.png"
+    },
+    {
+        "category_name": "T-Shirt",
+        "image_path": "assets/icons/sports.png"
+    },
+    {
+        "category_name": "Saree",
+        "image_path": "assets/icons/seminar.png"
+    },
+    {
+        "category_name": "Kurti",
+        "image_path": "assets/icons/conference.png"
+    },
+    {
+        "category_name": "Ladies Over Coat",
+        "image_path": "assets/icons/tradeshow.png"
+    },
+    {
+        "category_name": "Jumpsuit",
+        "image_path": "assets/icons/workshop.png"
+    },
+    {
+        "category_name": "Sleepwear",
+        "image_path": "assets/icons/meetup.png"
+    },
+    {
+        "category_name": "Denim",
+        "image_path": "assets/icons/parties.png"
+    },
+    {
+        "category_name": "Joggers",
+        "image_path": "assets/icons/launch.png"
+    },
+    {
+        "category_name": "Pant",
+        "image_path": "assets/icons/launch.png"
+    },
+    {
+        "category_name": "Bra",
+        "image_path": "assets/icons/launch.png"
+    },
+    {
+        "category_name": "Panties",
+        "image_path": "assets/icons/launch.png"
+    },
+    {
+        "category_name": "Footwear",
+        "image_path": "assets/icons/launch.png"
+    },
+    {
+        "category_name": "Bags & Luggage",
+        "image_path": "assets/icons/launch.png"
+    },
+    {
+        "category_name": "Belts",
+        "image_path": "assets/icons/award.png"
+    },
+    {
+        "category_name": "Hats & Caps",
+        "image_path": "assets/icons/help.png"
+    },
+    {
+        "category_name": "Socks",
+        "image_path": "assets/icons/help.png"
+    },
+    {
+        "category_name": "Tie",
+        "image_path": "assets/icons/help.png"
+    },
+    {
+        "category_name": "Wallet",
+        "image_path": "assets/icons/help.png"
+    },
+    {
+        "category_name": "Sports wear",
+        "image_path": "assets/icons/help.png"
+    },
+    {
+        "category_name": "Watches",
+        "image_path": "assets/icons/help.png"
+    },
+    {
+        "category_name": "Sunglasses",
+        "image_path": "assets/icons/help.png"
+    }
+]
