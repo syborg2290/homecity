@@ -108,7 +108,7 @@ class _AddMenuState extends State<AddMenu> {
           child: Column(
             children: <Widget>[
               SizedBox(
-                height: 50,
+                height: 10,
               ),
               Container(
                 child: Column(
@@ -475,7 +475,128 @@ class _AddMenuState extends State<AddMenu> {
                           ),
                         ),
                       ],
-                    )
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        GestureDetector(
+                          onTap: () async {
+                            var obj = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => MenuItemForm(
+                                          itemType: 'Seafoods',
+                                        )));
+                            if (obj != null) {
+                              setState(() {
+                                menu.add(obj);
+                              });
+                            }
+                          },
+                          child: Container(
+                            width: 190,
+                            height: 190,
+                            child: Card(
+                              clipBehavior: Clip.antiAliasWithSaveLayer,
+                              child: Container(
+                                color: Colors.white,
+                                child: Column(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: EdgeInsets.all(10),
+                                      child: Column(
+                                        children: <Widget>[
+                                          Image.asset(
+                                            'assets/icons/seafood.png',
+                                            width: 100,
+                                            height: 100,
+                                            color: Pallete.mainAppColor,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                              "Seafoods",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: Pallete.mainAppColor,
+                                                fontSize: 19,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                              elevation: 5,
+                              margin: EdgeInsets.all(10),
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            var obj = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => MenuItemForm(
+                                          itemType: 'Other',
+                                        )));
+                            if (obj != null) {
+                              setState(() {
+                                menu.add(obj);
+                              });
+                            }
+                          },
+                          child: Container(
+                            width: 190,
+                            height: 190,
+                            child: Card(
+                              clipBehavior: Clip.antiAliasWithSaveLayer,
+                              child: Container(
+                                color: Colors.white,
+                                child: Column(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: EdgeInsets.all(10),
+                                      child: Column(
+                                        children: <Widget>[
+                                          Image.asset(
+                                            'assets/icons/other.png',
+                                            width: 100,
+                                            height: 100,
+                                            color: Pallete.mainAppColor,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                              "Other",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: Pallete.mainAppColor,
+                                                fontSize: 19,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                              elevation: 5,
+                              margin: EdgeInsets.all(10),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),

@@ -14,3 +14,4 @@ final groceriesRef = Firestore.instance.collection('groceries');
 final eventsRef = Firestore.instance.collection('events');
 final mainBannerRef = Firestore.instance.collection('mainBanner');
 final apparelRef = Firestore.instance.collection('apparel');
+final vehicleServicesRef = Firestore.instance.collection('vehicleServices');

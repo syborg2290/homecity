@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:nearby/screens/main/sub/apparel/add_apparel.dart';
 import 'package:nearby/screens/main/sub/events/events_type.dart';
 import 'package:nearby/screens/main/sub/grocery/add_grocery.dart';
 import 'package:nearby/screens/main/sub/place/place_type.dart';
@@ -101,6 +102,12 @@ class _SelectCategoryState extends State<SelectCategory> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => EventType()));
+                        }
+                        if (myData[index]['service'] == "Apparel & fashions") {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AddApparel()));
                         }
                       },
                       child: Padding(

@@ -63,5 +63,10 @@
         "category_name": "Other",
         "eg": "baby items, pet items, batteries, greeting cards",
         "image_path": "assets/icons/baby_products.png"
+    },
+    {
+        "category_name": "Other",
+        "eg": "Other products",
+        "image_path": "assets/icons/other.png"
     }
 ]

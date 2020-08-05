@@ -50,5 +50,9 @@
     {
         "category_name": "Charity",
         "image_path": "assets/icons/help.png"
+    },
+    {
+        "category_name": "Other",
+        "image_path": "assets/icons/other.png"
     }
 ]

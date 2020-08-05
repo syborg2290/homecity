@@ -66,5 +66,9 @@
     {
         "category_name": "Agri",
         "image_path": "assets/icons/agri.png"
+    },
+    {
+        "category_name": "Other",
+        "image_path": "assets/icons/other.png"
     }
 ]
