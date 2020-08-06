@@ -32,6 +32,14 @@
         "image_path": "assets/icons/saree1.png"
     },
     {
+        "category_name": "Frock",
+        "image_path": "assets/icons/frock.png"
+    },
+    {
+        "category_name": "Skirt",
+        "image_path": "assets/icons/skirt.png"
+    },
+    {
         "category_name": "Kurti",
         "image_path": "assets/icons/kurti.png"
     },

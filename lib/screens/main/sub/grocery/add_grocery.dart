@@ -162,7 +162,7 @@ class _AddGroceryState extends State<AddGrocery> {
                             "thumb": thumbUrl,
                             "type": "image",
                           };
-                          uploadGallery.add(obj);
+                          uploadGallery.add(json.encode(obj));
                         } else {
                           String downUrl =
                               await _groceryService.uploadVideoToGroc(

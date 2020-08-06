@@ -5,93 +5,113 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:nearby/config/collections.dart';
 import 'package:uuid/uuid.dart';
 
-class PlaceService {
-  Future<String> addPlace(
+class VehiService {
+  Future<String> addVehiSe(
     String ownerId,
-    String placeName,
-    String intialImage,
-    String about,
+    String shopName,
+    String details,
+    String initialImage,
+    String address,
     double latitude,
     double longitude,
-    String entranceFee,
-    List daysOfUn,
-    String specialUn,
+    String email,
     String district,
+    String website,
+    List closingDays,
+    DateTime closingTime,
+    DateTime openingTime,
+    String telephone1,
+    String telephone2,
+    String specialHolidayshoursOfClosing,
+    List vehicles,
     List gallery,
+    dynamic repaircustomize,
+    String type,
   ) async {
     var uuid = Uuid();
-    DocumentReference docRe = await placesRef.add({
+    DocumentReference docRe = await vehicleServicesRef.add({
       "id": uuid.v1().toString() + new DateTime.now().toString(),
       "ownerId": ownerId,
-      "placeName": placeName,
-      "intialImage": intialImage,
-      "aboutThePlace": about,
+      "shopName": shopName,
+      "type": type,
+      "details": details,
+      "initialImage": initialImage,
       "district": district,
+      "address": address,
       "latitude": latitude,
       "longitude": longitude,
-      "entranceFee": entranceFee,
-      "daysOfUnavailable": daysOfUn,
-      "specialUnavailable": specialUn,
+      "email": email,
+      "website": website,
+      "closingDays": closingDays,
+      "closingTime": closingTime,
+      "openingTime": openingTime,
+      "telephone1": telephone1,
+      "telephone2": telephone2,
+      "specialHolidayshoursOfClosing": specialHolidayshoursOfClosing,
+      "vehicles": vehicles,
+      "repaircustomize": repaircustomize,
       "gallery": gallery,
-      "timestamp": timestamp
+      "timestamp": timestamp,
     });
     return docRe.documentID;
   }
 
   addMainBanner(
-    String placeName,
+    String shopName,
     String initialImage,
-    String placeId,
+    String vehiSeId,
     String title,
+    String address,
   ) async {
     var uuid = Uuid();
     await mainBannerRef.add({
       "id": uuid.v1().toString() + new DateTime.now().toString(),
-      "serviceId": placeId,
+      "serviceId": vehiSeId,
       "title": title,
-      "type": "place",
-      "serviceName": placeName,
+      "type": "vehiSe",
+      "address": address,
+      "serviceName": shopName,
       "intialImage": initialImage,
       "timestamp": timestamp,
     });
   }
 
-  Future<String> uploadImagePlace(File imageFile) async {
+  Future<String> uploadImageVehiSe(File imageFile) async {
     var uuid = Uuid();
     StorageUploadTask uploadTask = storageRef
-        .child("place/place_image/user_${uuid.v1().toString()}.jpg")
+        .child("vehiSe/vehiSe_image/user_${uuid.v1().toString()}.jpg")
         .putFile(imageFile);
     StorageTaskSnapshot storageSnapshot = await uploadTask.onComplete;
     String downloadURL = await storageSnapshot.ref.getDownloadURL();
     return downloadURL;
   }
 
-  Future<String> uploadImagePlaceThumbnail(File imageFile) async {
+  Future<String> uploadImageVehiSeThumbnail(File imageFile) async {
     var uuid = Uuid();
     StorageUploadTask uploadTask = storageRef
-        .child("place/place_image_thumbnail/user_${uuid.v1().toString()}.jpg")
+        .child("vehiSe/vehiSe_image_thumbnail/user_${uuid.v1().toString()}.jpg")
         .putFile(imageFile);
     StorageTaskSnapshot storageSnapshot = await uploadTask.onComplete;
     String downloadURL = await storageSnapshot.ref.getDownloadURL();
     return downloadURL;
   }
 
-  Future<String> uploadVideoToPlace(File video) async {
+  Future<String> uploadVideoToVehiSe(File video) async {
     var uuid = Uuid();
     String path = uuid.v1().toString() + new DateTime.now().toString();
     StorageUploadTask uploadTask = storageRef
-        .child("place/place_video/user_$path${uuid.v1().toString()}.mp4")
+        .child("vehiSe/vehiSe_video/user_$path${uuid.v1().toString()}.mp4")
         .putFile(video);
     StorageTaskSnapshot storageSnapshot = await uploadTask.onComplete;
     String downloadURL = await storageSnapshot.ref.getDownloadURL();
     return downloadURL;
   }
 
-  Future<String> uploadVideoToPlaceThumb(File video) async {
+  Future<String> uploadVideoToVehiSeThumb(File video) async {
     var uuid = Uuid();
     String path = uuid.v1().toString() + new DateTime.now().toString();
     StorageUploadTask uploadTask = storageRef
-        .child("place/place_videoThumb/user_$path${uuid.v1().toString()}.jpg")
+        .child("vehiSe/vehiSe_videoThumb/user_$path${uuid.v1().toString()}.jpg")
         .putFile(video);
     StorageTaskSnapshot storageSnapshot = await uploadTask.onComplete;
     String downloadURL = await storageSnapshot.ref.getDownloadURL();

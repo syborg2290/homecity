@@ -24,6 +24,10 @@
         "image_path": "assets/icons/frock.png"
     },
     {
+        "category_name": "Skirt",
+        "image_path": "assets/icons/skirt.png"
+    },
+    {
         "category_name": "Hoodies",
         "image_path": "assets/icons/hoodie.png"
     },

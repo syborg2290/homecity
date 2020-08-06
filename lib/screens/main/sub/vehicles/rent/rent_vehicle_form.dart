@@ -2,28 +2,31 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:nearby/screens/main/sub/vehicles/rent/renting_gallery.dart';
 import 'package:nearby/utils/flush_bars.dart';
 import 'package:nearby/utils/image_cropper.dart';
 import 'package:nearby/utils/media_picker/gallery_pick.dart';
 import 'package:nearby/utils/pallete.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-class GroceryItemsForm extends StatefulWidget {
+class RentVehiForm extends StatefulWidget {
   final String type;
   final obj;
-  GroceryItemsForm({this.type, this.obj, Key key}) : super(key: key);
+  RentVehiForm({this.type, this.obj, Key key}) : super(key: key);
 
   @override
-  _GroceryItemsFormState createState() => _GroceryItemsFormState();
+  _RentVehiFormState createState() => _RentVehiFormState();
 }
 
-class _GroceryItemsFormState extends State<GroceryItemsForm> {
+class _RentVehiFormState extends State<RentVehiForm> {
   File intialImage;
-  TextEditingController _itemName = TextEditingController();
+  TextEditingController _vehiName = TextEditingController();
   TextEditingController _brandName = TextEditingController();
-  TextEditingController _aboutTheItem = TextEditingController();
-  TextEditingController _price = TextEditingController();
+  TextEditingController _model = TextEditingController();
+  TextEditingController _aboutTheVehicle = TextEditingController();
+  TextEditingController _pricePerKm = TextEditingController();
   bool isForEdit = false;
+  List gallery = [];
 
   @override
   void initState() {
@@ -32,25 +35,29 @@ class _GroceryItemsFormState extends State<GroceryItemsForm> {
       setState(() {
         isForEdit = true;
         intialImage = widget.obj["initialImage"];
-        _itemName.text = widget.obj["item_name"];
-        _aboutTheItem.text = widget.obj["about"];
-        _price.text = widget.obj["price"];
+        _vehiName.text = widget.obj["vehi_name"];
+        _aboutTheVehicle.text = widget.obj["details"];
+        _pricePerKm.text = widget.obj["price"];
         _brandName.text = widget.obj["brand"];
+        _model.text = widget.obj["model"];
+        gallery = widget.obj["gallery"];
       });
     }
   }
 
   done() {
     if (intialImage != null) {
-      if (_itemName.text.trim() != "") {
-        if (_price.text.trim() != "") {
+      if (_vehiName.text.trim() != "") {
+        if (_pricePerKm.text.trim() != "") {
           var obj = {
             "initialImage": intialImage,
             "item_type": widget.type,
-            "item_name": _itemName.text.trim(),
-            "price": _price.text.trim(),
-            "about": _aboutTheItem.text.trim(),
+            "vehi_name": _vehiName.text.trim(),
+            "price": _pricePerKm.text.trim(),
+            "details": _aboutTheVehicle.text.trim(),
             "brand": _brandName.text.trim(),
+            "model": _model.text.trim(),
+            "gallery": gallery,
           };
           Navigator.pop(context, obj);
         } else {
@@ -133,7 +140,7 @@ class _GroceryItemsFormState extends State<GroceryItemsForm> {
                 ? Stack(
                     children: <Widget>[
                       Image.asset(
-                        'assets/groc_back.jpg',
+                        'assets/vehi_back.png',
                         height: height * 0.3,
                         width: width,
                         fit: BoxFit.cover,
@@ -149,7 +156,7 @@ class _GroceryItemsFormState extends State<GroceryItemsForm> {
                           children: <Widget>[
                             Center(
                                 child: Text(
-                              "* Add initial image for the item",
+                              "* Add initial image for the vehicle",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.white,
@@ -290,9 +297,9 @@ class _GroceryItemsFormState extends State<GroceryItemsForm> {
             Container(
               width: width * 0.89,
               child: TextField(
-                controller: _itemName,
+                controller: _vehiName,
                 decoration: InputDecoration(
-                  labelText: "* Name of the item",
+                  labelText: "* Vehicle",
                   labelStyle:
                       TextStyle(fontSize: 18, color: Colors.grey.shade500),
                   enabledBorder: OutlineInputBorder(
@@ -315,10 +322,10 @@ class _GroceryItemsFormState extends State<GroceryItemsForm> {
             Container(
               width: width * 0.89,
               child: TextField(
-                controller: _price,
+                controller: _pricePerKm,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  labelText: "* Price(LKR)",
+                  labelText: "* Price per KM (LKR)",
                   labelStyle:
                       TextStyle(fontSize: 18, color: Colors.grey.shade500),
                   enabledBorder: OutlineInputBorder(
@@ -349,7 +356,7 @@ class _GroceryItemsFormState extends State<GroceryItemsForm> {
               child: TextField(
                 controller: _brandName,
                 decoration: InputDecoration(
-                  labelText: "Brand of the item",
+                  labelText: "Brand",
                   labelStyle:
                       TextStyle(fontSize: 18, color: Colors.grey.shade500),
                   enabledBorder: OutlineInputBorder(
@@ -372,10 +379,9 @@ class _GroceryItemsFormState extends State<GroceryItemsForm> {
             Container(
               width: width * 0.89,
               child: TextField(
-                controller: _aboutTheItem,
-                maxLines: 3,
+                controller: _model,
                 decoration: InputDecoration(
-                  labelText: "About the item",
+                  labelText: "Model",
                   labelStyle:
                       TextStyle(fontSize: 18, color: Colors.grey.shade500),
                   enabledBorder: OutlineInputBorder(
@@ -391,6 +397,80 @@ class _GroceryItemsFormState extends State<GroceryItemsForm> {
                       )),
                 ),
               ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              width: width * 0.89,
+              child: TextField(
+                controller: _aboutTheVehicle,
+                maxLines: 3,
+                decoration: InputDecoration(
+                  labelText: "Details",
+                  labelStyle:
+                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                      color: Colors.grey.shade500,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(
+                        color: Pallete.mainAppColor,
+                      )),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            GestureDetector(
+              onTap: () async {
+                List reGallery = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => RentGallery(
+                              gallery: gallery,
+                            )));
+                if (reGallery != null) {
+                  setState(() {
+                    gallery = reGallery;
+                  });
+                }
+              },
+              child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: Colors.grey.shade500,
+                      )),
+                  width: width * 0.89,
+                  height: height * 0.09,
+                  child: Center(
+                      child: Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.3,
+                    ),
+                    child: Row(
+                      children: <Widget>[
+                        Image.asset(
+                          'assets/icons/album.png',
+                          width: 30,
+                          height: 30,
+                          color: Colors.grey.shade800,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text("Gallery",
+                              style: TextStyle(
+                                  fontSize: 18, color: Colors.grey.shade800)),
+                        ),
+                      ],
+                    ),
+                  ))),
             ),
             SizedBox(
               height: 20,

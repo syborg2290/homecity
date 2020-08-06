@@ -287,7 +287,7 @@ class _AddResturantState extends State<AddResturant> {
                               "thumb": thumbUrl,
                               "type": "image",
                             };
-                            uploadGallery.add(obj);
+                            uploadGallery.add(json.encode(obj));
                           } else {
                             String downUrl =
                                 await _resturantService.uploadVideoToRest(

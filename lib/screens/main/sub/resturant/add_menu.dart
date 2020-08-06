@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:nearby/screens/main/sub/resturant/display_menu_item_in_make.dart';
 import 'package:nearby/utils/pallete.dart';
 import 'package:nearby/screens/main/sub/resturant/menu_items_form.dart';
@@ -110,496 +113,95 @@ class _AddMenuState extends State<AddMenu> {
               SizedBox(
                 height: 10,
               ),
-              Container(
-                child: Column(
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        GestureDetector(
-                          onTap: () async {
-                            var obj = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => MenuItemForm(
-                                          itemType: 'Hot dishes',
-                                        )));
-                            if (obj != null) {
-                              setState(() {
-                                menu.add(obj);
-                              });
-                            }
-                          },
-                          child: Container(
-                            width: 190,
-                            height: 190,
-                            child: Card(
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              child: Container(
-                                color: Colors.white,
-                                child: Column(
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: EdgeInsets.all(10),
+              FutureBuilder(
+                  future: DefaultAssetBundle.of(context)
+                      .loadString("assets/json/food_menu.json"),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return Center(
+                          child: SpinKitCircle(color: Pallete.mainAppColor));
+                    }
+                    List myData = json.decode(snapshot.data);
+
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GridView.count(
+                          physics: ScrollPhysics(),
+                          crossAxisCount: 2,
+                          shrinkWrap: true,
+                          children: List.generate(myData.length, (index) {
+                            return GestureDetector(
+                              onTap: () async {
+                                var obj = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => MenuItemForm(
+                                              itemType: myData[index]
+                                                  ['category_name'],
+                                            )));
+                                if (obj != null) {
+                                  setState(() {
+                                    menu.add(obj);
+                                  });
+                                }
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  left: 5,
+                                  right: 5,
+                                ),
+                                child: Container(
+                                  width: width * 0.25,
+                                  height: height * 0.1,
+                                  child: Card(
+                                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                                    child: Container(
+                                      width: width * 0.25,
+                                      height: height * 0.1,
                                       child: Column(
                                         children: <Widget>[
-                                          Image.asset(
-                                            'assets/icons/hotdishes.png',
-                                            width: 100,
-                                            height: 100,
-                                            color: Pallete.mainAppColor,
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(
-                                              "Hot dishes",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                color: Pallete.mainAppColor,
-                                                fontSize: 19,
+                                          Column(
+                                            children: <Widget>[
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                  myData[index]
+                                                      ['category_name'],
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    color: Pallete.mainAppColor,
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
                                               ),
-                                            ),
+                                              Center(
+                                                child: Image.asset(
+                                                  myData[index]['image_path'],
+                                                  width: 80,
+                                                  height: 80,
+                                                  color: Pallete.mainAppColor,
+                                                  fit: BoxFit.contain,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
                                     ),
-                                  ],
-                                ),
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              elevation: 5,
-                              margin: EdgeInsets.all(10),
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () async {
-                            var obj = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => MenuItemForm(
-                                          itemType: 'Fast food',
-                                        )));
-                            if (obj != null) {
-                              setState(() {
-                                menu.add(obj);
-                              });
-                            }
-                          },
-                          child: Container(
-                            width: 190,
-                            height: 190,
-                            child: Card(
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              child: Container(
-                                color: Colors.white,
-                                child: Column(
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: EdgeInsets.all(10),
-                                      child: Column(
-                                        children: <Widget>[
-                                          Image.asset(
-                                            'assets/icons/fast-food.png',
-                                            width: 100,
-                                            height: 100,
-                                            color: Pallete.mainAppColor,
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(
-                                              "Fast food",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                color: Pallete.mainAppColor,
-                                                fontSize: 19,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
                                     ),
-                                  ],
+                                    elevation: 5,
+                                    margin: EdgeInsets.all(5),
+                                  ),
                                 ),
                               ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              elevation: 5,
-                              margin: EdgeInsets.all(10),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        GestureDetector(
-                          onTap: () async {
-                            var obj = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => MenuItemForm(
-                                          itemType: 'Meat',
-                                        )));
-                            if (obj != null) {
-                              setState(() {
-                                menu.add(obj);
-                              });
-                            }
-                          },
-                          child: Container(
-                            width: 190,
-                            height: 190,
-                            child: Card(
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              child: Container(
-                                color: Colors.white,
-                                child: Column(
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: EdgeInsets.all(10),
-                                      child: Column(
-                                        children: <Widget>[
-                                          Image.asset(
-                                            'assets/icons/meat.png',
-                                            width: 100,
-                                            height: 100,
-                                            color: Pallete.mainAppColor,
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(
-                                              "Meat",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                color: Pallete.mainAppColor,
-                                                fontSize: 19,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              elevation: 5,
-                              margin: EdgeInsets.all(10),
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () async {
-                            var obj = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => MenuItemForm(
-                                          itemType: 'Vegetarian',
-                                        )));
-                            if (obj != null) {
-                              setState(() {
-                                menu.add(obj);
-                              });
-                            }
-                          },
-                          child: Container(
-                            width: 190,
-                            height: 190,
-                            child: Card(
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              child: Container(
-                                color: Colors.white,
-                                child: Column(
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: EdgeInsets.all(10),
-                                      child: Column(
-                                        children: <Widget>[
-                                          Image.asset(
-                                            'assets/icons/vegetarian.png',
-                                            width: 100,
-                                            height: 100,
-                                            color: Pallete.mainAppColor,
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(
-                                              "Vegetarian",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                color: Pallete.mainAppColor,
-                                                fontSize: 19,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              elevation: 5,
-                              margin: EdgeInsets.all(10),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        GestureDetector(
-                          onTap: () async {
-                            var obj = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => MenuItemForm(
-                                          itemType: 'Drinks',
-                                        )));
-                            if (obj != null) {
-                              setState(() {
-                                menu.add(obj);
-                              });
-                            }
-                          },
-                          child: Container(
-                            width: 190,
-                            height: 190,
-                            child: Card(
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              child: Container(
-                                color: Colors.white,
-                                child: Column(
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: EdgeInsets.all(10),
-                                      child: Column(
-                                        children: <Widget>[
-                                          Image.asset(
-                                            'assets/icons/drink.png',
-                                            width: 100,
-                                            height: 100,
-                                            color: Pallete.mainAppColor,
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(
-                                              "Drinks",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                color: Pallete.mainAppColor,
-                                                fontSize: 19,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              elevation: 5,
-                              margin: EdgeInsets.all(10),
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () async {
-                            var obj = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => MenuItemForm(
-                                          itemType: 'Desserts',
-                                        )));
-                            if (obj != null) {
-                              setState(() {
-                                menu.add(obj);
-                              });
-                            }
-                          },
-                          child: Container(
-                            width: 190,
-                            height: 190,
-                            child: Card(
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              child: Container(
-                                color: Colors.white,
-                                child: Column(
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: EdgeInsets.all(10),
-                                      child: Column(
-                                        children: <Widget>[
-                                          Image.asset(
-                                            'assets/icons/desserts.png',
-                                            width: 100,
-                                            height: 100,
-                                            color: Pallete.mainAppColor,
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(
-                                              "Desserts",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                color: Pallete.mainAppColor,
-                                                fontSize: 19,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              elevation: 5,
-                              margin: EdgeInsets.all(10),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        GestureDetector(
-                          onTap: () async {
-                            var obj = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => MenuItemForm(
-                                          itemType: 'Seafoods',
-                                        )));
-                            if (obj != null) {
-                              setState(() {
-                                menu.add(obj);
-                              });
-                            }
-                          },
-                          child: Container(
-                            width: 190,
-                            height: 190,
-                            child: Card(
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              child: Container(
-                                color: Colors.white,
-                                child: Column(
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: EdgeInsets.all(10),
-                                      child: Column(
-                                        children: <Widget>[
-                                          Image.asset(
-                                            'assets/icons/seafood.png',
-                                            width: 100,
-                                            height: 100,
-                                            color: Pallete.mainAppColor,
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(
-                                              "Seafoods",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                color: Pallete.mainAppColor,
-                                                fontSize: 19,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              elevation: 5,
-                              margin: EdgeInsets.all(10),
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () async {
-                            var obj = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => MenuItemForm(
-                                          itemType: 'Other',
-                                        )));
-                            if (obj != null) {
-                              setState(() {
-                                menu.add(obj);
-                              });
-                            }
-                          },
-                          child: Container(
-                            width: 190,
-                            height: 190,
-                            child: Card(
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              child: Container(
-                                color: Colors.white,
-                                child: Column(
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: EdgeInsets.all(10),
-                                      child: Column(
-                                        children: <Widget>[
-                                          Image.asset(
-                                            'assets/icons/other.png',
-                                            width: 100,
-                                            height: 100,
-                                            color: Pallete.mainAppColor,
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(
-                                              "Other",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                color: Pallete.mainAppColor,
-                                                fontSize: 19,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              elevation: 5,
-                              margin: EdgeInsets.all(10),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+                            );
+                          })),
+                    );
+                  }),
             ],
           ),
         ),

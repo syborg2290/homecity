@@ -60,10 +60,10 @@ class GroceryService {
     var uuid = Uuid();
     await mainBannerRef.add({
       "id": uuid.v1().toString() + new DateTime.now().toString(),
-      "groceryId": groceryId,
+      "serviceId": groceryId,
       "title": title,
       "type": "grocery",
-      "grocname": grocname,
+      "serviceName": grocname,
       "intialImage": initialImage,
       "address": address,
       "timestamp": timestamp,

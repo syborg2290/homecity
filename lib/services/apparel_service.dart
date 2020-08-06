@@ -62,11 +62,11 @@ class ApparelService {
     var uuid = Uuid();
     await mainBannerRef.add({
       "id": uuid.v1().toString() + new DateTime.now().toString(),
-      "resturantId": shopId,
+      "serviceId": shopId,
       "title": title,
       "type": "apparel",
       "address": address,
-      "resturantName": shopName,
+      "serviceName": shopName,
       "intialImage": initialImage,
       "timestamp": timestamp,
     });

@@ -149,7 +149,7 @@ class _AddPlaceState extends State<AddPlace> {
                         "thumb": thumbUrl,
                         "type": "image",
                       };
-                      uploadGallery.add(obj);
+                      uploadGallery.add(json.encode(obj));
                     } else {
                       String downUrl = await _placeService.uploadVideoToPlace(
                           await compressVideoFile(ele["media"]));

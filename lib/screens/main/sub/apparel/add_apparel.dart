@@ -163,7 +163,7 @@ class _AddApparelState extends State<AddApparel> {
                             "thumb": thumbUrl,
                             "type": "image",
                           };
-                          uploadGallery.add(obj);
+                          uploadGallery.add(json.encode(obj));
                         } else {
                           String downUrl =
                               await _apparelService.uploadVideoToApparel(
@@ -754,7 +754,6 @@ class _AddApparelState extends State<AddApparel> {
                 ),
               ),
             ),
-            Divider(),
             SizedBox(
               height: 20,
             ),

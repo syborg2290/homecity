@@ -8,6 +8,7 @@ import 'package:nearby/screens/main/sub/events/events_type.dart';
 import 'package:nearby/screens/main/sub/grocery/add_grocery.dart';
 import 'package:nearby/screens/main/sub/place/place_type.dart';
 import 'package:nearby/screens/main/sub/resturant/add_resturant.dart';
+import 'package:nearby/screens/main/sub/vehicles/vehicle_service_type.dart';
 import 'package:nearby/utils/pallete.dart';
 
 class SelectCategory extends StatefulWidget {
@@ -108,6 +109,12 @@ class _SelectCategoryState extends State<SelectCategory> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => AddApparel()));
+                        }
+                        if (myData[index]['service'] == "Vehicle services") {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => VehiServiceType()));
                         }
                       },
                       child: Padding(

@@ -65,6 +65,7 @@ flutter:
     - assets/logo.png
     - assets/profilephoto.png
     - assets/resturant_back.png
+    - assets/vehi_back.png
     - assets/events_back.png
     - assets/apparel_back.jpg
     - assets/groc_back.jpg
@@ -174,6 +175,7 @@ flutter:
     - assets/icons/watch.png
     - assets/icons/pant.png
     - assets/icons/cap.png
+    - assets/icons/skirt.png
     - assets/icons/socks.png
     - assets/icons/sports_wear.png
     - assets/icons/blouse.png
@@ -208,15 +210,51 @@ flutter:
     - assets/icons/boy_bag.png
     - assets/icons/bag_pack.png
     - assets/icons/seafood.png
+    - assets/icons/spare_parts.png
+    - assets/icons/sell_car.png
+    - assets/icons/cabs.png
+    - assets/icons/car_hire.png
+    - assets/icons/service_center.png
+    - assets/icons/rent_car.png
+    - assets/icons/repair.png
+    - assets/icons/engine_repair.png
+    - assets/icons/engine_tune.png
+    - assets/icons/suspension.png
+    - assets/icons/breaking.png
+    - assets/icons/car_audio_modify.png
+    - assets/icons/interio_modify.png
+    - assets/icons/exterio_modify.png
+    - assets/icons/safety_modify.png
+    - assets/icons/lights_modify.png
+    - assets/icons/paint_modify.png
+    - assets/icons/car_stickers.png
+    - assets/icons/offroad_modify.png
+    - assets/icons/air-conditioning.png
+    - assets/icons/hybrid.png
+    - assets/icons/electric.png
+    - assets/icons/none.png
+    - assets/icons/bus.png
+    - assets/icons/excavator.png
+    - assets/icons/heavytruck.png
+    - assets/icons/motorcycle.png
+    - assets/icons/lorry.png
+    - assets/icons/rickshaw.png
+    - assets/icons/hire.png
     - assets/icons/other.png
     
     - assets/json/services.json
     - assets/json/map_style.json
+    - assets/json/rent_types.json
+    - assets/json/vehi_services.json
     - assets/json/event_type.json
+    - assets/json/food_menu.json
     - assets/json/grocery_item_types.json
     - assets/json/place_categories.json
     - assets/json/apparel/boys's wear.json
     - assets/json/apparel/men's wear.json
     - assets/json/apparel/women's wear.json
+    - assets/json/customize_repair/vehi_modie.json
+    - assets/json/customize_repair/vehi_tech.json
+    - assets/json/customize_repair/vehi_types.json
 
   

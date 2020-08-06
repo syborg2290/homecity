@@ -31,11 +31,13 @@ class _LocationMapState extends State<LocationMap> {
   double latitude;
   double longitude;
   bool isLoading = true;
+  var location = lo.Location();
 
   @override
   void initState() {
+    checkGps();
     super.initState();
-    if (widget.locationCoord!=null) {
+    if (widget.locationCoord != null) {
       setState(() {
         _center = LatLng(widget.locationCoord[0], widget.locationCoord[1]);
         _lastMapPosition =
@@ -58,6 +60,13 @@ class _LocationMapState extends State<LocationMap> {
           isLoading = false;
         });
       });
+    }
+  }
+
+  Future checkGps() async {
+    if (!await location.serviceEnabled()) {
+      location.requestService();
+      setState(() {});
     }
   }
 

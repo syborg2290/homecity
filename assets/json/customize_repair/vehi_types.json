@@ -1,0 +1,38 @@
+[
+    {
+        "category_name": "Any",
+        "image_path": "assets/icons/vehicle.png"
+    },
+    {
+        "category_name": "Cars/Vans",
+        "image_path": "assets/icons/hire.png"
+    },
+    {
+        "category_name": "Motorbikes & Scooters",
+        "image_path": "assets/icons/motorcycle.png"
+    },
+    {
+        "category_name": "Buses",
+        "image_path": "assets/icons/bus.png"
+    },
+    {
+        "category_name": "Lorries",
+        "image_path": "assets/icons/lorry.png"
+    },
+    {
+        "category_name": "Three Wheelers",
+        "image_path": "assets/icons/rickshaw.png"
+    },
+    {
+        "category_name": "Heavy trucks",
+        "image_path": "assets/icons/heavytruck.png"
+    },
+    {
+        "category_name": "Heavy Machinery and Tractors",
+        "image_path": "assets/icons/excavator.png"
+    },
+    {
+        "category_name": "Other",
+        "image_path": "assets/icons/other.png"
+    }
+]

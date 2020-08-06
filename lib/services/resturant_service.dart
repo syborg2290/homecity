@@ -64,11 +64,11 @@ class ResturantService {
     var uuid = Uuid();
     await mainBannerRef.add({
       "id": uuid.v1().toString() + new DateTime.now().toString(),
-      "resturantId": restId,
+      "serviceId": restId,
       "title": title,
       "type": "resturant",
       "address": address,
-      "resturantName": restName,
+      "serviceName": restName,
       "intialImage": initialImage,
       "timestamp": timestamp,
     });

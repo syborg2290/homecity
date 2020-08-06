@@ -1,0 +1,34 @@
+[
+    {
+        "category_name": "Hot dishes",
+        "image_path": "assets/icons/hotdishes.png"
+    },
+    {
+        "category_name": "Fast foods",
+        "image_path": "assets/icons/fast-food.png"
+    },
+    {
+        "category_name": "Meats",
+        "image_path": "assets/icons/meat.png"
+    },
+    {
+        "category_name": "Seafoods",
+        "image_path": "assets/icons/seafood.png"
+    },
+    {
+        "category_name": "Vegetarian",
+        "image_path": "assets/icons/vegetarian.png"
+    },
+    {
+        "category_name": "Drinks",
+        "image_path": "assets/icons/drink.png"
+    },
+    {
+        "category_name": "Desserts",
+        "image_path": "assets/icons/desserts.png"
+    },
+    {
+        "category_name": "Other",
+        "image_path": "assets/icons/other.png"
+    }
+]

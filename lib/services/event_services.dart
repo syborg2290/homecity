@@ -58,7 +58,7 @@ class EventServices {
     var uuid = Uuid();
     await mainBannerRef.add({
       "id": uuid.v1().toString() + new DateTime.now().toString(),
-      "eventId": eventId,
+      "serviceId": eventId,
       "type": "event",
       "eventTitle": eventTitle,
       "intialImage": initialImage,
