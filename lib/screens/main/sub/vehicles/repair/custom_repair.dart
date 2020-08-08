@@ -81,7 +81,7 @@ class _CustomRepairState extends State<CustomRepair> {
             style: TextStyle(
                 color: Colors.grey[700],
                 fontFamily: "Roboto",
-                fontSize: 20,
+                fontSize: 18,
                 fontWeight: FontWeight.w400),
           ),
         ),
@@ -168,7 +168,8 @@ class _CustomRepairState extends State<CustomRepair> {
                                                                 index]
                                                             ['category_name'])
                                                         ? Colors.white
-                                                        : Pallete.mainAppColor,
+                                                        : Colors.black
+                                                            .withOpacity(0.6),
                                                     fontSize: 18,
                                                     fontWeight: FontWeight.bold,
                                                   ),
@@ -183,7 +184,8 @@ class _CustomRepairState extends State<CustomRepair> {
                                                           myData[index]
                                                               ['category_name'])
                                                       ? Colors.white
-                                                      : Pallete.mainAppColor,
+                                                      : Colors.black
+                                                          .withOpacity(0.6),
                                                   fit: BoxFit.contain,
                                                 ),
                                               ),
@@ -286,7 +288,8 @@ class _CustomRepairState extends State<CustomRepair> {
                                                             myData[index][
                                                                 'category_name'])
                                                         ? Colors.white
-                                                        : Pallete.mainAppColor,
+                                                        : Colors.black
+                                                            .withOpacity(0.6),
                                                     fontSize: 18,
                                                     fontWeight: FontWeight.bold,
                                                   ),
@@ -301,7 +304,8 @@ class _CustomRepairState extends State<CustomRepair> {
                                                           myData[index]
                                                               ['category_name'])
                                                       ? Colors.white
-                                                      : Pallete.mainAppColor,
+                                                      : Colors.black
+                                                          .withOpacity(0.6),
                                                   fit: BoxFit.contain,
                                                 ),
                                               ),
@@ -404,7 +408,8 @@ class _CustomRepairState extends State<CustomRepair> {
                                                             myData[index][
                                                                 'category_name'])
                                                         ? Colors.white
-                                                        : Pallete.mainAppColor,
+                                                        : Colors.black
+                                                            .withOpacity(0.6),
                                                     fontSize: 18,
                                                     fontWeight: FontWeight.bold,
                                                   ),
@@ -419,7 +424,8 @@ class _CustomRepairState extends State<CustomRepair> {
                                                           myData[index]
                                                               ['category_name'])
                                                       ? Colors.white
-                                                      : Pallete.mainAppColor,
+                                                      : Colors.black
+                                                          .withOpacity(0.6),
                                                   fit: BoxFit.contain,
                                                 ),
                                               ),

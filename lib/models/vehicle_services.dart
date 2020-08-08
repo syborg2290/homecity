@@ -22,6 +22,15 @@ class VehicleS {
   dynamic repaircustomize;
   List vehicles;
   List gallery;
+  String homecity;
+  String price;
+  String condition;
+  String brand;
+  String model;
+  String year;
+  String mileage;
+  List spareVehicles;
+  String vehicleType;
   Timestamp timestamp;
 
   VehicleS({
@@ -46,6 +55,15 @@ class VehicleS {
     this.repaircustomize,
     this.vehicles,
     this.gallery,
+    this.homecity,
+    this.brand,
+    this.condition,
+    this.mileage,
+    this.model,
+    this.price,
+    this.year,
+    this.spareVehicles,
+    this.vehicleType,
     this.timestamp,
   });
 
@@ -72,6 +90,15 @@ class VehicleS {
       repaircustomize: doc['repaircustomize'],
       vehicles: doc['vehicles'],
       gallery: doc['gallery'],
+      homecity: doc['homecity'],
+      brand: doc['brand'],
+      condition: doc['condition'],
+      mileage: doc['mileage'],
+      model: doc['model'],
+      price: doc['price'],
+      year: doc['year'],
+      spareVehicles: doc['spareVehicles'],
+      vehicleType: doc['vehicleType'],
       timestamp: doc['timestamp'],
     );
   }

@@ -164,6 +164,34 @@ class _MenuItemFormState extends State<MenuItemForm> {
     }
   }
 
+  Widget textBoxContainer(TextEditingController _contro, String hint, int lines,
+      double width, bool autoFocus, TextInputType typeText) {
+    return Container(
+      width: width * 0.89,
+      child: TextField(
+        controller: _contro,
+        maxLines: lines,
+        autofocus: autoFocus,
+        keyboardType: typeText,
+        decoration: InputDecoration(
+          labelText: hint,
+          labelStyle: TextStyle(fontSize: 18, color: Colors.grey.shade500),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(
+              color: Colors.grey.shade500,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(
+                color: Pallete.mainAppColor,
+              )),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -386,28 +414,8 @@ class _MenuItemFormState extends State<MenuItemForm> {
             SizedBox(
               height: 20,
             ),
-            Container(
-              width: width * 0.89,
-              child: TextField(
-                controller: _itemName,
-                decoration: InputDecoration(
-                  labelText: "* Name of the food item",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
-                ),
-              ),
-            ),
+            textBoxContainer(_itemName, "* Name of the food item", 1, width,
+                false, TextInputType.text),
             SizedBox(
               height: 20,
             ),
@@ -475,29 +483,8 @@ class _MenuItemFormState extends State<MenuItemForm> {
             SizedBox(
               height: 20,
             ),
-            Container(
-              width: width * 0.89,
-              child: TextField(
-                controller: _aboutTheItem,
-                maxLines: 3,
-                decoration: InputDecoration(
-                  labelText: "About the food item",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
-                ),
-              ),
-            ),
+            textBoxContainer(_aboutTheItem, "About the food item", 3, width,
+                false, TextInputType.text),
             SizedBox(
               height: 20,
             ),
@@ -695,9 +682,6 @@ class _MenuItemFormState extends State<MenuItemForm> {
                   ),
                 ],
               ),
-            ),
-            SizedBox(
-              height: 20,
             ),
             SizedBox(
               height: 20,

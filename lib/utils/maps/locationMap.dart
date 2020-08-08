@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -26,18 +25,16 @@ class _LocationMapState extends State<LocationMap> {
   Set<Marker> _markers = Set();
   LatLng _lastMapPosition;
   lo.Location _locationTracker = lo.Location();
-  StreamSubscription _locationSubscription;
-
   double latitude;
   double longitude;
   bool isLoading = true;
-  var location = lo.Location();
 
   @override
   void initState() {
-    checkGps();
     super.initState();
+
     if (widget.locationCoord != null) {
+      if (!mounted) return;
       setState(() {
         _center = LatLng(widget.locationCoord[0], widget.locationCoord[1]);
         _lastMapPosition =
@@ -51,6 +48,7 @@ class _LocationMapState extends State<LocationMap> {
       Geolocator()
           .getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
           .then((position) {
+        if (!mounted) return;
         setState(() {
           _center = LatLng(position.latitude, position.longitude);
           _lastMapPosition = LatLng(position.latitude, position.longitude);
@@ -60,13 +58,6 @@ class _LocationMapState extends State<LocationMap> {
           isLoading = false;
         });
       });
-    }
-  }
-
-  Future checkGps() async {
-    if (!await location.serviceEnabled()) {
-      location.requestService();
-      setState(() {});
     }
   }
 
@@ -86,26 +77,6 @@ class _LocationMapState extends State<LocationMap> {
     _lastMapPosition = position.target;
   }
 
-  _onMapTypeButtonPressed() {
-    if (_currentType == MapType.normal) {
-      setState(() {
-        _currentType = MapType.satellite;
-      });
-    } else if (_currentType == MapType.satellite) {
-      setState(() {
-        _currentType = MapType.terrain;
-      });
-    } else if (_currentType == MapType.terrain) {
-      setState(() {
-        _currentType = MapType.hybrid;
-      });
-    } else if (_currentType == MapType.hybrid) {
-      setState(() {
-        _currentType = MapType.normal;
-      });
-    }
-  }
-
   Future<Uint8List> getBytesFromAsset(String path, int width) async {
     ByteData data = await rootBundle.load(path);
     ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
@@ -117,7 +88,11 @@ class _LocationMapState extends State<LocationMap> {
   }
 
   setCoord() async {
-    var location = await _locationTracker.getLocation();
+    _locationTracker.getLocation().then((value) {
+      if (!mounted) return;
+      setState(() {});
+    });
+
     changeMapMode();
     final Uint8List markerIcon =
         await getBytesFromAsset('assets/icons/dot.png', 100);
@@ -140,6 +115,7 @@ class _LocationMapState extends State<LocationMap> {
         },
       ),
     );
+    if (!mounted) return;
     setState(() {});
   }
 

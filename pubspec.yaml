@@ -216,6 +216,7 @@ flutter:
     - assets/icons/car_hire.png
     - assets/icons/service_center.png
     - assets/icons/rent_car.png
+    - assets/icons/tyre.png
     - assets/icons/repair.png
     - assets/icons/engine_repair.png
     - assets/icons/engine_tune.png
@@ -243,6 +244,7 @@ flutter:
     - assets/icons/other.png
     
     - assets/json/services.json
+    - assets/json/sell_vehi.json
     - assets/json/map_style.json
     - assets/json/rent_types.json
     - assets/json/vehi_services.json

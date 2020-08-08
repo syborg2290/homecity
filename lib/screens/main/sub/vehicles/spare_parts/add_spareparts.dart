@@ -1,56 +1,42 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:date_picker_timeline/date_picker_timeline.dart';
-import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:nearby/screens/main/sub/events/event_gallery.dart';
+import 'package:nearby/screens/main/sub/vehicles/vehi_gallery.dart';
 import 'package:nearby/services/auth_services.dart';
-import 'package:nearby/services/event_services.dart';
 import 'package:nearby/services/services_service.dart';
+import 'package:nearby/services/vehi_service.dart';
 import 'package:nearby/utils/compress_media.dart';
 import 'package:nearby/utils/flush_bars.dart';
 import 'package:nearby/utils/image_cropper.dart';
-import 'package:nearby/utils/maps/locationMap.dart';
 import 'package:nearby/utils/media_picker/gallery_pick.dart';
 import 'package:nearby/utils/pallete.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:progress_dialog/progress_dialog.dart';
-import 'package:intl/intl.dart' as dd;
 
-class AddEvent extends StatefulWidget {
+class SpareParts extends StatefulWidget {
   final String type;
-  AddEvent({this.type, Key key}) : super(key: key);
+  SpareParts({this.type, Key key}) : super(key: key);
 
   @override
-  _AddEventState createState() => _AddEventState();
+  _SparePartsState createState() => _SparePartsState();
 }
 
-class _AddEventState extends State<AddEvent> {
+class _SparePartsState extends State<SpareParts> {
   File intialImage;
-  TextEditingController _eventTitle = TextEditingController();
-  TextEditingController _address = TextEditingController();
-  TextEditingController _eventDetails = TextEditingController();
-  TextEditingController _location = TextEditingController();
-  TextEditingController _fee = TextEditingController();
-  TextEditingController _telephone1 = TextEditingController();
-  TextEditingController _telephone2 = TextEditingController();
-  TextEditingController _email = TextEditingController();
-  TextEditingController _startTime = TextEditingController();
-  double latitude;
-  double longitude;
+  TextEditingController _name = TextEditingController();
+  TextEditingController _details = TextEditingController();
+  TextEditingController _homecity = TextEditingController();
+  TextEditingController _brand = TextEditingController();
   Services _services = Services();
   AuthServcies _authServcies = AuthServcies();
-  EventServices _eventServices = EventServices();
+  VehiService _vehiService = VehiService();
   ProgressDialog pr;
   String currentUserId;
-  final format = dd.DateFormat("HH:mm");
-  DateTime heldOn;
-  DateTime startTime;
   String selectedDistrict = "Colombo";
-  List gallery = [];
+  String selectedCondition = "Brand new";
   var _districtsList = [
     "Ampara",
     "Anuradhapura",
@@ -78,6 +64,11 @@ class _AddEventState extends State<AddEvent> {
     "Trincomalee",
     "Vavuniya"
   ];
+  List gallery = [];
+  TextEditingController _telephone1 = TextEditingController();
+  TextEditingController _telephone2 = TextEditingController();
+  TextEditingController _price = TextEditingController();
+  List vehiclesType = [];
 
   @override
   void initState() {
@@ -107,7 +98,7 @@ class _AddEventState extends State<AddEvent> {
             child: Column(
               children: <Widget>[
                 SpinKitPouringHourglass(color: Pallete.mainAppColor),
-                Text("Creating event...",
+                Text("Creating spare parts...",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Color.fromRGBO(129, 165, 168, 1),
@@ -125,104 +116,104 @@ class _AddEventState extends State<AddEvent> {
 
   done() async {
     if (intialImage != null) {
-      if (_eventTitle.text.trim() != "") {
-        if (_address.text.trim() != "") {
+      if (_name.text.trim() != "") {
+        if (_homecity.text.trim() != "") {
           if (selectedDistrict != null) {
-            if (latitude != null) {
-              if (_telephone1.text.trim() != "") {
-                if (heldOn != null) {
-                  if (startTime != null) {
-                    pr.show();
-                    List uploadGallery = [];
-                    if (gallery.isNotEmpty) {
-                      for (var ele in gallery) {
-                        if (ele["type"] == "image") {
-                          String downUrl =
-                              await _eventServices.uploadImageEvent(
-                                  await compressImageFile(ele["media"], 80));
-                          String thumbUrl =
-                              await _eventServices.uploadImageEventThumbnail(
-                                  await compressImageFile(ele["media"], 40));
-                          var obj = {
-                            "url": downUrl,
-                            "thumb": thumbUrl,
-                            "type": "image",
-                          };
-                          uploadGallery.add(json.encode(obj));
-                        } else {
-                          String downUrl =
-                              await _eventServices.uploadVideoToEvent(
-                                  await compressVideoFile(ele["media"]));
-                          String thumbUrl =
-                              await _eventServices.uploadVideoToEventThumb(
-                                  await getThumbnailForVideo(ele["media"]));
-                          var obj = {
-                            "url": downUrl,
-                            "thumb": thumbUrl,
-                            "type": "video",
-                          };
-                          uploadGallery.add(json.encode(obj));
-                        }
-                      }
-                    }
-                    String initialImageUpload =
-                        await _eventServices.uploadImageEvent(
-                            await compressImageFile(intialImage, 80));
+            if (_telephone1.text != "") {
+              pr.show();
 
-                    String eventId = await _eventServices.addEvent(
-                      currentUserId,
-                      _eventTitle.text.trim(),
-                      _eventDetails.text.trim(),
-                      initialImageUpload,
-                      _address.text.trim(),
-                      latitude,
-                      longitude,
-                      _email.text.trim(),
-                      _fee.text.trim(),
-                      heldOn,
-                      startTime,
-                      _telephone1.text.trim(),
-                      _telephone2.text.trim(),
-                      uploadGallery,
-                      selectedDistrict,
-                    );
-                    await _services.addService(_eventDetails.text.trim(),
-                        eventId, widget.type, "Events");
-                    await _eventServices.addMainBanner(
-                      _eventTitle.text.trim(),
-                      _eventDetails.text.trim(),
-                      initialImageUpload,
-                      _fee.text.trim(),
-                      heldOn,
-                      startTime,
-                      eventId,
-                    );
-                    pr.hide().whenComplete(() {
-                      Navigator.pop(context);
-                    });
+              List uploadGallery = [];
+              if (gallery.isNotEmpty) {
+                for (var ele in gallery) {
+                  if (ele["type"] == "image") {
+                    String downUrl = await _vehiService.uploadImageVehiSe(
+                        await compressImageFile(ele["media"], 80));
+                    String thumbUrl =
+                        await _vehiService.uploadImageVehiSeThumbnail(
+                            await compressImageFile(ele["media"], 40));
+                    var obj = {
+                      "url": downUrl,
+                      "thumb": thumbUrl,
+                      "type": "image",
+                    };
+                    uploadGallery.add(json.encode(obj));
                   } else {
-                    GradientSnackBar.showMessage(
-                        context, "Event start time is required");
+                    String downUrl = await _vehiService.uploadVideoToVehiSe(
+                        await compressVideoFile(ele["media"]));
+                    String thumbUrl =
+                        await _vehiService.uploadVideoToVehiSeThumb(
+                            await getThumbnailForVideo(ele["media"]));
+                    var obj = {
+                      "url": downUrl,
+                      "thumb": thumbUrl,
+                      "type": "video",
+                    };
+                    uploadGallery.add(json.encode(obj));
                   }
-                } else {
-                  GradientSnackBar.showMessage(
-                      context, "Event date is required");
                 }
-              } else {
-                GradientSnackBar.showMessage(
-                    context, "Telephone number is required");
               }
+
+              String initialImageUpload = await _vehiService
+                  .uploadImageVehiSe(await compressImageFile(intialImage, 80));
+
+              String vehiSeId = await _vehiService.addVehiSe(
+                currentUserId,
+                _name.text.trim(),
+                _details.text.trim(),
+                initialImageUpload,
+                null,
+                null,
+                null,
+                null,
+                selectedDistrict,
+                null,
+                null,
+                null,
+                null,
+                _telephone1.text.trim(),
+                _telephone1.text.trim(),
+                null,
+                null,
+                uploadGallery,
+                null,
+                widget.type,
+                null,
+                _brand.text.trim(),
+                selectedCondition,
+                null,
+                null,
+                null,
+                _price.text.trim(),
+                vehiclesType,
+                null,
+              );
+              await _services.addService(
+                  _name.text.trim(), vehiSeId, widget.type, "Vehicle services");
+              await _vehiService.addMainBanner(
+                _name.text.trim(),
+                initialImageUpload,
+                vehiSeId,
+                null,
+                null,
+                null,
+                widget.type,
+                _brand.text.trim(),
+              );
+              pr.hide().whenComplete(() {
+                Navigator.pop(context);
+              });
             } else {
-              GradientSnackBar.showMessage(context, "Please pin the location");
+              GradientSnackBar.showMessage(
+                  context, "Telephone number is required");
             }
           } else {
-            GradientSnackBar.showMessage(context, "District is required");
+            GradientSnackBar.showMessage(context, "Please select a district");
           }
         } else {
-          GradientSnackBar.showMessage(context, "Address is required");
+          GradientSnackBar.showMessage(context, "Home city is required");
         }
       } else {
-        GradientSnackBar.showMessage(context, "Event title is required");
+        GradientSnackBar.showMessage(context, "Item name is required");
       }
     } else {
       GradientSnackBar.showMessage(context, "Initial image is required");
@@ -293,7 +284,7 @@ class _AddEventState extends State<AddEvent> {
           style: TextStyle(
               color: Colors.grey[700],
               fontFamily: "Roboto",
-              fontSize: 20,
+              fontSize: 18,
               fontWeight: FontWeight.w400),
         ),
         actions: <Widget>[
@@ -326,7 +317,7 @@ class _AddEventState extends State<AddEvent> {
                 ? Stack(
                     children: <Widget>[
                       Image.asset(
-                        'assets/events_back.png',
+                        'assets/vehi_back.png',
                         height: height * 0.3,
                         width: width,
                         fit: BoxFit.cover,
@@ -342,7 +333,7 @@ class _AddEventState extends State<AddEvent> {
                           children: <Widget>[
                             Center(
                                 child: Text(
-                              "* Add initial image for the event",
+                              "* Add initial image for the item",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.white,
@@ -480,18 +471,222 @@ class _AddEventState extends State<AddEvent> {
             SizedBox(
               height: 20,
             ),
-            textBoxContainer(_eventTitle, "* Title of the event", 1, width,
-                false, TextInputType.text),
+            textBoxContainer(
+                _name, "* Item", 1, width, false, TextInputType.text),
             SizedBox(
               height: 20,
             ),
-            textBoxContainer(_eventDetails, "More details", 8, width, false,
+            textBoxContainer(_brand, "Brand of the item", 1, width, false,
                 TextInputType.text),
             SizedBox(
               height: 20,
             ),
             textBoxContainer(
-                _address, "* Address", 1, width, false, TextInputType.text),
+                _details, "Details", 8, width, false, TextInputType.text),
+            SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "Condition of the item",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+            ),
+            Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selectedCondition = "Brand new";
+                        });
+                      },
+                      child: Chip(
+                          backgroundColor: selectedCondition == "Brand new"
+                              ? Pallete.mainAppColor
+                              : null,
+                          label: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Text(
+                              "Brand new",
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: selectedCondition == "Brand new"
+                                    ? Colors.white
+                                    : Colors.black,
+                              ),
+                            ),
+                          ))),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selectedCondition = "Used";
+                        });
+                      },
+                      child: Chip(
+                          backgroundColor: selectedCondition == "Used"
+                              ? Pallete.mainAppColor
+                              : null,
+                          label: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Text(
+                              "Used",
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: selectedCondition == "Used"
+                                    ? Colors.white
+                                    : Colors.black,
+                              ),
+                            ),
+                          )))
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            Container(
+              width: width * 0.89,
+              child: TextField(
+                controller: _price,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: "* Price",
+                  labelStyle:
+                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                      color: Colors.grey.shade500,
+                    ),
+                  ),
+                  suffix: Text(
+                    "LKR",
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(
+                        color: Pallete.mainAppColor,
+                      )),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "Suitable vehicles for the item",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: height * 0.17,
+              child: FutureBuilder(
+                  future: DefaultAssetBundle.of(context).loadString(
+                      'assets/json/customize_repair/vehi_types.json'),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return Center(
+                          child: SpinKitCircle(color: Pallete.mainAppColor));
+                    }
+                    List myData = json.decode(snapshot.data);
+
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ListView.builder(
+                          itemCount: myData.length,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                if (vehiclesType
+                                    .contains(myData[index]['category_name'])) {
+                                  setState(() {
+                                    vehiclesType
+                                        .remove(myData[index]['category_name']);
+                                  });
+                                } else {
+                                  setState(() {
+                                    vehiclesType
+                                        .add(myData[index]['category_name']);
+                                  });
+                                }
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.all(
+                                  10,
+                                ),
+                                child: Container(
+                                  width: width * 0.25,
+                                  height: height * 0.17,
+                                  child: Card(
+                                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                                    color: vehiclesType.contains(
+                                            myData[index]['category_name'])
+                                        ? Pallete.mainAppColor
+                                        : Colors.white,
+                                    child: Column(
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: const EdgeInsets.all(2.0),
+                                          child: Text(
+                                            myData[index]['category_name'],
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              color: vehiclesType.contains(
+                                                      myData[index]
+                                                          ['category_name'])
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                        Center(
+                                          child: Image.asset(
+                                            myData[index]['image_path'],
+                                            width: 40,
+                                            height: 40,
+                                            color: vehiclesType.contains(
+                                                    myData[index]
+                                                        ['category_name'])
+                                                ? Colors.white
+                                                : Colors.black,
+                                            fit: BoxFit.contain,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    elevation: 5,
+                                    margin: EdgeInsets.all(0),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }),
+                    );
+                  }),
+            ),
             SizedBox(
               height: 20,
             ),
@@ -545,82 +740,8 @@ class _AddEventState extends State<AddEvent> {
             SizedBox(
               height: 20,
             ),
-            Container(
-              width: width * 0.89,
-              child: TextField(
-                readOnly: true,
-                onTap: () async {
-                  List<double> locationCo = [];
-                  locationCo.add(latitude);
-                  locationCo.add(longitude);
-                  List<double> locationCoord = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => LocationMap(
-                                isFromFeed: false,
-                                locationCoord:
-                                    latitude == null ? null : locationCo,
-                              )));
-                  if (locationCoord != null) {
-                    setState(() {
-                      latitude = locationCoord[0];
-                      longitude = locationCoord[1];
-                      _location.text = "Location pinned";
-                    });
-                  }
-                },
-                controller: _location,
-                keyboardType: TextInputType.text,
-                decoration: InputDecoration(
-                  labelText: "* location",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-              width: width * 0.89,
-              child: TextField(
-                controller: _fee,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: "Any Entrance fee per person",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  suffix: Text(
-                    "LKR",
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
-                ),
-              ),
-            ),
+            textBoxContainer(
+                _homecity, "* Home city", 1, width, false, TextInputType.text),
             SizedBox(
               height: 20,
             ),
@@ -634,114 +755,12 @@ class _AddEventState extends State<AddEvent> {
             SizedBox(
               height: 20,
             ),
-            textBoxContainer(
-                _email, "Email address", 1, width, false, TextInputType.text),
-            SizedBox(
-              height: 20,
-            ),
-            Text(
-              "* Select date of event will be held on",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.black.withOpacity(0.5),
-                fontSize: 19,
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: DatePicker(
-                DateTime.now(),
-                initialSelectedDate: DateTime.now(),
-                selectionColor: Colors.black,
-                selectedTextColor: Colors.white,
-                onDateChange: (date) {
-                  setState(() {
-                    heldOn = date;
-                  });
-                },
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Text(
-              "* Start time of the event",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.black.withOpacity(0.5),
-                fontSize: 19,
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              width: width * 0.89,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: Colors.grey.shade500,
-                  width: 1,
-                ),
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.white,
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: Offset(0, 3), // changes position of shadow
-                  ),
-                ],
-              ),
-              child: Padding(
-                padding: EdgeInsets.only(
-                  top: height * 0.01,
-                  bottom: height * 0.01,
-                  // right: width * 0.4,
-                ),
-                child: Center(
-                  child: DateTimeField(
-                    format: format,
-                    controller: _startTime,
-                    onChanged: (value) {
-                      setState(() {
-                        startTime = value;
-                      });
-                    },
-                    textAlign: TextAlign.center,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: '* Start At',
-                      hintStyle: TextStyle(
-                        color: Colors.grey.shade500,
-                        fontSize: 18,
-                      ),
-                    ),
-                    onShowPicker: (context, currentValue) async {
-                      final time = await showTimePicker(
-                        context: context,
-                        initialTime: TimeOfDay.fromDateTime(
-                            currentValue ?? DateTime.now()),
-                      );
-
-                      return DateTimeField.convert(time);
-                    },
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
             GestureDetector(
               onTap: () async {
                 List reGallery = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => EventGallery(
+                        builder: (context) => VehiGallery(
                               gallery: gallery,
                             )));
                 if (reGallery != null) {

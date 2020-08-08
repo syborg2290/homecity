@@ -3,23 +3,19 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:nearby/screens/main/sub/vehicles/hire/add_hire_vehicle.dart';
-import 'package:nearby/screens/main/sub/vehicles/rent/rent_vehicles.dart';
-import 'package:nearby/screens/main/sub/vehicles/repair/vehi_Repair.dart';
-import 'package:nearby/screens/main/sub/vehicles/sell_vehicles/selling_type.dart';
-import 'package:nearby/screens/main/sub/vehicles/service_centers/add_service_center.dart';
-import 'package:nearby/screens/main/sub/vehicles/spare_parts/add_spareparts.dart';
-import 'package:nearby/screens/main/sub/vehicles/tyre_shop/add_tyre.dart';
 import 'package:nearby/utils/pallete.dart';
 
-class VehiServiceType extends StatefulWidget {
-  VehiServiceType({Key key}) : super(key: key);
+import 'add_Sell_vehicle.dart';
+
+class SellingType extends StatefulWidget {
+  final String type;
+  SellingType({this.type, Key key}) : super(key: key);
 
   @override
-  _VehiServiceTypeState createState() => _VehiServiceTypeState();
+  _SellingTypeState createState() => _SellingTypeState();
 }
 
-class _VehiServiceTypeState extends State<VehiServiceType> {
+class _SellingTypeState extends State<SellingType> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -51,17 +47,17 @@ class _VehiServiceTypeState extends State<VehiServiceType> {
         ),
         centerTitle: false,
         title: Text(
-          'Select a category',
+          'Vehicle type',
           style: TextStyle(
               color: Colors.grey[700],
               fontFamily: "Roboto",
-              fontSize: 20,
+              fontSize: 18,
               fontWeight: FontWeight.w400),
         ),
       ),
       body: FutureBuilder(
           future: DefaultAssetBundle.of(context)
-              .loadString('assets/json/vehi_services.json'),
+              .loadString('assets/json/sell_vehi.json'),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return Center(child: SpinKitCircle(color: Pallete.mainAppColor));
@@ -76,70 +72,13 @@ class _VehiServiceTypeState extends State<VehiServiceType> {
                   children: List.generate(myData.length, (index) {
                     return GestureDetector(
                       onTap: () {
-                        if (myData[index]['category_name'] ==
-                            "Vehicle repairs & modifications") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => VehiRepair(
-                                        type: myData[index]['category_name'],
-                                      )));
-                        }
-                        if (myData[index]['category_name'] == "Rent vehicles") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => RentVehicles(
-                                        type: myData[index]['category_name'],
-                                      )));
-                        }
-                        if (myData[index]['category_name'] ==
-                            "Vehicle service centers") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AddServiceCenter(
-                                        type: myData[index]['category_name'],
-                                      )));
-                        }
-
-                        if (myData[index]['category_name'] == "Hire vehicles") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => HireVehicle(
-                                        type: myData[index]['category_name'],
-                                      )));
-                        }
-
-                        if (myData[index]['category_name'] ==
-                            "Spare parts/accessories") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SpareParts(
-                                        type: myData[index]['category_name'],
-                                      )));
-                        }
-
-                        if (myData[index]['category_name'] ==
-                            "Tyre shop and services") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AddTyre(
-                                        type: myData[index]['category_name'],
-                                      )));
-                        }
-
-                        if (myData[index]['category_name'] == "Sell vehicles") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SellingType(
-                                        type: myData[index]['category_name'],
-                                      )));
-                        }
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AddSell(
+                                      category: myData[index]['category_name'],
+                                      type: widget.type,
+                                    )));
                       },
                       child: Padding(
                         padding: EdgeInsets.only(

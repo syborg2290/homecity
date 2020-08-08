@@ -71,6 +71,34 @@ class _RentVehiFormState extends State<RentVehiForm> {
     }
   }
 
+  Widget textBoxContainer(TextEditingController _contro, String hint, int lines,
+      double width, bool autoFocus, TextInputType typeText) {
+    return Container(
+      width: width * 0.89,
+      child: TextField(
+        controller: _contro,
+        maxLines: lines,
+        autofocus: autoFocus,
+        keyboardType: typeText,
+        decoration: InputDecoration(
+          labelText: hint,
+          labelStyle: TextStyle(fontSize: 18, color: Colors.grey.shade500),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(
+              color: Colors.grey.shade500,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(
+                color: Pallete.mainAppColor,
+              )),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -107,7 +135,7 @@ class _RentVehiFormState extends State<RentVehiForm> {
           style: TextStyle(
               color: Colors.grey[700],
               fontFamily: "Roboto",
-              fontSize: 20,
+              fontSize: 18,
               fontWeight: FontWeight.w400),
         ),
         actions: <Widget>[
@@ -294,28 +322,8 @@ class _RentVehiFormState extends State<RentVehiForm> {
             SizedBox(
               height: 20,
             ),
-            Container(
-              width: width * 0.89,
-              child: TextField(
-                controller: _vehiName,
-                decoration: InputDecoration(
-                  labelText: "* Vehicle",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
-                ),
-              ),
-            ),
+            textBoxContainer(
+                _vehiName, "* Vehicle", 1, width, false, TextInputType.text),
             SizedBox(
               height: 20,
             ),
@@ -351,79 +359,18 @@ class _RentVehiFormState extends State<RentVehiForm> {
             SizedBox(
               height: 20,
             ),
-            Container(
-              width: width * 0.89,
-              child: TextField(
-                controller: _brandName,
-                decoration: InputDecoration(
-                  labelText: "Brand",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
-                ),
-              ),
-            ),
+            textBoxContainer(
+                _brandName, "Brand", 1, width, false, TextInputType.text),
             SizedBox(
               height: 20,
             ),
-            Container(
-              width: width * 0.89,
-              child: TextField(
-                controller: _model,
-                decoration: InputDecoration(
-                  labelText: "Model",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
-                ),
-              ),
-            ),
+            textBoxContainer(
+                _model, "Model", 1, width, false, TextInputType.text),
             SizedBox(
               height: 20,
             ),
-            Container(
-              width: width * 0.89,
-              child: TextField(
-                controller: _aboutTheVehicle,
-                maxLines: 3,
-                decoration: InputDecoration(
-                  labelText: "Details",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
-                ),
-              ),
-            ),
+            textBoxContainer(_aboutTheVehicle, "Details", 3, width, false,
+                TextInputType.text),
             SizedBox(
               height: 20,
             ),

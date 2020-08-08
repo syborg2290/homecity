@@ -27,6 +27,15 @@ class VehiService {
     List gallery,
     dynamic repaircustomize,
     String type,
+    String homecity,
+    String brand,
+    String condition,
+    String mileage,
+    String model,
+    String year,
+    String price,
+    List spareVehicles,
+    String vehicleType,
   ) async {
     var uuid = Uuid();
     DocumentReference docRe = await vehicleServicesRef.add({
@@ -51,26 +60,40 @@ class VehiService {
       "vehicles": vehicles,
       "repaircustomize": repaircustomize,
       "gallery": gallery,
+      "homecity": homecity,
+      "brand": brand,
+      "condition": condition,
+      "mileage": mileage,
+      "model": model,
+      "price": price,
+      "year": year,
+      "spareVehicles": spareVehicles,
+      "vehicleType": vehicleType,
       "timestamp": timestamp,
     });
     return docRe.documentID;
   }
 
   addMainBanner(
-    String shopName,
+    String name,
     String initialImage,
     String vehiSeId,
     String title,
     String address,
+    String homecity,
+    String type,
+    String brand,
   ) async {
     var uuid = Uuid();
     await mainBannerRef.add({
       "id": uuid.v1().toString() + new DateTime.now().toString(),
       "serviceId": vehiSeId,
       "title": title,
-      "type": "vehiSe",
+      "type": type,
       "address": address,
-      "serviceName": shopName,
+      "homecity": homecity,
+      "serviceName": name,
+      "brand": brand,
       "intialImage": initialImage,
       "timestamp": timestamp,
     });

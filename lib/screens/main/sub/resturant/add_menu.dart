@@ -170,7 +170,8 @@ class _AddMenuState extends State<AddMenu> {
                                                       ['category_name'],
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
-                                                    color: Pallete.mainAppColor,
+                                                    color: Colors.black
+                                                        .withOpacity(0.6),
                                                     fontSize: 18,
                                                     fontWeight: FontWeight.bold,
                                                   ),
@@ -181,7 +182,8 @@ class _AddMenuState extends State<AddMenu> {
                                                   myData[index]['image_path'],
                                                   width: 80,
                                                   height: 80,
-                                                  color: Pallete.mainAppColor,
+                                                  color: Colors.black
+                                                      .withOpacity(0.6),
                                                   fit: BoxFit.contain,
                                                 ),
                                               ),

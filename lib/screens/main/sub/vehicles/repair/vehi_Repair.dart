@@ -211,6 +211,15 @@ class _VehiRepairState extends State<VehiRepair> {
                       uploadGallery,
                       json.encode(customizeObj),
                       widget.type,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
                     );
                     await _services.addService(_serviceName.text.trim(),
                         vehiSeId, widget.type, "Vehicle services");
@@ -220,6 +229,9 @@ class _VehiRepairState extends State<VehiRepair> {
                       vehiSeId,
                       _banner.text.trim(),
                       _address.text.trim(),
+                      null,
+                      widget.type,
+                      null,
                     );
                     pr.hide().whenComplete(() {
                       Navigator.pop(context);
@@ -326,6 +338,34 @@ class _VehiRepairState extends State<VehiRepair> {
     );
   }
 
+  Widget textBoxContainer(TextEditingController _contro, String hint, int lines,
+      double width, bool autoFocus, TextInputType typeText) {
+    return Container(
+      width: width * 0.89,
+      child: TextField(
+        controller: _contro,
+        maxLines: lines,
+        autofocus: autoFocus,
+        keyboardType: typeText,
+        decoration: InputDecoration(
+          labelText: hint,
+          labelStyle: TextStyle(fontSize: 18, color: Colors.grey.shade500),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(
+              color: Colors.grey.shade500,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(
+                color: Pallete.mainAppColor,
+              )),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -362,7 +402,7 @@ class _VehiRepairState extends State<VehiRepair> {
           style: TextStyle(
               color: Colors.grey[700],
               fontFamily: "Roboto",
-              fontSize: 20,
+              fontSize: 18,
               fontWeight: FontWeight.w400),
         ),
         actions: <Widget>[
@@ -549,105 +589,23 @@ class _VehiRepairState extends State<VehiRepair> {
             SizedBox(
               height: 20,
             ),
-            Container(
-              width: width * 0.89,
-              child: TextField(
-                controller: _serviceName,
-                decoration: InputDecoration(
-                  labelText: "* Name of the repair center",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
-                ),
-              ),
-            ),
+            textBoxContainer(_serviceName, "* Name of the repair center", 1,
+                width, false, TextInputType.text),
             SizedBox(
               height: 20,
             ),
-            Container(
-              width: width * 0.89,
-              child: TextField(
-                controller: _banner,
-                decoration: InputDecoration(
-                  labelText: "* Provide a title for the banner",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
-                ),
-              ),
-            ),
+            textBoxContainer(_banner, "* Provide a title for the banner", 1,
+                width, false, TextInputType.text),
             SizedBox(
               height: 20,
             ),
-            Container(
-              width: width * 0.89,
-              child: TextField(
-                controller: _details,
-                maxLines: 8,
-                decoration: InputDecoration(
-                  labelText: "Details",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
-                ),
-              ),
-            ),
+            textBoxContainer(
+                _details, "Details", 8, width, false, TextInputType.text),
             SizedBox(
               height: 20,
             ),
-            Container(
-              width: width * 0.89,
-              child: TextField(
-                controller: _address,
-                maxLines: 1,
-                decoration: InputDecoration(
-                  labelText: "* Address",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
-                ),
-              ),
-            ),
+            textBoxContainer(
+                _address, "* Address", 1, width, false, TextInputType.text),
             SizedBox(
               height: 20,
             ),
@@ -748,57 +706,13 @@ class _VehiRepairState extends State<VehiRepair> {
             SizedBox(
               height: 20,
             ),
-            Container(
-              width: width * 0.89,
-              child: TextField(
-                controller: _telephone1,
-                autofocus: false,
-                keyboardType: TextInputType.phone,
-                decoration: InputDecoration(
-                  labelText: "* Telephone 1",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
-                ),
-              ),
-            ),
+            textBoxContainer(_telephone1, "* Telephone 1", 1, width, false,
+                TextInputType.phone),
             SizedBox(
               height: 20,
             ),
-            Container(
-              width: width * 0.89,
-              child: TextField(
-                autofocus: false,
-                controller: _telephone2,
-                keyboardType: TextInputType.phone,
-                decoration: InputDecoration(
-                  labelText: "Telephone 2",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
-                ),
-              ),
-            ),
+            textBoxContainer(_telephone2, "Telephone 2", 1, width, false,
+                TextInputType.phone),
             SizedBox(
               height: 20,
             ),
@@ -986,30 +900,13 @@ class _VehiRepairState extends State<VehiRepair> {
             SizedBox(
               height: 10,
             ),
-            Container(
-              width: width * 0.89,
-              child: TextField(
-                controller: _specialHolidaysAndHoursController,
-                maxLines: 3,
-                keyboardType: TextInputType.text,
-                decoration: InputDecoration(
-                  labelText: "Special holidays and hours",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
-                ),
-              ),
-            ),
+            textBoxContainer(
+                _specialHolidaysAndHoursController,
+                "Special holidays and hours",
+                3,
+                width,
+                false,
+                TextInputType.text),
             SizedBox(
               height: 20,
             ),

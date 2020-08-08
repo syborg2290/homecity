@@ -1,0 +1,34 @@
+[
+    {
+        "category_name": "Nightclubs",
+        "image_path": "assets/icons/meat.png"
+    },
+    {
+        "category_name": "Bars",
+        "image_path": "assets/icons/seafood.png"
+    },
+    {
+        "category_name": "Live music shows",
+        "image_path": "assets/icons/seafood.png"
+    },
+    {
+        "category_name": "Night festivals",
+        "image_path": "assets/icons/seafood.png"
+    },
+    {
+        "category_name": "Pubs",
+        "image_path": "assets/icons/vegetarian.png"
+    },
+    {
+        "category_name": "Night cafes",
+        "image_path": "assets/icons/hotdishes.png"
+    },
+    {
+        "category_name": "Night resturants",
+        "image_path": "assets/icons/fast-food.png"
+    },
+    {
+        "category_name": "Other",
+        "image_path": "assets/icons/other.png"
+    }
+]

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -204,15 +205,28 @@ class _AddServiceCenterState extends State<AddServiceCenter> {
                       uploadGallery,
                       null,
                       widget.type,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
                     );
                     await _services.addService(_name.text.trim(), vehiSeId,
-                        "Vehicle services centers", "Vehicle services");
+                        widget.type, "Vehicle services");
                     await _vehiService.addMainBanner(
-                        _name.text.trim(),
-                        initialImageUpload,
-                        vehiSeId,
-                        _banner.text.trim(),
-                        _address.text.trim());
+                      _name.text.trim(),
+                      initialImageUpload,
+                      vehiSeId,
+                      _banner.text.trim(),
+                      _address.text.trim(),
+                      null,
+                      widget.type,
+                      null,
+                    );
                     pr.hide().whenComplete(() {
                       Navigator.pop(context);
                     });
@@ -245,6 +259,106 @@ class _AddServiceCenterState extends State<AddServiceCenter> {
     } else {
       GradientSnackBar.showMessage(context, "Initial image is required");
     }
+  }
+
+  Widget textBoxContainer(TextEditingController _contro, String hint, int lines,
+      double width, bool autoFocus, TextInputType typeText) {
+    return Container(
+      width: width * 0.89,
+      child: TextField(
+        controller: _contro,
+        maxLines: lines,
+        autofocus: autoFocus,
+        keyboardType: typeText,
+        decoration: InputDecoration(
+          labelText: hint,
+          labelStyle: TextStyle(fontSize: 18, color: Colors.grey.shade500),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(
+              color: Colors.grey.shade500,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(
+                color: Pallete.mainAppColor,
+              )),
+        ),
+      ),
+    );
+  }
+
+  Widget openAndClose(double width, double height, bool isOpen,
+      TextEditingController _controller) {
+    return Padding(
+      padding: EdgeInsets.only(
+        top: height * 0.01,
+      ),
+      child: Center(
+        child: Container(
+          width: width * 0.4,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: Colors.grey.shade500,
+              width: 1,
+            ),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.white,
+                spreadRadius: 5,
+                blurRadius: 7,
+                offset: Offset(0, 3), // changes position of shadow
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: EdgeInsets.only(
+              top: height * 0.01,
+              bottom: height * 0.01,
+              // right: width * 0.4,
+            ),
+            child: Center(
+              child: DateTimeField(
+                format: format,
+                controller: _controller,
+                onChanged: (value) {
+                  if (isOpen) {
+                    setState(() {
+                      open = value;
+                    });
+                  } else {
+                    setState(() {
+                      close = value;
+                    });
+                  }
+                },
+                textAlign: TextAlign.center,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: isOpen ? 'Open At' : 'Close At',
+                  hintStyle: TextStyle(
+                    color: Colors.grey.shade500,
+                    fontSize: 18,
+                  ),
+                ),
+                onShowPicker: (context, currentValue) async {
+                  final time = await showTimePicker(
+                    context: context,
+                    initialTime:
+                        TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+                  );
+
+                  return DateTimeField.convert(time);
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -283,7 +397,7 @@ class _AddServiceCenterState extends State<AddServiceCenter> {
           style: TextStyle(
               color: Colors.grey[700],
               fontFamily: "Roboto",
-              fontSize: 20,
+              fontSize: 18,
               fontWeight: FontWeight.w400),
         ),
         actions: <Widget>[
@@ -470,79 +584,18 @@ class _AddServiceCenterState extends State<AddServiceCenter> {
             SizedBox(
               height: 20,
             ),
-            Container(
-              width: width * 0.89,
-              child: TextField(
-                controller: _name,
-                decoration: InputDecoration(
-                  labelText: "* Name of the service center",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
-                ),
-              ),
-            ),
+            textBoxContainer(_name, "* Name of the service center", 1, width,
+                false, TextInputType.text),
             SizedBox(
               height: 20,
             ),
-            Container(
-              width: width * 0.89,
-              child: TextField(
-                controller: _banner,
-                decoration: InputDecoration(
-                  labelText: "* Provide a title for the banner",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
-                ),
-              ),
-            ),
+            textBoxContainer(_banner, "* Provide a title for the banner", 1,
+                width, false, TextInputType.text),
             SizedBox(
               height: 20,
             ),
-            Container(
-              width: width * 0.89,
-              child: TextField(
-                controller: _details,
-                maxLines: 8,
-                decoration: InputDecoration(
-                  labelText: "Details",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
-                ),
-              ),
-            ),
+            textBoxContainer(
+                _details, "Details", 8, width, false, TextInputType.text),
             SizedBox(
               height: 20,
             ),
@@ -596,29 +649,8 @@ class _AddServiceCenterState extends State<AddServiceCenter> {
             SizedBox(
               height: 20,
             ),
-            Container(
-              width: width * 0.89,
-              child: TextField(
-                controller: _address,
-                maxLines: 1,
-                decoration: InputDecoration(
-                  labelText: "* Address",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
-                ),
-              ),
-            ),
+            textBoxContainer(
+                _address, "* Address", 1, width, false, TextInputType.text),
             SizedBox(
               height: 20,
             ),
@@ -669,84 +701,18 @@ class _AddServiceCenterState extends State<AddServiceCenter> {
             SizedBox(
               height: 20,
             ),
-            Container(
-              width: width * 0.89,
-              child: TextField(
-                controller: _telephone1,
-                autofocus: false,
-                keyboardType: TextInputType.phone,
-                decoration: InputDecoration(
-                  labelText: "* Telephone 1",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
-                ),
-              ),
-            ),
+            textBoxContainer(_telephone1, "* Telephone 1", 1, width, false,
+                TextInputType.phone),
             SizedBox(
               height: 20,
             ),
-            Container(
-              width: width * 0.89,
-              child: TextField(
-                autofocus: false,
-                controller: _telephone2,
-                keyboardType: TextInputType.phone,
-                decoration: InputDecoration(
-                  labelText: "Telephone 2",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
-                ),
-              ),
-            ),
+            textBoxContainer(_telephone2, "Telephone 2", 1, width, false,
+                TextInputType.phone),
             SizedBox(
               height: 20,
             ),
-            Container(
-              width: width * 0.89,
-              child: TextField(
-                autofocus: false,
-                controller: _email,
-                keyboardType: TextInputType.text,
-                decoration: InputDecoration(
-                  labelText: "Email",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
-                ),
-              ),
-            ),
+            textBoxContainer(
+                _email, "Email", 1, width, false, TextInputType.text),
             SizedBox(
               height: 20,
             ),
@@ -897,6 +863,27 @@ class _AddServiceCenterState extends State<AddServiceCenter> {
                       }),
                 )),
             SizedBox(
+              height: 20,
+            ),
+            Text(
+              "* Open and close time of service center",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.black.withOpacity(0.5),
+                fontSize: 19,
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                openAndClose(width, height, true, openController),
+                openAndClose(width, height, false, closeController),
+              ],
+            ),
+            SizedBox(
               height: 10,
             ),
             Padding(
@@ -913,30 +900,13 @@ class _AddServiceCenterState extends State<AddServiceCenter> {
             SizedBox(
               height: 10,
             ),
-            Container(
-              width: width * 0.89,
-              child: TextField(
-                controller: _specialHolidaysAndHoursController,
-                maxLines: 3,
-                keyboardType: TextInputType.text,
-                decoration: InputDecoration(
-                  labelText: "Special holidays and hours",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
-                ),
-              ),
-            ),
+            textBoxContainer(
+                _specialHolidaysAndHoursController,
+                "Special holidays and hours",
+                3,
+                width,
+                false,
+                TextInputType.text),
             SizedBox(
               height: 20,
             ),

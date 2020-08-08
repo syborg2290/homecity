@@ -114,7 +114,7 @@ class _MainCategoryState extends State<MainCategory> {
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10.0),
                                 border: Border.all(
-                                  color: Pallete.mainAppColor,
+                                  color: Colors.black.withOpacity(0.6),
                                   width: 1,
                                 )),
                             child: Card(
@@ -127,7 +127,7 @@ class _MainCategoryState extends State<MainCategory> {
                                       myData[index]['service'],
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                        color: Pallete.mainAppColor,
+                                        color: Colors.black.withOpacity(0.6),
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -137,7 +137,7 @@ class _MainCategoryState extends State<MainCategory> {
                                     myData[index]['image_path'],
                                     width: 50,
                                     height: 50,
-                                    color: Pallete.mainAppColor,
+                                    color: Colors.black.withOpacity(0.6),
                                     fit: BoxFit.contain,
                                   ),
                                 ],

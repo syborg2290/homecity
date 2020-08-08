@@ -1,15 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:nearby/screens/main/sub/events/event_gallery.dart';
+import 'package:nearby/screens/main/sub/vehicles/vehi_gallery.dart';
 import 'package:nearby/services/auth_services.dart';
-import 'package:nearby/services/event_services.dart';
 import 'package:nearby/services/services_service.dart';
+import 'package:nearby/services/vehi_service.dart';
 import 'package:nearby/utils/compress_media.dart';
 import 'package:nearby/utils/flush_bars.dart';
 import 'package:nearby/utils/image_cropper.dart';
@@ -20,37 +19,42 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:intl/intl.dart' as dd;
 
-class AddEvent extends StatefulWidget {
+class AddTyre extends StatefulWidget {
   final String type;
-  AddEvent({this.type, Key key}) : super(key: key);
+  AddTyre({this.type, Key key}) : super(key: key);
 
   @override
-  _AddEventState createState() => _AddEventState();
+  _AddTyreState createState() => _AddTyreState();
 }
 
-class _AddEventState extends State<AddEvent> {
+class _AddTyreState extends State<AddTyre> {
   File intialImage;
-  TextEditingController _eventTitle = TextEditingController();
-  TextEditingController _address = TextEditingController();
-  TextEditingController _eventDetails = TextEditingController();
+  TextEditingController _name = TextEditingController();
+  TextEditingController _details = TextEditingController();
   TextEditingController _location = TextEditingController();
-  TextEditingController _fee = TextEditingController();
-  TextEditingController _telephone1 = TextEditingController();
-  TextEditingController _telephone2 = TextEditingController();
-  TextEditingController _email = TextEditingController();
-  TextEditingController _startTime = TextEditingController();
+  TextEditingController _banner = TextEditingController();
+  TextEditingController _address = TextEditingController();
   double latitude;
   double longitude;
+  List<int> closingDays = [];
+  List<String> selectedClosingDays = [];
+  List<String> daysOfAWeek = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday"
+  ];
+  TextEditingController _specialHolidaysAndHoursController =
+      TextEditingController();
   Services _services = Services();
   AuthServcies _authServcies = AuthServcies();
-  EventServices _eventServices = EventServices();
+  VehiService _vehiService = VehiService();
   ProgressDialog pr;
   String currentUserId;
-  final format = dd.DateFormat("HH:mm");
-  DateTime heldOn;
-  DateTime startTime;
   String selectedDistrict = "Colombo";
-  List gallery = [];
   var _districtsList = [
     "Ampara",
     "Anuradhapura",
@@ -78,6 +82,16 @@ class _AddEventState extends State<AddEvent> {
     "Trincomalee",
     "Vavuniya"
   ];
+  List gallery = [];
+  final format = dd.DateFormat("HH:mm");
+  DateTime open;
+  DateTime close;
+  TextEditingController _telephone1 = TextEditingController();
+  TextEditingController _telephone2 = TextEditingController();
+  TextEditingController _email = TextEditingController();
+  TextEditingController _website = TextEditingController();
+  TextEditingController openController = TextEditingController();
+  TextEditingController closeController = TextEditingController();
 
   @override
   void initState() {
@@ -107,7 +121,7 @@ class _AddEventState extends State<AddEvent> {
             child: Column(
               children: <Widget>[
                 SpinKitPouringHourglass(color: Pallete.mainAppColor),
-                Text("Creating event...",
+                Text("Creating tire works shop...",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Color.fromRGBO(129, 165, 168, 1),
@@ -125,23 +139,23 @@ class _AddEventState extends State<AddEvent> {
 
   done() async {
     if (intialImage != null) {
-      if (_eventTitle.text.trim() != "") {
-        if (_address.text.trim() != "") {
+      if (_name.text.trim() != "") {
+        if (_banner.text.trim() != "") {
           if (selectedDistrict != null) {
-            if (latitude != null) {
-              if (_telephone1.text.trim() != "") {
-                if (heldOn != null) {
-                  if (startTime != null) {
+            if (_address.text.trim() != "") {
+              if (latitude != null) {
+                if (_telephone1.text != "") {
+                  if (openController.text != "" && closeController.text != "") {
                     pr.show();
+
                     List uploadGallery = [];
                     if (gallery.isNotEmpty) {
                       for (var ele in gallery) {
                         if (ele["type"] == "image") {
-                          String downUrl =
-                              await _eventServices.uploadImageEvent(
-                                  await compressImageFile(ele["media"], 80));
+                          String downUrl = await _vehiService.uploadImageVehiSe(
+                              await compressImageFile(ele["media"], 80));
                           String thumbUrl =
-                              await _eventServices.uploadImageEventThumbnail(
+                              await _vehiService.uploadImageVehiSeThumbnail(
                                   await compressImageFile(ele["media"], 40));
                           var obj = {
                             "url": downUrl,
@@ -151,10 +165,10 @@ class _AddEventState extends State<AddEvent> {
                           uploadGallery.add(json.encode(obj));
                         } else {
                           String downUrl =
-                              await _eventServices.uploadVideoToEvent(
+                              await _vehiService.uploadVideoToVehiSe(
                                   await compressVideoFile(ele["media"]));
                           String thumbUrl =
-                              await _eventServices.uploadVideoToEventThumb(
+                              await _vehiService.uploadVideoToVehiSeThumb(
                                   await getThumbnailForVideo(ele["media"]));
                           var obj = {
                             "url": downUrl,
@@ -165,64 +179,80 @@ class _AddEventState extends State<AddEvent> {
                         }
                       }
                     }
+
                     String initialImageUpload =
-                        await _eventServices.uploadImageEvent(
+                        await _vehiService.uploadImageVehiSe(
                             await compressImageFile(intialImage, 80));
 
-                    String eventId = await _eventServices.addEvent(
+                    String vehiSeId = await _vehiService.addVehiSe(
                       currentUserId,
-                      _eventTitle.text.trim(),
-                      _eventDetails.text.trim(),
+                      _name.text.trim(),
+                      _details.text.trim(),
                       initialImageUpload,
                       _address.text.trim(),
                       latitude,
                       longitude,
                       _email.text.trim(),
-                      _fee.text.trim(),
-                      heldOn,
-                      startTime,
-                      _telephone1.text.trim(),
-                      _telephone2.text.trim(),
-                      uploadGallery,
                       selectedDistrict,
+                      _website.text.trim(),
+                      closingDays,
+                      close,
+                      open,
+                      _telephone1.text.trim(),
+                      _telephone1.text.trim(),
+                      _specialHolidaysAndHoursController.text.trim(),
+                      null,
+                      uploadGallery,
+                      null,
+                      widget.type,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
                     );
-                    await _services.addService(_eventDetails.text.trim(),
-                        eventId, widget.type, "Events");
-                    await _eventServices.addMainBanner(
-                      _eventTitle.text.trim(),
-                      _eventDetails.text.trim(),
+                    await _services.addService(_name.text.trim(), vehiSeId,
+                        widget.type, "Vehicle services");
+                    await _vehiService.addMainBanner(
+                      _name.text.trim(),
                       initialImageUpload,
-                      _fee.text.trim(),
-                      heldOn,
-                      startTime,
-                      eventId,
+                      vehiSeId,
+                      _banner.text.trim(),
+                      _address.text.trim(),
+                      null,
+                      widget.type,
+                      null,
                     );
                     pr.hide().whenComplete(() {
                       Navigator.pop(context);
                     });
                   } else {
                     GradientSnackBar.showMessage(
-                        context, "Event start time is required");
+                        context, "Open and close time is required");
                   }
                 } else {
                   GradientSnackBar.showMessage(
-                      context, "Event date is required");
+                      context, "Shop telephone number is required");
                 }
               } else {
                 GradientSnackBar.showMessage(
-                    context, "Telephone number is required");
+                    context, "Please pin the location");
               }
             } else {
-              GradientSnackBar.showMessage(context, "Please pin the location");
+              GradientSnackBar.showMessage(context, "Shop address is required");
             }
           } else {
-            GradientSnackBar.showMessage(context, "District is required");
+            GradientSnackBar.showMessage(context, "Please select a district");
           }
         } else {
-          GradientSnackBar.showMessage(context, "Address is required");
+          GradientSnackBar.showMessage(context, "Banner title is required");
         }
       } else {
-        GradientSnackBar.showMessage(context, "Event title is required");
+        GradientSnackBar.showMessage(context, "Shop name is required");
       }
     } else {
       GradientSnackBar.showMessage(context, "Initial image is required");
@@ -252,6 +282,78 @@ class _AddEventState extends State<AddEvent> {
               borderSide: BorderSide(
                 color: Pallete.mainAppColor,
               )),
+        ),
+      ),
+    );
+  }
+
+  Widget openAndClose(double width, double height, bool isOpen,
+      TextEditingController _controller) {
+    return Padding(
+      padding: EdgeInsets.only(
+        top: height * 0.01,
+      ),
+      child: Center(
+        child: Container(
+          width: width * 0.4,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: Colors.grey.shade500,
+              width: 1,
+            ),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.white,
+                spreadRadius: 5,
+                blurRadius: 7,
+                offset: Offset(0, 3), // changes position of shadow
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: EdgeInsets.only(
+              top: height * 0.01,
+              bottom: height * 0.01,
+              // right: width * 0.4,
+            ),
+            child: Center(
+              child: DateTimeField(
+                format: format,
+                controller: _controller,
+                onChanged: (value) {
+                  if (isOpen) {
+                    setState(() {
+                      open = value;
+                    });
+                  } else {
+                    setState(() {
+                      close = value;
+                    });
+                  }
+                },
+                textAlign: TextAlign.center,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: isOpen ? 'Open At' : 'Close At',
+                  hintStyle: TextStyle(
+                    color: Colors.grey.shade500,
+                    fontSize: 18,
+                  ),
+                ),
+                onShowPicker: (context, currentValue) async {
+                  final time = await showTimePicker(
+                    context: context,
+                    initialTime:
+                        TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+                  );
+
+                  return DateTimeField.convert(time);
+                },
+              ),
+            ),
+          ),
         ),
       ),
     );
@@ -293,7 +395,7 @@ class _AddEventState extends State<AddEvent> {
           style: TextStyle(
               color: Colors.grey[700],
               fontFamily: "Roboto",
-              fontSize: 20,
+              fontSize: 18,
               fontWeight: FontWeight.w400),
         ),
         actions: <Widget>[
@@ -326,7 +428,7 @@ class _AddEventState extends State<AddEvent> {
                 ? Stack(
                     children: <Widget>[
                       Image.asset(
-                        'assets/events_back.png',
+                        'assets/vehi_back.png',
                         height: height * 0.3,
                         width: width,
                         fit: BoxFit.cover,
@@ -342,7 +444,7 @@ class _AddEventState extends State<AddEvent> {
                           children: <Widget>[
                             Center(
                                 child: Text(
-                              "* Add initial image for the event",
+                              "* Add initial image for the shop",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.white,
@@ -480,18 +582,18 @@ class _AddEventState extends State<AddEvent> {
             SizedBox(
               height: 20,
             ),
-            textBoxContainer(_eventTitle, "* Title of the event", 1, width,
-                false, TextInputType.text),
-            SizedBox(
-              height: 20,
-            ),
-            textBoxContainer(_eventDetails, "More details", 8, width, false,
+            textBoxContainer(_name, "* Name of the shop", 1, width, false,
                 TextInputType.text),
             SizedBox(
               height: 20,
             ),
+            textBoxContainer(_banner, "* Provide a title for the banner", 1,
+                width, false, TextInputType.text),
+            SizedBox(
+              height: 20,
+            ),
             textBoxContainer(
-                _address, "* Address", 1, width, false, TextInputType.text),
+                _details, "Details", 8, width, false, TextInputType.text),
             SizedBox(
               height: 20,
             ),
@@ -545,6 +647,11 @@ class _AddEventState extends State<AddEvent> {
             SizedBox(
               height: 20,
             ),
+            textBoxContainer(
+                _address, "* Address", 1, width, false, TextInputType.text),
+            SizedBox(
+              height: 20,
+            ),
             Container(
               width: width * 0.89,
               child: TextField(
@@ -592,25 +699,42 @@ class _AddEventState extends State<AddEvent> {
             SizedBox(
               height: 20,
             ),
+            textBoxContainer(_telephone1, "* Telephone 1", 1, width, false,
+                TextInputType.phone),
+            SizedBox(
+              height: 20,
+            ),
+            textBoxContainer(_telephone2, "Telephone 2", 1, width, false,
+                TextInputType.phone),
+            SizedBox(
+              height: 20,
+            ),
+            textBoxContainer(
+                _email, "Email", 1, width, false, TextInputType.text),
+            SizedBox(
+              height: 20,
+            ),
             Container(
               width: width * 0.89,
               child: TextField(
-                controller: _fee,
-                keyboardType: TextInputType.number,
+                controller: _website,
+                keyboardType: TextInputType.text,
                 decoration: InputDecoration(
-                  labelText: "Any Entrance fee per person",
+                  prefix: Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: Text(
+                      "www.",
+                      style:
+                          TextStyle(fontSize: 18, color: Colors.grey.shade500),
+                    ),
+                  ),
+                  labelText: "Website",
                   labelStyle:
                       TextStyle(fontSize: 18, color: Colors.grey.shade500),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                     borderSide: BorderSide(
                       color: Colors.grey.shade500,
-                    ),
-                  ),
-                  suffix: Text(
-                    "LKR",
-                    style: TextStyle(
-                      color: Colors.black,
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
@@ -624,115 +748,197 @@ class _AddEventState extends State<AddEvent> {
             SizedBox(
               height: 20,
             ),
-            textBoxContainer(_telephone1, "* Telephone 1", 1, width, false,
-                TextInputType.phone),
-            SizedBox(
-              height: 20,
-            ),
-            textBoxContainer(_telephone2, "Telephone 2", 1, width, false,
-                TextInputType.phone),
-            SizedBox(
-              height: 20,
-            ),
-            textBoxContainer(
-                _email, "Email address", 1, width, false, TextInputType.text),
-            SizedBox(
-              height: 20,
-            ),
             Text(
-              "* Select date of event will be held on",
+              "Mention days of closing",
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.black.withOpacity(0.5),
                 fontSize: 19,
               ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            SizedBox(
+                height: height * 0.1,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: 10,
+                    right: 10,
+                  ),
+                  child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: daysOfAWeek.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            if (daysOfAWeek[index] == "Monday") {
+                              if (selectedClosingDays.contains("Monday")) {
+                                setState(() {
+                                  closingDays.remove(1);
+                                  selectedClosingDays.remove("Monday");
+                                });
+                              } else {
+                                setState(() {
+                                  closingDays.add(1);
+                                  selectedClosingDays.add("Monday");
+                                });
+                              }
+                            }
+                            if (daysOfAWeek[index] == "Tuesday") {
+                              if (selectedClosingDays.contains("Tuesday")) {
+                                setState(() {
+                                  closingDays.remove(2);
+                                  selectedClosingDays.remove("Tuesday");
+                                });
+                              } else {
+                                setState(() {
+                                  closingDays.add(2);
+                                  selectedClosingDays.add("Tuesday");
+                                });
+                              }
+                            }
+                            if (daysOfAWeek[index] == "Wednesday") {
+                              if (selectedClosingDays.contains("Wednesday")) {
+                                setState(() {
+                                  closingDays.remove(3);
+                                  selectedClosingDays.remove("Wednesday");
+                                });
+                              } else {
+                                setState(() {
+                                  closingDays.add(3);
+                                  selectedClosingDays.add("Wednesday");
+                                });
+                              }
+                            }
+                            if (daysOfAWeek[index] == "Thursday") {
+                              if (selectedClosingDays.contains("Thursday")) {
+                                setState(() {
+                                  closingDays.remove(4);
+                                  selectedClosingDays.remove("Thursday");
+                                });
+                              } else {
+                                setState(() {
+                                  closingDays.add(4);
+                                  selectedClosingDays.add("Thursday");
+                                });
+                              }
+                            }
+                            if (daysOfAWeek[index] == "Friday") {
+                              if (selectedClosingDays.contains("Friday")) {
+                                setState(() {
+                                  closingDays.remove(5);
+                                  selectedClosingDays.remove("Friday");
+                                });
+                              } else {
+                                setState(() {
+                                  closingDays.add(5);
+                                  selectedClosingDays.add("Friday");
+                                });
+                              }
+                            }
+                            if (daysOfAWeek[index] == "Saturday") {
+                              if (selectedClosingDays.contains("Saturday")) {
+                                setState(() {
+                                  closingDays.remove(6);
+                                  selectedClosingDays.remove("Saturday");
+                                });
+                              } else {
+                                setState(() {
+                                  closingDays.add(6);
+                                  selectedClosingDays.add("Saturday");
+                                });
+                              }
+                            }
+                            if (daysOfAWeek[index] == "Sunday") {
+                              if (selectedClosingDays.contains("Sunday")) {
+                                setState(() {
+                                  closingDays.remove(7);
+                                  selectedClosingDays.remove("Sunday");
+                                });
+                              } else {
+                                setState(() {
+                                  closingDays.add(7);
+                                  selectedClosingDays.add("Sunday");
+                                });
+                              }
+                            }
+                          },
+                          child: Container(
+                            width: width * 0.3,
+                            height: height * 0.1,
+                            child: Card(
+                              clipBehavior: Clip.antiAliasWithSaveLayer,
+                              color: selectedClosingDays
+                                      .contains(daysOfAWeek[index])
+                                  ? Colors.red
+                                  : Colors.white,
+                              child: Center(
+                                child: Text(daysOfAWeek[index],
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: selectedClosingDays
+                                              .contains(daysOfAWeek[index])
+                                          ? Colors.white
+                                          : Colors.black,
+                                      fontSize: 17,
+                                    )),
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                              elevation: 5,
+                              margin: EdgeInsets.all(10),
+                            ),
+                          ),
+                        );
+                      }),
+                )),
+            SizedBox(
+              height: 20,
+            ),
+            Text(
+              "* Open and close time of your shop",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.black.withOpacity(0.5),
+                fontSize: 19,
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                openAndClose(width, height, true, openController),
+                openAndClose(width, height, false, closeController),
+              ],
             ),
             SizedBox(
               height: 10,
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: DatePicker(
-                DateTime.now(),
-                initialSelectedDate: DateTime.now(),
-                selectionColor: Colors.black,
-                selectedTextColor: Colors.white,
-                onDateChange: (date) {
-                  setState(() {
-                    heldOn = date;
-                  });
-                },
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Text(
-              "* Start time of the event",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.black.withOpacity(0.5),
-                fontSize: 19,
+              child: Text(
+                "Mention Special holidays and hours of closing",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.black.withOpacity(0.5),
+                  fontSize: 19,
+                ),
               ),
             ),
             SizedBox(
               height: 10,
             ),
-            Container(
-              width: width * 0.89,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: Colors.grey.shade500,
-                  width: 1,
-                ),
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.white,
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: Offset(0, 3), // changes position of shadow
-                  ),
-                ],
-              ),
-              child: Padding(
-                padding: EdgeInsets.only(
-                  top: height * 0.01,
-                  bottom: height * 0.01,
-                  // right: width * 0.4,
-                ),
-                child: Center(
-                  child: DateTimeField(
-                    format: format,
-                    controller: _startTime,
-                    onChanged: (value) {
-                      setState(() {
-                        startTime = value;
-                      });
-                    },
-                    textAlign: TextAlign.center,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: '* Start At',
-                      hintStyle: TextStyle(
-                        color: Colors.grey.shade500,
-                        fontSize: 18,
-                      ),
-                    ),
-                    onShowPicker: (context, currentValue) async {
-                      final time = await showTimePicker(
-                        context: context,
-                        initialTime: TimeOfDay.fromDateTime(
-                            currentValue ?? DateTime.now()),
-                      );
-
-                      return DateTimeField.convert(time);
-                    },
-                  ),
-                ),
-              ),
-            ),
+            textBoxContainer(
+                _specialHolidaysAndHoursController,
+                "Special holidays and hours",
+                3,
+                width,
+                false,
+                TextInputType.text),
             SizedBox(
               height: 20,
             ),
@@ -741,7 +947,7 @@ class _AddEventState extends State<AddEvent> {
                 List reGallery = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => EventGallery(
+                        builder: (context) => VehiGallery(
                               gallery: gallery,
                             )));
                 if (reGallery != null) {

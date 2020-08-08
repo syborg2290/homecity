@@ -181,7 +181,8 @@ class _ApparelMainTypeState extends State<ApparelMainType> {
                                                       ['category_name'],
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
-                                                    color: Pallete.mainAppColor,
+                                                    color: Colors.black
+                                                        .withOpacity(0.6),
                                                     fontSize: 18,
                                                     fontWeight: FontWeight.bold,
                                                   ),
@@ -192,7 +193,8 @@ class _ApparelMainTypeState extends State<ApparelMainType> {
                                                   myData[index]['image_path'],
                                                   width: 80,
                                                   height: 80,
-                                                  color: Pallete.mainAppColor,
+                                                  color: Colors.black
+                                                      .withOpacity(0.6),
                                                   fit: BoxFit.contain,
                                                 ),
                                               ),
@@ -288,7 +290,8 @@ class _ApparelMainTypeState extends State<ApparelMainType> {
                                                       ['category_name'],
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
-                                                    color: Pallete.mainAppColor,
+                                                    color: Colors.black
+                                                        .withOpacity(0.6),
                                                     fontSize: 18,
                                                     fontWeight: FontWeight.bold,
                                                   ),
@@ -299,7 +302,8 @@ class _ApparelMainTypeState extends State<ApparelMainType> {
                                                   myData[index]['image_path'],
                                                   width: 80,
                                                   height: 80,
-                                                  color: Pallete.mainAppColor,
+                                                  color: Colors.black
+                                                      .withOpacity(0.6),
                                                   fit: BoxFit.contain,
                                                 ),
                                               ),
@@ -395,7 +399,8 @@ class _ApparelMainTypeState extends State<ApparelMainType> {
                                                       ['category_name'],
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
-                                                    color: Pallete.mainAppColor,
+                                                    color: Colors.black
+                                                        .withOpacity(0.6),
                                                     fontSize: 18,
                                                     fontWeight: FontWeight.bold,
                                                   ),
@@ -406,7 +411,8 @@ class _ApparelMainTypeState extends State<ApparelMainType> {
                                                   myData[index]['image_path'],
                                                   width: 80,
                                                   height: 80,
-                                                  color: Pallete.mainAppColor,
+                                                  color: Colors.black
+                                                      .withOpacity(0.6),
                                                   fit: BoxFit.contain,
                                                 ),
                                               ),
