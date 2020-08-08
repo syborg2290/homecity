@@ -188,6 +188,7 @@ class _AddGroceryState extends State<AddGrocery> {
                           "initialImage": downUrl,
                           "item_type": item["item_type"],
                           "item_name": item["item_name"],
+                          "status": "available",
                           "price": item["price"],
                           "about": item["about"],
                           "brand": item["brand"],

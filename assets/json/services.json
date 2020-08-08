@@ -25,10 +25,10 @@
     },
     {
         "service": "Night-life",
-        "image_path": "assets/icons/bar.png"
+        "image_path": "assets/icons/night_club.png"
     },
     {
-        "service": "Hotels & stayings",
+        "service": "Stays",
         "image_path": "assets/icons/hotel.png"
     },
     {
@@ -52,7 +52,7 @@
         "image_path": "assets/icons/furniture.png"
     },
     {
-        "service": "Construction materials & services",
+        "service": "Construction materials & hardware",
         "image_path": "assets/icons/constru.png"
     }
 ]

@@ -214,6 +214,7 @@ class _AddTyreState extends State<AddTyre> {
                       null,
                       null,
                       null,
+                      "available",
                     );
                     await _services.addService(_name.text.trim(), vehiSeId,
                         widget.type, "Vehicle services");

@@ -36,6 +36,7 @@ class VehiService {
     String price,
     List spareVehicles,
     String vehicleType,
+    String status,
   ) async {
     var uuid = Uuid();
     DocumentReference docRe = await vehicleServicesRef.add({
@@ -69,6 +70,7 @@ class VehiService {
       "year": year,
       "spareVehicles": spareVehicles,
       "vehicleType": vehicleType,
+      "status": status,
       "timestamp": timestamp,
     });
     return docRe.documentID;

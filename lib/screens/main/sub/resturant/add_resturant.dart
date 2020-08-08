@@ -314,6 +314,7 @@ class _AddResturantState extends State<AddResturant> {
                             "initialImage": downUrl,
                             "item_type": item["item_type"],
                             "item_name": item["item_name"],
+                            "status": "available",
                             "price": item["price"],
                             "portion_count": item["portion_count"],
                             "about": item["about"],
@@ -494,6 +495,7 @@ class _AddResturantState extends State<AddResturant> {
                         'assets/resturant_back.png',
                         height: height * 0.3,
                         width: width,
+                        fit: BoxFit.cover,
                       ),
                       Container(
                         color: Colors.black.withOpacity(0.5),

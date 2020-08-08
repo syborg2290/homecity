@@ -31,6 +31,7 @@ class VehicleS {
   String mileage;
   List spareVehicles;
   String vehicleType;
+  String status;
   Timestamp timestamp;
 
   VehicleS({
@@ -64,6 +65,7 @@ class VehicleS {
     this.year,
     this.spareVehicles,
     this.vehicleType,
+    this.status,
     this.timestamp,
   });
 
@@ -99,6 +101,7 @@ class VehicleS {
       year: doc['year'],
       spareVehicles: doc['spareVehicles'],
       vehicleType: doc['vehicleType'],
+      status: doc['status'],
       timestamp: doc['timestamp'],
     );
   }

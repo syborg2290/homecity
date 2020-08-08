@@ -190,6 +190,7 @@ class _AddSellState extends State<AddSell> {
                 _price.text.trim(),
                 null,
                 widget.category,
+                "available",
               );
               await _services.addService(
                   _name.text.trim(), vehiSeId, widget.type, "Vehicle services");

@@ -190,6 +190,7 @@ class _AddApparelState extends State<AddApparel> {
                           "initialImage": downUrl,
                           "item_maintype": item["item_maintype"],
                           "item_subtype": item["item_subtype"],
+                          "status": "available",
                           "item_name": item["item_name"],
                           "price": item["price"],
                           "about": item["about"],

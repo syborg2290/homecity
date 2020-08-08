@@ -195,6 +195,7 @@ class _HireVehicleState extends State<HireVehicle> {
                   null,
                   null,
                   null,
+                  "available"
                 );
                 await _services.addService(_name.text.trim(), vehiSeId,
                     widget.type, "Vehicle services");

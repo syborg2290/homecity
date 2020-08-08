@@ -68,6 +68,9 @@ flutter:
     - assets/vehi_back.png
     - assets/events_back.png
     - assets/apparel_back.jpg
+    - assets/night_life_back.jpg
+    - assets/education_back.jpg
+    - assets/stay_back.jpg
     - assets/groc_back.jpg
     - assets/place_background.png
     
@@ -241,10 +244,39 @@ flutter:
     - assets/icons/lorry.png
     - assets/icons/rickshaw.png
     - assets/icons/hire.png
+    - assets/icons/night_club.png
+    - assets/icons/festival.png
+    - assets/icons/live_music.png
+    - assets/icons/pub.png
+    - assets/icons/night_Rest.png
+    - assets/icons/cafe.png
+    - assets/icons/_night_bar.png
+    - assets/icons/air-conditioner.png
+    - assets/icons/bath_tub.png
+    - assets/icons/bbq.png
+    - assets/icons/bike.png
+    - assets/icons/billiard-ball.png
+    - assets/icons/cooking.png
+    - assets/icons/garden.png
+    - assets/icons/gym.png
+    - assets/icons/heating.png
+    - assets/icons/iorn_board.png
+    - assets/icons/kitchen.png
+    - assets/icons/laundery.png
+    - assets/icons/microwave.png
+    - assets/icons/pool.png
+    - assets/icons/refrigerator.png
+    - assets/icons/shower.png
+    - assets/icons/spa.png
+    - assets/icons/television.png
+    - assets/icons/wifi.png
+    - assets/icons/parking.png
     - assets/icons/other.png
     
     - assets/json/services.json
     - assets/json/sell_vehi.json
+    - assets/json/stay_features.json
+    - assets/json/night_life.json
     - assets/json/map_style.json
     - assets/json/rent_types.json
     - assets/json/vehi_services.json
