@@ -46,30 +46,6 @@ class EventServices {
     return docRe.documentID;
   }
 
-  addMainBanner(
-    String eventTitle,
-    String details,
-    String initialImage,
-    String entranceFee,
-    DateTime heldOn,
-    DateTime startTime,
-    String eventId,
-  ) async {
-    var uuid = Uuid();
-    await mainBannerRef.add({
-      "id": uuid.v1().toString() + new DateTime.now().toString(),
-      "serviceId": eventId,
-      "type": "event",
-      "eventTitle": eventTitle,
-      "intialImage": initialImage,
-      "eventDetails": details,
-      "heldDate": heldOn,
-      "entranceFee": entranceFee,
-      "startTime": startTime,
-      "timestamp": timestamp,
-    });
-  }
-
   Future<String> uploadImageEvent(File imageFile) async {
     var uuid = Uuid();
     StorageUploadTask uploadTask = storageRef

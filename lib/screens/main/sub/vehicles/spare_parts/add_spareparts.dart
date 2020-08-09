@@ -157,48 +157,42 @@ class _SparePartsState extends State<SpareParts> {
                   .uploadImageVehiSe(await compressImageFile(intialImage, 80));
 
               String vehiSeId = await _vehiService.addVehiSe(
-                  currentUserId,
-                  _name.text.trim(),
-                  _details.text.trim(),
-                  initialImageUpload,
-                  null,
-                  null,
-                  null,
-                  null,
-                  selectedDistrict,
-                  null,
-                  null,
-                  null,
-                  null,
-                  _telephone1.text.trim(),
-                  _telephone1.text.trim(),
-                  null,
-                  null,
-                  uploadGallery,
-                  null,
-                  widget.type,
-                  null,
-                  _brand.text.trim(),
-                  selectedCondition,
-                  null,
-                  null,
-                  null,
-                  _price.text.trim(),
-                  vehiclesType,
-                  null,
-                  "available");
-              await _services.addService(
-                  _name.text.trim(), vehiSeId, widget.type, "Vehicle services");
-              await _vehiService.addMainBanner(
+                currentUserId,
                 _name.text.trim(),
+                _details.text.trim(),
                 initialImageUpload,
-                vehiSeId,
+                _homecity.text.trim(),
                 null,
                 null,
+                null,
+                selectedDistrict,
+                null,
+                null,
+                null,
+                null,
+                _telephone1.text.trim(),
+                _telephone1.text.trim(),
+                null,
+                null,
+                uploadGallery,
                 null,
                 widget.type,
+                null,
                 _brand.text.trim(),
+                selectedCondition,
+                null,
+                null,
+                _price.text.trim(),
+                vehiclesType,
+                null,
+                "available",
+                null,
+                null,
+                null,
               );
+              await _services.addService(
+                  _name.text.trim(), vehiSeId, widget.type, "Vehicle services");
+
               pr.hide().whenComplete(() {
                 Navigator.pop(context);
               });
@@ -210,7 +204,7 @@ class _SparePartsState extends State<SpareParts> {
             GradientSnackBar.showMessage(context, "Please select a district");
           }
         } else {
-          GradientSnackBar.showMessage(context, "Home city is required");
+          GradientSnackBar.showMessage(context, "Address is required");
         }
       } else {
         GradientSnackBar.showMessage(context, "Item name is required");
@@ -559,7 +553,7 @@ class _SparePartsState extends State<SpareParts> {
                 controller: _price,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  labelText: "* Price",
+                  labelText: "Price",
                   labelStyle:
                       TextStyle(fontSize: 18, color: Colors.grey.shade500),
                   enabledBorder: OutlineInputBorder(
@@ -741,7 +735,7 @@ class _SparePartsState extends State<SpareParts> {
               height: 20,
             ),
             textBoxContainer(
-                _homecity, "* Home city", 1, width, false, TextInputType.text),
+                _homecity, "* Address", 1, width, false, TextInputType.text),
             SizedBox(
               height: 20,
             ),

@@ -41,7 +41,6 @@ class _NightClubFormState extends State<NightClubForm> {
   TextEditingController closeController = TextEditingController();
   TextEditingController _specialHolidaysAndHoursController =
       TextEditingController();
-  TextEditingController _banner = TextEditingController();
   double latitude;
   double longitude;
   List<int> closingDays = [];
@@ -240,101 +239,91 @@ class _NightClubFormState extends State<NightClubForm> {
   done() async {
     if (intialImage != null) {
       if (_name.text.trim() != "") {
-        if (_banner.text.trim() != "") {
-          if (selectedDistrict != null) {
-            if (_address.text.trim() != "") {
-              if (latitude != null) {
-                if (_telephone1.text != "") {
-                  if (openController.text != "" && closeController.text != "") {
-                    pr.show();
-                    List uploadGallery = [];
-                    if (gallery.isNotEmpty) {
-                      for (var ele in gallery) {
-                        if (ele["type"] == "image") {
-                          String downUrl =
-                              await _nightLifeService.uploadImageNightLife(
-                                  await compressImageFile(ele["media"], 80));
-                          String thumbUrl = await _nightLifeService
-                              .uploadImageNightLifeThumbnail(
-                                  await compressImageFile(ele["media"], 40));
-                          var obj = {
-                            "url": downUrl,
-                            "thumb": thumbUrl,
-                            "type": "image",
-                          };
-                          uploadGallery.add(json.encode(obj));
-                        } else {
-                          String downUrl =
-                              await _nightLifeService.uploadVideoToNightLife(
-                                  await compressVideoFile(ele["media"]));
-                          String thumbUrl = await _nightLifeService
-                              .uploadVideoToNightLifeThumb(
-                                  await getThumbnailForVideo(ele["media"]));
-                          var obj = {
-                            "url": downUrl,
-                            "thumb": thumbUrl,
-                            "type": "video",
-                          };
-                          uploadGallery.add(json.encode(obj));
-                        }
+        if (selectedDistrict != null) {
+          if (_address.text.trim() != "") {
+            if (latitude != null) {
+              if (_telephone1.text != "") {
+                if (openController.text != "" && closeController.text != "") {
+                  pr.show();
+                  List uploadGallery = [];
+                  if (gallery.isNotEmpty) {
+                    for (var ele in gallery) {
+                      if (ele["type"] == "image") {
+                        String downUrl =
+                            await _nightLifeService.uploadImageNightLife(
+                                await compressImageFile(ele["media"], 80));
+                        String thumbUrl = await _nightLifeService
+                            .uploadImageNightLifeThumbnail(
+                                await compressImageFile(ele["media"], 40));
+                        var obj = {
+                          "url": downUrl,
+                          "thumb": thumbUrl,
+                          "type": "image",
+                        };
+                        uploadGallery.add(json.encode(obj));
+                      } else {
+                        String downUrl =
+                            await _nightLifeService.uploadVideoToNightLife(
+                                await compressVideoFile(ele["media"]));
+                        String thumbUrl =
+                            await _nightLifeService.uploadVideoToNightLifeThumb(
+                                await getThumbnailForVideo(ele["media"]));
+                        var obj = {
+                          "url": downUrl,
+                          "thumb": thumbUrl,
+                          "type": "video",
+                        };
+                        uploadGallery.add(json.encode(obj));
                       }
                     }
-
-                    String initialImageUpload =
-                        await _nightLifeService.uploadImageNightLife(
-                            await compressImageFile(intialImage, 80));
-
-                    String restId = await _nightLifeService.addNightLife(
-                      currentUserId,
-                      _name.text.trim(),
-                      _aboutThe.text.trim(),
-                      initialImageUpload,
-                      _address.text.trim(),
-                      latitude,
-                      longitude,
-                      _email.text.trim(),
-                      _website.text.trim(),
-                      closingDays,
-                      close,
-                      open,
-                      _telephone1.text.trim(),
-                      _telephone2.text.trim(),
-                      _specialHolidaysAndHoursController.text.trim(),
-                      selectedDistrict,
-                      uploadGallery,
-                    );
-                    await _services.addService(
-                        _name.text.trim(), restId, widget.type, widget.type);
-                    await _nightLifeService.addMainBanner(
-                        _name.text.trim(),
-                        initialImageUpload,
-                        restId,
-                        _banner.text.trim(),
-                        _address.text.trim());
-                    pr.hide().whenComplete(() {
-                      Navigator.pop(context);
-                    });
-                  } else {
-                    GradientSnackBar.showMessage(
-                        context, "Open and close time is required");
                   }
+
+                  String initialImageUpload =
+                      await _nightLifeService.uploadImageNightLife(
+                          await compressImageFile(intialImage, 80));
+
+                  String restId = await _nightLifeService.addNightLife(
+                    currentUserId,
+                    _name.text.trim(),
+                    _aboutThe.text.trim(),
+                    initialImageUpload,
+                    _address.text.trim(),
+                    latitude,
+                    longitude,
+                    _email.text.trim(),
+                    _website.text.trim(),
+                    closingDays,
+                    close,
+                    open,
+                    _telephone1.text.trim(),
+                    _telephone2.text.trim(),
+                    _specialHolidaysAndHoursController.text.trim(),
+                    selectedDistrict,
+                    uploadGallery,
+                  );
+                  await _services.addService(
+                      _name.text.trim(), restId, widget.type, widget.type);
+                 
+                  pr.hide().whenComplete(() {
+                    Navigator.pop(context);
+                  });
                 } else {
                   GradientSnackBar.showMessage(
-                      context, widget.type + " telephone number is required");
+                      context, "Open and close time is required");
                 }
               } else {
                 GradientSnackBar.showMessage(
-                    context, "Please pin the location");
+                    context, widget.type + " telephone number is required");
               }
             } else {
-              GradientSnackBar.showMessage(
-                  context, widget.type + " address is required");
+              GradientSnackBar.showMessage(context, "Please pin the location");
             }
           } else {
-            GradientSnackBar.showMessage(context, "Please select a district");
+            GradientSnackBar.showMessage(
+                context, widget.type + " address is required");
           }
         } else {
-          GradientSnackBar.showMessage(context, "Banner title is required");
+          GradientSnackBar.showMessage(context, "Please select a district");
         }
       } else {
         GradientSnackBar.showMessage(
@@ -575,11 +564,6 @@ class _NightClubFormState extends State<NightClubForm> {
                 width,
                 false,
                 TextInputType.text),
-            SizedBox(
-              height: 20,
-            ),
-            textBoxContainer(_banner, "* Provide a title for the banner", 1,
-                width, false, TextInputType.text),
             SizedBox(
               height: 20,
             ),

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:nearby/screens/main/bookmarks.dart';
 import 'package:nearby/screens/main/chat.dart';
 import 'package:nearby/screens/main/mainPage.dart';
 import 'package:nearby/screens/main/notification.dart';
@@ -111,6 +112,7 @@ class _HomeState extends State<Home> {
               MainPage(),
               Notify(),
               Chat(),
+              Bookmarks(),
               Profile(
                 profileId: currentUserId,
               ),
@@ -135,8 +137,8 @@ class _HomeState extends State<Home> {
             ),
             child: BottomAppBar(
               shape: CircularNotchedRectangle(),
-              notchMargin: 6.0,
-              elevation: 9.0,
+              notchMargin: 2.0,
+              elevation: 2.0,
               clipBehavior: Clip.antiAlias,
               child: Container(
                 height: 55,
@@ -159,7 +161,10 @@ class _HomeState extends State<Home> {
                     ),
                     IconButton(
                       iconSize: pageIndex == 1 ? 35.0 : 30.0,
-                      padding: EdgeInsets.only(right: 28.0),
+                      padding: EdgeInsets.only(
+                        right: 14.0,
+                        left: 14,
+                      ),
                       icon: Image(
                         image: AssetImage("assets/icons/bell.png"),
                         color: pageIndex == 1
@@ -172,7 +177,10 @@ class _HomeState extends State<Home> {
                     ),
                     IconButton(
                       iconSize: pageIndex == 2 ? 35.0 : 30.0,
-                      padding: EdgeInsets.only(right: 28.0),
+                      padding: EdgeInsets.only(
+                        right: 14.0,
+                        left: 14.0,
+                      ),
                       icon: Image(
                         image: AssetImage("assets/icons/chat.png"),
                         color: pageIndex == 2
@@ -185,15 +193,31 @@ class _HomeState extends State<Home> {
                     ),
                     IconButton(
                       iconSize: pageIndex == 3 ? 35.0 : 30.0,
-                      padding: EdgeInsets.only(right: 28.0),
+                      padding: EdgeInsets.only(
+                        right: 14.0,
+                        left: 14.0,
+                      ),
                       icon: Image(
-                        image: AssetImage("assets/icons/user.png"),
+                        image: AssetImage("assets/icons/bookmark.png"),
                         color: pageIndex == 3
                             ? Pallete.mainAppColor
                             : Colors.black54,
                       ),
                       onPressed: () {
                         onTap(3);
+                      },
+                    ),
+                    IconButton(
+                      iconSize: pageIndex == 4 ? 35.0 : 30.0,
+                      padding: EdgeInsets.only(right: 28.0),
+                      icon: Image(
+                        image: AssetImage("assets/icons/user.png"),
+                        color: pageIndex == 4
+                            ? Pallete.mainAppColor
+                            : Colors.black54,
+                      ),
+                      onPressed: () {
+                        onTap(4);
                       },
                     ),
                   ],

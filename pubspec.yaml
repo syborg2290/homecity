@@ -102,6 +102,7 @@ flutter:
     - assets/icons/dining.png
     - assets/icons/takeaway.png
     - assets/icons/delivery.png
+    - assets/icons/pencil.png
     - assets/icons/anyFoodType.png
     - assets/icons/cut.png
     - assets/icons/crop.png
@@ -117,6 +118,7 @@ flutter:
     - assets/icons/close.png
     - assets/icons/play.png
     - assets/icons/property.png
+    - assets/icons/experience.png
     - assets/icons/furniture.png
     - assets/icons/beach.png
     - assets/icons/agri.png
@@ -271,9 +273,18 @@ flutter:
     - assets/icons/television.png
     - assets/icons/wifi.png
     - assets/icons/parking.png
+    - assets/icons/pre_school.png
+    - assets/icons/vocational.png
+    - assets/icons/higher.png
+    - assets/icons/school.png
+    - assets/icons/school2.png
+    - assets/icons/stationery.png
+    - assets/icons/bookmark.png
+    - assets/icons/tution_classes.png
     - assets/icons/other.png
     
     - assets/json/services.json
+    - assets/json/education.json
     - assets/json/sell_vehi.json
     - assets/json/stay_features.json
     - assets/json/night_life.json

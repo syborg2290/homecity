@@ -52,26 +52,6 @@ class ApparelService {
     return docRe.documentID;
   }
 
-  addMainBanner(
-    String shopName,
-    String initialImage,
-    String shopId,
-    String title,
-    String address,
-  ) async {
-    var uuid = Uuid();
-    await mainBannerRef.add({
-      "id": uuid.v1().toString() + new DateTime.now().toString(),
-      "serviceId": shopId,
-      "title": title,
-      "type": "apparel",
-      "address": address,
-      "serviceName": shopName,
-      "intialImage": initialImage,
-      "timestamp": timestamp,
-    });
-  }
-
   Future<String> uploadImageApparel(File imageFile) async {
     var uuid = Uuid();
     StorageUploadTask uploadTask = storageRef

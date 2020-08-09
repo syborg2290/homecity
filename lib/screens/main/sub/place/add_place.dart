@@ -31,7 +31,6 @@ class _AddPlaceState extends State<AddPlace> {
   TextEditingController _aboutThePlace = TextEditingController();
   TextEditingController _location = TextEditingController();
   TextEditingController _fee = TextEditingController();
-  TextEditingController _banner = TextEditingController();
   double latitude;
   double longitude;
   List<int> closingDays = [];
@@ -129,79 +128,73 @@ class _AddPlaceState extends State<AddPlace> {
   done() async {
     if (intialImage != null) {
       if (_placeName.text.trim() != "") {
-        if (_banner.text.trim() != "") {
-          if (_aboutThePlace.text.trim() != null) {
-            if (selectedDistrict != null) {
-              if (latitude != null) {
-                pr.show();
+        if (_aboutThePlace.text.trim() != null) {
+          if (selectedDistrict != null) {
+            if (latitude != null) {
+              pr.show();
 
-                List uploadGallery = [];
-                if (gallery.isNotEmpty) {
-                  for (var ele in gallery) {
-                    if (ele["type"] == "image") {
-                      String downUrl = await _placeService.uploadImagePlace(
-                          await compressImageFile(ele["media"], 80));
-                      String thumbUrl =
-                          await _placeService.uploadImagePlaceThumbnail(
-                              await compressImageFile(ele["media"], 40));
-                      var obj = {
-                        "url": downUrl,
-                        "thumb": thumbUrl,
-                        "type": "image",
-                      };
-                      uploadGallery.add(json.encode(obj));
-                    } else {
-                      String downUrl = await _placeService.uploadVideoToPlace(
-                          await compressVideoFile(ele["media"]));
-                      String thumbUrl =
-                          await _placeService.uploadVideoToPlaceThumb(
-                              await getThumbnailForVideo(ele["media"]));
-                      var obj = {
-                        "url": downUrl,
-                        "thumb": thumbUrl,
-                        "type": "video",
-                      };
-                      uploadGallery.add(json.encode(obj));
-                    }
+              List uploadGallery = [];
+              if (gallery.isNotEmpty) {
+                for (var ele in gallery) {
+                  if (ele["type"] == "image") {
+                    String downUrl = await _placeService.uploadImagePlace(
+                        await compressImageFile(ele["media"], 80));
+                    String thumbUrl =
+                        await _placeService.uploadImagePlaceThumbnail(
+                            await compressImageFile(ele["media"], 40));
+                    var obj = {
+                      "url": downUrl,
+                      "thumb": thumbUrl,
+                      "type": "image",
+                    };
+                    uploadGallery.add(json.encode(obj));
+                  } else {
+                    String downUrl = await _placeService.uploadVideoToPlace(
+                        await compressVideoFile(ele["media"]));
+                    String thumbUrl =
+                        await _placeService.uploadVideoToPlaceThumb(
+                            await getThumbnailForVideo(ele["media"]));
+                    var obj = {
+                      "url": downUrl,
+                      "thumb": thumbUrl,
+                      "type": "video",
+                    };
+                    uploadGallery.add(json.encode(obj));
                   }
                 }
-
-                String initialImageUpload = await _placeService
-                    .uploadImagePlace(await compressImageFile(intialImage, 80));
-
-                String placeId = await _placeService.addPlace(
-                  currentUserId,
-                  _placeName.text.trim(),
-                  initialImageUpload,
-                  _aboutThePlace.text.trim(),
-                  latitude,
-                  longitude,
-                  _fee.text.trim(),
-                  closingDays,
-                  _specialHolidaysAndHoursController.text.trim(),
-                  selectedDistrict,
-                  uploadGallery,
-                );
-                await _services.addService(
-                    _placeName.text.trim(), placeId, widget.type, "Places");
-                await _placeService.addMainBanner(_placeName.text.trim(),
-                    initialImageUpload, placeId, _banner.text.trim());
-                pr.hide().whenComplete(() {
-                  Navigator.pop(context);
-                });
-              } else {
-                GradientSnackBar.showMessage(
-                    context, "Please pin the location");
               }
+
+              String initialImageUpload = await _placeService
+                  .uploadImagePlace(await compressImageFile(intialImage, 80));
+
+              String placeId = await _placeService.addPlace(
+                currentUserId,
+                _placeName.text.trim(),
+                initialImageUpload,
+                _aboutThePlace.text.trim(),
+                latitude,
+                longitude,
+                _fee.text.trim(),
+                closingDays,
+                _specialHolidaysAndHoursController.text.trim(),
+                selectedDistrict,
+                uploadGallery,
+              );
+              await _services.addService(
+                  _placeName.text.trim(), placeId, widget.type, "Places");
+
+              pr.hide().whenComplete(() {
+                Navigator.pop(context);
+              });
             } else {
-              GradientSnackBar.showMessage(context, "Please select a district");
+              GradientSnackBar.showMessage(context, "Please pin the location");
             }
           } else {
-            GradientSnackBar.showMessage(
-                context, "Give a small description about the place");
+            GradientSnackBar.showMessage(context, "Please select a district");
           }
         } else {
-          GradientSnackBar.showMessage(context, "Banner title is required");
+          GradientSnackBar.showMessage(
+              context, "Give a small description about the place");
         }
       } else {
         GradientSnackBar.showMessage(context, "Place name is required");
@@ -464,11 +457,6 @@ class _AddPlaceState extends State<AddPlace> {
             ),
             textBoxContainer(_placeName, "* Name of the place", 1, width, false,
                 TextInputType.text),
-            SizedBox(
-              height: 20,
-            ),
-            textBoxContainer(_banner, "* Provide a title for the banner", 1,
-                width, false, TextInputType.text),
             SizedBox(
               height: 20,
             ),

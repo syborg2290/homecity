@@ -33,7 +33,6 @@ class _VehiRepairState extends State<VehiRepair> {
   TextEditingController _serviceName = TextEditingController();
   TextEditingController _details = TextEditingController();
   TextEditingController _location = TextEditingController();
-  TextEditingController _banner = TextEditingController();
   TextEditingController _address = TextEditingController();
   double latitude;
   double longitude;
@@ -140,123 +139,111 @@ class _VehiRepairState extends State<VehiRepair> {
   done() async {
     if (intialImage != null) {
       if (_serviceName.text.trim() != "") {
-        if (_banner.text.trim() != "") {
-          if (selectedDistrict != null) {
-            if (_address.text.trim() != "") {
-              if (latitude != null) {
-                if (_telephone1.text != "") {
-                  if (openController.text != "" && closeController.text != "") {
-                    pr.show();
-                    var customizeObj = {
-                      "tech": json.encode(customizedRepair["tech"]),
-                      "types": json.encode(customizedRepair["types"]),
-                      "repairandModi":
-                          json.encode(customizedRepair["repairandModi"]),
-                    };
+        if (selectedDistrict != null) {
+          if (_address.text.trim() != "") {
+            if (latitude != null) {
+              if (_telephone1.text != "") {
+                if (openController.text != "" && closeController.text != "") {
+                  pr.show();
+                  var customizeObj = {
+                    "tech": json.encode(customizedRepair["tech"]),
+                    "types": json.encode(customizedRepair["types"]),
+                    "repairandModi":
+                        json.encode(customizedRepair["repairandModi"]),
+                  };
 
-                    List uploadGallery = [];
-                    if (gallery.isNotEmpty) {
-                      for (var ele in gallery) {
-                        if (ele["type"] == "image") {
-                          String downUrl = await _vehiService.uploadImageVehiSe(
-                              await compressImageFile(ele["media"], 80));
-                          String thumbUrl =
-                              await _vehiService.uploadImageVehiSeThumbnail(
-                                  await compressImageFile(ele["media"], 40));
-                          var obj = {
-                            "url": downUrl,
-                            "thumb": thumbUrl,
-                            "type": "image",
-                          };
-                          uploadGallery.add(json.encode(obj));
-                        } else {
-                          String downUrl =
-                              await _vehiService.uploadVideoToVehiSe(
-                                  await compressVideoFile(ele["media"]));
-                          String thumbUrl =
-                              await _vehiService.uploadVideoToVehiSeThumb(
-                                  await getThumbnailForVideo(ele["media"]));
-                          var obj = {
-                            "url": downUrl,
-                            "thumb": thumbUrl,
-                            "type": "video",
-                          };
-                          uploadGallery.add(json.encode(obj));
-                        }
+                  List uploadGallery = [];
+                  if (gallery.isNotEmpty) {
+                    for (var ele in gallery) {
+                      if (ele["type"] == "image") {
+                        String downUrl = await _vehiService.uploadImageVehiSe(
+                            await compressImageFile(ele["media"], 80));
+                        String thumbUrl =
+                            await _vehiService.uploadImageVehiSeThumbnail(
+                                await compressImageFile(ele["media"], 40));
+                        var obj = {
+                          "url": downUrl,
+                          "thumb": thumbUrl,
+                          "type": "image",
+                        };
+                        uploadGallery.add(json.encode(obj));
+                      } else {
+                        String downUrl = await _vehiService.uploadVideoToVehiSe(
+                            await compressVideoFile(ele["media"]));
+                        String thumbUrl =
+                            await _vehiService.uploadVideoToVehiSeThumb(
+                                await getThumbnailForVideo(ele["media"]));
+                        var obj = {
+                          "url": downUrl,
+                          "thumb": thumbUrl,
+                          "type": "video",
+                        };
+                        uploadGallery.add(json.encode(obj));
                       }
                     }
-
-                    String initialImageUpload =
-                        await _vehiService.uploadImageVehiSe(
-                            await compressImageFile(intialImage, 80));
-
-                    String vehiSeId = await _vehiService.addVehiSe(
-                        currentUserId,
-                        _serviceName.text.trim(),
-                        _details.text.trim(),
-                        initialImageUpload,
-                        _address.text.trim(),
-                        latitude,
-                        longitude,
-                        null,
-                        selectedDistrict,
-                        null,
-                        closingDays,
-                        close,
-                        open,
-                        _telephone1.text.trim(),
-                        _telephone2.text.trim(),
-                        _specialHolidaysAndHoursController.text.trim(),
-                        null,
-                        uploadGallery,
-                        json.encode(customizeObj),
-                        widget.type,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        "available");
-                    await _services.addService(_serviceName.text.trim(),
-                        vehiSeId, widget.type, "Vehicle services");
-                    await _vehiService.addMainBanner(
-                      _serviceName.text.trim(),
-                      initialImageUpload,
-                      vehiSeId,
-                      _banner.text.trim(),
-                      _address.text.trim(),
-                      null,
-                      widget.type,
-                      null,
-                    );
-                    pr.hide().whenComplete(() {
-                      Navigator.pop(context);
-                    });
-                  } else {
-                    GradientSnackBar.showMessage(
-                        context, "Open and close time is required");
                   }
+
+                  String initialImageUpload =
+                      await _vehiService.uploadImageVehiSe(
+                          await compressImageFile(intialImage, 80));
+
+                  String vehiSeId = await _vehiService.addVehiSe(
+                    currentUserId,
+                    _serviceName.text.trim(),
+                    _details.text.trim(),
+                    initialImageUpload,
+                    _address.text.trim(),
+                    latitude,
+                    longitude,
+                    null,
+                    selectedDistrict,
+                    null,
+                    closingDays,
+                    close,
+                    open,
+                    _telephone1.text.trim(),
+                    _telephone2.text.trim(),
+                    _specialHolidaysAndHoursController.text.trim(),
+                    null,
+                    uploadGallery,
+                    json.encode(customizeObj),
+                    widget.type,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    "available",
+                    null,
+                    null,
+                    null,
+                  );
+                  await _services.addService(_serviceName.text.trim(), vehiSeId,
+                      widget.type, "Vehicle services");
+
+                  pr.hide().whenComplete(() {
+                    Navigator.pop(context);
+                  });
                 } else {
                   GradientSnackBar.showMessage(
-                      context, "Repair center telephone number is required");
+                      context, "Open and close time is required");
                 }
               } else {
                 GradientSnackBar.showMessage(
-                    context, "Please pin the location");
+                    context, "Repair center telephone number is required");
               }
             } else {
-              GradientSnackBar.showMessage(
-                  context, "Repair center address is required");
+              GradientSnackBar.showMessage(context, "Please pin the location");
             }
           } else {
-            GradientSnackBar.showMessage(context, "Please select a district");
+            GradientSnackBar.showMessage(
+                context, "Repair center address is required");
           }
         } else {
-          GradientSnackBar.showMessage(context, "Banner title is required");
+          GradientSnackBar.showMessage(context, "Please select a district");
         }
       } else {
         GradientSnackBar.showMessage(context, "Repair center name is required");
@@ -590,11 +577,6 @@ class _VehiRepairState extends State<VehiRepair> {
               height: 20,
             ),
             textBoxContainer(_serviceName, "* Name of the repair center", 1,
-                width, false, TextInputType.text),
-            SizedBox(
-              height: 20,
-            ),
-            textBoxContainer(_banner, "* Provide a title for the banner", 1,
                 width, false, TextInputType.text),
             SizedBox(
               height: 20,

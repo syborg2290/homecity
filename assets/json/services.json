@@ -1,6 +1,6 @@
 [
     {
-        "service": "Resturants",
+        "service": "Resturants & cafes",
         "image_path": "assets/icons/resturant.png"
     },
     {
@@ -32,7 +32,7 @@
         "image_path": "assets/icons/hotel.png"
     },
     {
-        "service": "Education & stationeries",
+        "service": "Education",
         "image_path": "assets/icons/tution.png"
     },
     {

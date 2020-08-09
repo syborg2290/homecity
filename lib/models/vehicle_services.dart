@@ -22,15 +22,17 @@ class VehicleS {
   dynamic repaircustomize;
   List vehicles;
   List gallery;
-  String homecity;
   String price;
   String condition;
   String brand;
   String model;
+  String fuel;
+  String transmission;
   String year;
   String mileage;
   List spareVehicles;
   String vehicleType;
+  String enginecapacity;
   String status;
   Timestamp timestamp;
 
@@ -56,7 +58,6 @@ class VehicleS {
     this.repaircustomize,
     this.vehicles,
     this.gallery,
-    this.homecity,
     this.brand,
     this.condition,
     this.mileage,
@@ -67,6 +68,9 @@ class VehicleS {
     this.vehicleType,
     this.status,
     this.timestamp,
+    this.fuel,
+    this.enginecapacity,
+    this.transmission,
   });
 
   factory VehicleS.fromDocument(DocumentSnapshot doc) {
@@ -92,7 +96,6 @@ class VehicleS {
       repaircustomize: doc['repaircustomize'],
       vehicles: doc['vehicles'],
       gallery: doc['gallery'],
-      homecity: doc['homecity'],
       brand: doc['brand'],
       condition: doc['condition'],
       mileage: doc['mileage'],
@@ -102,6 +105,9 @@ class VehicleS {
       spareVehicles: doc['spareVehicles'],
       vehicleType: doc['vehicleType'],
       status: doc['status'],
+      fuel: doc['fuel'],
+      transmission: doc['transmission'],
+      enginecapacity: doc['enginecapacity'],
       timestamp: doc['timestamp'],
     );
   }

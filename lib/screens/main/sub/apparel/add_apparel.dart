@@ -30,7 +30,6 @@ class AddApparel extends StatefulWidget {
 class _AddApparelState extends State<AddApparel> {
   File intialImage;
   TextEditingController _apparelName = TextEditingController();
-  TextEditingController _banner = TextEditingController();
   TextEditingController _about = TextEditingController();
   TextEditingController _address = TextEditingController();
   TextEditingController _email = TextEditingController();
@@ -141,121 +140,109 @@ class _AddApparelState extends State<AddApparel> {
   done() async {
     if (intialImage != null) {
       if (_apparelName.text.trim() != "") {
-        if (_banner.text.trim() != "") {
-          if (selectedDistrict != null) {
-            if (_address.text.trim() != "") {
-              if (latitude != null) {
-                if (_telephone1.text != "") {
-                  if (openController.text != "" && closeController.text != "") {
-                    pr.show();
-                    List uploadGallery = [];
-                    if (gallery.isNotEmpty) {
-                      for (var ele in gallery) {
-                        if (ele["type"] == "image") {
-                          String downUrl =
-                              await _apparelService.uploadImageApparel(
-                                  await compressImageFile(ele["media"], 80));
-                          String thumbUrl =
-                              await _apparelService.uploadImageApparelThumbnail(
-                                  await compressImageFile(ele["media"], 40));
-                          var obj = {
-                            "url": downUrl,
-                            "thumb": thumbUrl,
-                            "type": "image",
-                          };
-                          uploadGallery.add(json.encode(obj));
-                        } else {
-                          String downUrl =
-                              await _apparelService.uploadVideoToApparel(
-                                  await compressVideoFile(ele["media"]));
-                          String thumbUrl =
-                              await _apparelService.uploadVideoToApparelThumb(
-                                  await getThumbnailForVideo(ele["media"]));
-                          var obj = {
-                            "url": downUrl,
-                            "thumb": thumbUrl,
-                            "type": "video",
-                          };
-                          uploadGallery.add(json.encode(obj));
-                        }
-                      }
-                    }
-                    List itemsUpload = [];
-                    if (apparelItems.isNotEmpty) {
-                      for (var item in apparelItems) {
-                        String downUrl = await _apparelService
-                            .uploadImageApparel(await compressImageFile(
-                                item["initialImage"], 80));
+        if (selectedDistrict != null) {
+          if (_address.text.trim() != "") {
+            if (latitude != null) {
+              if (_telephone1.text != "") {
+                if (openController.text != "" && closeController.text != "") {
+                  pr.show();
+                  List uploadGallery = [];
+                  if (gallery.isNotEmpty) {
+                    for (var ele in gallery) {
+                      if (ele["type"] == "image") {
+                        String downUrl =
+                            await _apparelService.uploadImageApparel(
+                                await compressImageFile(ele["media"], 80));
+                        String thumbUrl =
+                            await _apparelService.uploadImageApparelThumbnail(
+                                await compressImageFile(ele["media"], 40));
                         var obj = {
-                          "initialImage": downUrl,
-                          "item_maintype": item["item_maintype"],
-                          "item_subtype": item["item_subtype"],
-                          "status": "available",
-                          "item_name": item["item_name"],
-                          "price": item["price"],
-                          "about": item["about"],
-                          "brand": item["brand"],
+                          "url": downUrl,
+                          "thumb": thumbUrl,
+                          "type": "image",
                         };
-                        itemsUpload.add(json.encode(obj));
+                        uploadGallery.add(json.encode(obj));
+                      } else {
+                        String downUrl =
+                            await _apparelService.uploadVideoToApparel(
+                                await compressVideoFile(ele["media"]));
+                        String thumbUrl =
+                            await _apparelService.uploadVideoToApparelThumb(
+                                await getThumbnailForVideo(ele["media"]));
+                        var obj = {
+                          "url": downUrl,
+                          "thumb": thumbUrl,
+                          "type": "video",
+                        };
+                        uploadGallery.add(json.encode(obj));
                       }
                     }
-
-                    String initialImageUpload =
-                        await _apparelService.uploadImageApparel(
-                            await compressImageFile(intialImage, 80));
-
-                    String apparelId = await _apparelService.addApparel(
-                      currentUserId,
-                      _apparelName.text.trim(),
-                      _about.text.trim(),
-                      initialImageUpload,
-                      _address.text.trim(),
-                      latitude,
-                      longitude,
-                      _email.text.trim(),
-                      _website.text.trim(),
-                      closingDays,
-                      close,
-                      open,
-                      _telephone1.text.trim(),
-                      _telephone2.text.trim(),
-                      _specialHolidaysAndHoursController.text.trim(),
-                      itemsUpload,
-                      selectedDistrict,
-                      uploadGallery,
-                    );
-                    await _services.addService(_apparelName.text.trim(),
-                        apparelId, "Apparel & fashions", "Apparel & fashions");
-                    await _apparelService.addMainBanner(
-                      _apparelName.text.trim(),
-                      initialImageUpload,
-                      apparelId,
-                      _banner.text.trim(),
-                      _address.text.trim(),
-                    );
-                    pr.hide().whenComplete(() {
-                      Navigator.pop(context);
-                    });
-                  } else {
-                    GradientSnackBar.showMessage(
-                        context, "Open and close time is required");
                   }
+                  List itemsUpload = [];
+                  if (apparelItems.isNotEmpty) {
+                    for (var item in apparelItems) {
+                      String downUrl = await _apparelService.uploadImageApparel(
+                          await compressImageFile(item["initialImage"], 80));
+                      var obj = {
+                        "initialImage": downUrl,
+                        "item_maintype": item["item_maintype"],
+                        "item_subtype": item["item_subtype"],
+                        "status": "available",
+                        "item_name": item["item_name"],
+                        "price": item["price"],
+                        "about": item["about"],
+                        "brand": item["brand"],
+                      };
+                      itemsUpload.add(json.encode(obj));
+                    }
+                  }
+
+                  String initialImageUpload =
+                      await _apparelService.uploadImageApparel(
+                          await compressImageFile(intialImage, 80));
+
+                  String apparelId = await _apparelService.addApparel(
+                    currentUserId,
+                    _apparelName.text.trim(),
+                    _about.text.trim(),
+                    initialImageUpload,
+                    _address.text.trim(),
+                    latitude,
+                    longitude,
+                    _email.text.trim(),
+                    _website.text.trim(),
+                    closingDays,
+                    close,
+                    open,
+                    _telephone1.text.trim(),
+                    _telephone2.text.trim(),
+                    _specialHolidaysAndHoursController.text.trim(),
+                    itemsUpload,
+                    selectedDistrict,
+                    uploadGallery,
+                  );
+                  await _services.addService(_apparelName.text.trim(),
+                      apparelId, "Apparel & fashions", "Apparel & fashions");
+
+                  pr.hide().whenComplete(() {
+                    Navigator.pop(context);
+                  });
                 } else {
                   GradientSnackBar.showMessage(
-                      context, "Shop telephone number is required");
+                      context, "Open and close time is required");
                 }
               } else {
                 GradientSnackBar.showMessage(
-                    context, "Please pin the location");
+                    context, "Shop telephone number is required");
               }
             } else {
-              GradientSnackBar.showMessage(context, "shop address is required");
+              GradientSnackBar.showMessage(context, "Please pin the location");
             }
           } else {
-            GradientSnackBar.showMessage(context, "Please select a district");
+            GradientSnackBar.showMessage(context, "shop address is required");
           }
         } else {
-          GradientSnackBar.showMessage(context, "Banner title is required");
+          GradientSnackBar.showMessage(context, "Please select a district");
         }
       } else {
         GradientSnackBar.showMessage(context, "shop name is required");
@@ -589,11 +576,6 @@ class _AddApparelState extends State<AddApparel> {
             ),
             textBoxContainer(_apparelName, "* Name of the shop", 1, width,
                 false, TextInputType.text),
-            SizedBox(
-              height: 20,
-            ),
-            textBoxContainer(_banner, "* Provide a title for the banner", 1,
-                width, false, TextInputType.text),
             SizedBox(
               height: 20,
             ),
@@ -957,10 +939,11 @@ class _AddApparelState extends State<AddApparel> {
                   height: height * 0.09,
                   child: Center(
                       child: Padding(
-                    padding: EdgeInsets.only(
-                      left: width * 0.25,
+                    padding: EdgeInsets.all(
+                      0,
                     ),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Image.asset(
                           'assets/icons/jacket.png',
@@ -972,7 +955,7 @@ class _AddApparelState extends State<AddApparel> {
                           padding: const EdgeInsets.all(8.0),
                           child: Text("Add items",
                               style: TextStyle(
-                                  fontSize: 18, color: Colors.grey.shade500)),
+                                  fontSize: 18, color: Colors.grey.shade800)),
                         ),
                       ],
                     ),

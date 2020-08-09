@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:nearby/screens/main/sub/apparel/add_apparel.dart';
 import 'package:nearby/screens/main/sub/bar&nightlife/main_types.dart';
+import 'package:nearby/screens/main/sub/education/education_main_types.dart';
 import 'package:nearby/screens/main/sub/events/events_type.dart';
 import 'package:nearby/screens/main/sub/grocery/add_grocery.dart';
 import 'package:nearby/screens/main/sub/place/place_type.dart';
@@ -70,10 +71,11 @@ class _SelectCategoryState extends State<SelectCategory> {
             List myData = json.decode(snapshot.data);
 
             return Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(20.0),
               child: GridView.count(
                   crossAxisCount: 2,
                   shrinkWrap: true,
+                  mainAxisSpacing: 5,
                   children: List.generate(myData.length, (index) {
                     return GestureDetector(
                       onTap: () {
@@ -130,10 +132,17 @@ class _SelectCategoryState extends State<SelectCategory> {
                               MaterialPageRoute(
                                   builder: (context) => Addstays()));
                         }
+
+                        if (myData[index]['service'] == "Education") {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EducationTypes()));
+                        }
                       },
                       child: Padding(
                         padding: EdgeInsets.all(
-                          10,
+                          5,
                         ),
                         child: Container(
                           width: width * 0.2,
@@ -174,7 +183,7 @@ class _SelectCategoryState extends State<SelectCategory> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.0),
                             ),
-                            elevation: 5,
+                            elevation: 3,
                             margin: EdgeInsets.all(0),
                           ),
                         ),

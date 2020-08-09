@@ -31,7 +31,6 @@ class _AddstaysState extends State<Addstays> {
   TextEditingController _aboutTheStay = TextEditingController();
   TextEditingController _location = TextEditingController();
   TextEditingController _costPerNight = TextEditingController();
-  TextEditingController _banner = TextEditingController();
   TextEditingController _address = TextEditingController();
   TextEditingController _email = TextEditingController();
   TextEditingController _website = TextEditingController();
@@ -124,109 +123,96 @@ class _AddstaysState extends State<Addstays> {
   done() async {
     if (intialImage != null) {
       if (_stayName.text.trim() != "") {
-        if (_banner.text.trim() != "") {
-          if (_telephone1.text.trim() != "") {
-            if (_aboutTheStay.text.trim() != null) {
-              if (selectedDistrict != null) {
-                if (_address.text.trim() != null) {
-                  if (_costPerNight.text.trim() != null) {
-                    if (latitude != null) {
-                      pr.show();
+        if (_telephone1.text.trim() != "") {
+          if (_aboutTheStay.text.trim() != null) {
+            if (selectedDistrict != null) {
+              if (_address.text.trim() != null) {
+                if (_costPerNight.text.trim() != null) {
+                  if (latitude != null) {
+                    pr.show();
 
-                      List uploadGallery = [];
-                      if (gallery.isNotEmpty) {
-                        for (var ele in gallery) {
-                          if (ele["type"] == "image") {
-                            String downUrl = await _stayService.uploadImageStay(
-                                await compressImageFile(ele["media"], 80));
-                            String thumbUrl =
-                                await _stayService.uploadImageStayThumbnail(
-                                    await compressImageFile(ele["media"], 40));
-                            var obj = {
-                              "url": downUrl,
-                              "thumb": thumbUrl,
-                              "type": "image",
-                            };
-                            uploadGallery.add(json.encode(obj));
-                          } else {
-                            String downUrl =
-                                await _stayService.uploadVideoToStay(
-                                    await compressVideoFile(ele["media"]));
-                            String thumbUrl =
-                                await _stayService.uploadVideoToStayThumb(
-                                    await getThumbnailForVideo(ele["media"]));
-                            var obj = {
-                              "url": downUrl,
-                              "thumb": thumbUrl,
-                              "type": "video",
-                            };
-                            uploadGallery.add(json.encode(obj));
-                          }
+                    List uploadGallery = [];
+                    if (gallery.isNotEmpty) {
+                      for (var ele in gallery) {
+                        if (ele["type"] == "image") {
+                          String downUrl = await _stayService.uploadImageStay(
+                              await compressImageFile(ele["media"], 80));
+                          String thumbUrl =
+                              await _stayService.uploadImageStayThumbnail(
+                                  await compressImageFile(ele["media"], 40));
+                          var obj = {
+                            "url": downUrl,
+                            "thumb": thumbUrl,
+                            "type": "image",
+                          };
+                          uploadGallery.add(json.encode(obj));
+                        } else {
+                          String downUrl = await _stayService.uploadVideoToStay(
+                              await compressVideoFile(ele["media"]));
+                          String thumbUrl =
+                              await _stayService.uploadVideoToStayThumb(
+                                  await getThumbnailForVideo(ele["media"]));
+                          var obj = {
+                            "url": downUrl,
+                            "thumb": thumbUrl,
+                            "type": "video",
+                          };
+                          uploadGallery.add(json.encode(obj));
                         }
                       }
-
-                      String initialImageUpload =
-                          await _stayService.uploadImageStay(
-                              await compressImageFile(intialImage, 80));
-
-                      String stayId = await _stayService.addStay(
-                        currentUserId,
-                        _stayName.text.trim(),
-                        _aboutTheStay.text.trim(),
-                        initialImageUpload,
-                        _address.text.trim(),
-                        latitude,
-                        longitude,
-                        _email.text.trim(),
-                        _website.text.trim(),
-                        _telephone1.text.trim(),
-                        _telephone2.text.trim(),
-                        selectedDistrict,
-                        uploadGallery,
-                        customizeObj["bathrooms"],
-                        customizeObj["beds"],
-                        customizeObj["bedsRooms"],
-                        customizeObj["guests"],
-                        customizeObj["features"],
-                        _costPerNight.text.trim(),
-                      );
-                      await _services.addService(
-                          _stayName.text.trim(), stayId, "Stays", "Stays");
-                      await _stayService.addMainBanner(
-                        _stayName.text.trim(),
-                        initialImageUpload,
-                        stayId,
-                        _banner.text.trim(),
-                        _address.text.trim(),
-                      );
-                      pr.hide().whenComplete(() {
-                        Navigator.pop(context);
-                      });
-                    } else {
-                      GradientSnackBar.showMessage(
-                          context, "Please pin the location");
                     }
+
+                    String initialImageUpload =
+                        await _stayService.uploadImageStay(
+                            await compressImageFile(intialImage, 80));
+
+                    String stayId = await _stayService.addStay(
+                      currentUserId,
+                      _stayName.text.trim(),
+                      _aboutTheStay.text.trim(),
+                      initialImageUpload,
+                      _address.text.trim(),
+                      latitude,
+                      longitude,
+                      _email.text.trim(),
+                      _website.text.trim(),
+                      _telephone1.text.trim(),
+                      _telephone2.text.trim(),
+                      selectedDistrict,
+                      uploadGallery,
+                      customizeObj["bathrooms"],
+                      customizeObj["beds"],
+                      customizeObj["bedsRooms"],
+                      customizeObj["guests"],
+                      customizeObj["features"],
+                      _costPerNight.text.trim(),
+                    );
+                    await _services.addService(
+                        _stayName.text.trim(), stayId, "Stays", "Stays");
+
+                    pr.hide().whenComplete(() {
+                      Navigator.pop(context);
+                    });
                   } else {
                     GradientSnackBar.showMessage(
-                        context, "Cost per night is required");
+                        context, "Please pin the location");
                   }
                 } else {
-                  GradientSnackBar.showMessage(context, "Address is required");
+                  GradientSnackBar.showMessage(
+                      context, "Cost per night is required");
                 }
               } else {
-                GradientSnackBar.showMessage(
-                    context, "Please select a district");
+                GradientSnackBar.showMessage(context, "Address is required");
               }
             } else {
-              GradientSnackBar.showMessage(
-                  context, "Give a small description about the stay");
+              GradientSnackBar.showMessage(context, "Please select a district");
             }
           } else {
             GradientSnackBar.showMessage(
-                context, "Telephone number is required");
+                context, "Give a small description about the stay");
           }
         } else {
-          GradientSnackBar.showMessage(context, "Banner title is required");
+          GradientSnackBar.showMessage(context, "Telephone number is required");
         }
       } else {
         GradientSnackBar.showMessage(context, "Stay name is required");
@@ -489,11 +475,6 @@ class _AddstaysState extends State<Addstays> {
             ),
             textBoxContainer(_stayName, "* Name of the stay", 1, width, false,
                 TextInputType.text),
-            SizedBox(
-              height: 20,
-            ),
-            textBoxContainer(_banner, "* Provide a title for the banner", 1,
-                width, false, TextInputType.text),
             SizedBox(
               height: 20,
             ),

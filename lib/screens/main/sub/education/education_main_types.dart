@@ -3,20 +3,18 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:nearby/screens/main/sub/vehicles/rent/rent_vehicles.dart';
-import 'package:nearby/screens/main/sub/vehicles/repair/vehi_Repair.dart';
-import 'package:nearby/screens/main/sub/vehicles/sell_vehicles/selling_type.dart';
-import 'package:nearby/screens/main/sub/vehicles/spare_parts/add_spareparts.dart';
+import 'package:nearby/screens/main/sub/education/add_Pre_School.dart';
+import 'package:nearby/screens/main/sub/education/add_private_school.dart';
 import 'package:nearby/utils/pallete.dart';
 
-class VehiServiceType extends StatefulWidget {
-  VehiServiceType({Key key}) : super(key: key);
+class EducationTypes extends StatefulWidget {
+  EducationTypes({Key key}) : super(key: key);
 
   @override
-  _VehiServiceTypeState createState() => _VehiServiceTypeState();
+  _EducationTypesState createState() => _EducationTypesState();
 }
 
-class _VehiServiceTypeState extends State<VehiServiceType> {
+class _EducationTypesState extends State<EducationTypes> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -58,7 +56,7 @@ class _VehiServiceTypeState extends State<VehiServiceType> {
       ),
       body: FutureBuilder(
           future: DefaultAssetBundle.of(context)
-              .loadString('assets/json/vehi_services.json'),
+              .loadString('assets/json/education.json'),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return Center(child: SpinKitCircle(color: Pallete.mainAppColor));
@@ -73,39 +71,20 @@ class _VehiServiceTypeState extends State<VehiServiceType> {
                   children: List.generate(myData.length, (index) {
                     return GestureDetector(
                       onTap: () {
+                        if (myData[index]['category_name'] == "Pre-school") {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => PreSchool(
+                                        type: myData[index]['category_name'],
+                                      )));
+                        }
                         if (myData[index]['category_name'] ==
-                            "Vehicle repairs & modifications") {
+                            "Private school") {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => VehiRepair(
-                                        type: myData[index]['category_name'],
-                                      )));
-                        }
-                        if (myData[index]['category_name'] == "Rent vehicles") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => RentVehicles(
-                                        type: myData[index]['category_name'],
-                                      )));
-                        }
-
-                        if (myData[index]['category_name'] ==
-                            "Spare parts/accessories") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SpareParts(
-                                        type: myData[index]['category_name'],
-                                      )));
-                        }
-
-                        if (myData[index]['category_name'] == "Sell vehicles") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SellingType(
+                                  builder: (context) => PrivateSchool(
                                         type: myData[index]['category_name'],
                                       )));
                         }

@@ -38,24 +38,6 @@ class PlaceService {
     return docRe.documentID;
   }
 
-  addMainBanner(
-    String placeName,
-    String initialImage,
-    String placeId,
-    String title,
-  ) async {
-    var uuid = Uuid();
-    await mainBannerRef.add({
-      "id": uuid.v1().toString() + new DateTime.now().toString(),
-      "serviceId": placeId,
-      "title": title,
-      "type": "place",
-      "serviceName": placeName,
-      "intialImage": initialImage,
-      "timestamp": timestamp,
-    });
-  }
-
   Future<String> uploadImagePlace(File imageFile) async {
     var uuid = Uuid();
     StorageUploadTask uploadTask = storageRef

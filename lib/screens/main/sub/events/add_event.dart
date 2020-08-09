@@ -188,15 +188,7 @@ class _AddEventState extends State<AddEvent> {
                     );
                     await _services.addService(_eventDetails.text.trim(),
                         eventId, widget.type, "Events");
-                    await _eventServices.addMainBanner(
-                      _eventTitle.text.trim(),
-                      _eventDetails.text.trim(),
-                      initialImageUpload,
-                      _fee.text.trim(),
-                      heldOn,
-                      startTime,
-                      eventId,
-                    );
+
                     pr.hide().whenComplete(() {
                       Navigator.pop(context);
                     });

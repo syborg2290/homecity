@@ -51,26 +51,6 @@ class StayService {
     return docRe.documentID;
   }
 
-  addMainBanner(
-    String restName,
-    String initialImage,
-    String restId,
-    String title,
-    String address,
-  ) async {
-    var uuid = Uuid();
-    await mainBannerRef.add({
-      "id": uuid.v1().toString() + new DateTime.now().toString(),
-      "serviceId": restId,
-      "title": title,
-      "type": "stay",
-      "address": address,
-      "serviceName": restName,
-      "intialImage": initialImage,
-      "timestamp": timestamp,
-    });
-  }
-
   Future<String> uploadImageStay(File imageFile) async {
     var uuid = Uuid();
     StorageUploadTask uploadTask = storageRef

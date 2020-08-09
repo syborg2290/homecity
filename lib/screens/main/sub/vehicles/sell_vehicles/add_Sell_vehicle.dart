@@ -66,6 +66,7 @@ class _AddSellState extends State<AddSell> {
   List gallery = [];
   TextEditingController _telephone1 = TextEditingController();
   TextEditingController _telephone2 = TextEditingController();
+  TextEditingController _enginecapacity = TextEditingController();
   TextEditingController _email = TextEditingController();
   TextEditingController _brand = TextEditingController();
   TextEditingController _model = TextEditingController();
@@ -73,6 +74,8 @@ class _AddSellState extends State<AddSell> {
   TextEditingController _year = TextEditingController();
   TextEditingController _mileage = TextEditingController();
   String selectedCondition = "Brand new";
+  String fuel = "Petrol";
+  String transmission = "Automatic";
 
   @override
   void initState() {
@@ -165,7 +168,7 @@ class _AddSellState extends State<AddSell> {
                 _name.text.trim(),
                 _details.text.trim(),
                 initialImageUpload,
-                null,
+                _address.text.trim(),
                 null,
                 null,
                 _email.text.trim(),
@@ -181,7 +184,6 @@ class _AddSellState extends State<AddSell> {
                 uploadGallery,
                 null,
                 widget.type,
-                _address.text.trim(),
                 _brand.text.trim(),
                 selectedCondition,
                 _mileage.text.trim(),
@@ -191,19 +193,13 @@ class _AddSellState extends State<AddSell> {
                 null,
                 widget.category,
                 "available",
+                fuel,
+                transmission,
+                _enginecapacity.text.trim(),
               );
               await _services.addService(
                   _name.text.trim(), vehiSeId, widget.type, "Vehicle services");
-              await _vehiService.addMainBanner(
-                _name.text.trim(),
-                initialImageUpload,
-                vehiSeId,
-                null,
-                null,
-                _address.text.trim(),
-                widget.type,
-                _brand.text.trim(),
-              );
+
               pr.hide().whenComplete(() {
                 Navigator.pop(context);
               });
@@ -212,7 +208,7 @@ class _AddSellState extends State<AddSell> {
                   context, "Telephone number is required");
             }
           } else {
-            GradientSnackBar.showMessage(context, "Home city is required");
+            GradientSnackBar.showMessage(context, "Address is required");
           }
         } else {
           GradientSnackBar.showMessage(context, "Please select a district");
@@ -492,7 +488,7 @@ class _AddSellState extends State<AddSell> {
               height: 20,
             ),
             textBoxContainer(
-                _model, "Vehicle model", 1, width, false, TextInputType.text),
+                _model, "Model", 1, width, false, TextInputType.text),
             SizedBox(
               height: 20,
             ),
@@ -501,15 +497,74 @@ class _AddSellState extends State<AddSell> {
             SizedBox(
               height: 20,
             ),
-            textBoxContainer(
-                _mileage, "Mileage", 1, width, false, TextInputType.number),
+            Container(
+              width: width * 0.89,
+              child: TextField(
+                controller: _enginecapacity,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: "Engine capacity",
+                  labelStyle:
+                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                      color: Colors.grey.shade500,
+                    ),
+                  ),
+                  suffix: Text(
+                    "cc",
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(
+                        color: Pallete.mainAppColor,
+                      )),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              width: width * 0.89,
+              child: TextField(
+                controller: _mileage,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: "Mileage",
+                  labelStyle:
+                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                      color: Colors.grey.shade500,
+                    ),
+                  ),
+                  suffix: Text(
+                    "KM",
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(
+                        color: Pallete.mainAppColor,
+                      )),
+                ),
+              ),
+            ),
             SizedBox(
               height: 20,
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                "Condition of the item",
+                "Condition of the vehicle",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 20,
@@ -517,61 +572,313 @@ class _AddSellState extends State<AddSell> {
               ),
             ),
             Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedCondition = "Brand new";
-                        });
-                      },
-                      child: Chip(
-                          backgroundColor: selectedCondition == "Brand new"
-                              ? Pallete.mainAppColor
-                              : null,
-                          label: Padding(
-                            padding: const EdgeInsets.all(15.0),
-                            child: Text(
-                              "Brand new",
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: selectedCondition == "Brand new"
-                                    ? Colors.white
-                                    : Colors.black,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedCondition = "Brand new";
+                          });
+                        },
+                        child: Chip(
+                            backgroundColor: selectedCondition == "Brand new"
+                                ? Pallete.mainAppColor
+                                : null,
+                            label: Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Text(
+                                "Brand new",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: selectedCondition == "Brand new"
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
                               ),
-                            ),
-                          ))),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedCondition = "Used";
-                        });
-                      },
-                      child: Chip(
-                          backgroundColor: selectedCondition == "Used"
-                              ? Pallete.mainAppColor
-                              : null,
-                          label: Padding(
-                            padding: const EdgeInsets.all(15.0),
-                            child: Text(
-                              "Used",
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: selectedCondition == "Used"
-                                    ? Colors.white
-                                    : Colors.black,
+                            ))),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedCondition = "Used";
+                          });
+                        },
+                        child: Chip(
+                            backgroundColor: selectedCondition == "Used"
+                                ? Pallete.mainAppColor
+                                : null,
+                            label: Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Text(
+                                "Used",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: selectedCondition == "Used"
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
                               ),
-                            ),
-                          )))
-                ],
+                            )))
+                  ],
+                ),
               ),
             ),
             SizedBox(
-              height: 30,
+              height: 20,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "Transmission of the vehicle",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+            ),
+            Center(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    SizedBox(
+                      width: 10,
+                    ),
+                    GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            transmission = "Automatic";
+                          });
+                        },
+                        child: Chip(
+                            backgroundColor: transmission == "Automatic"
+                                ? Pallete.mainAppColor
+                                : null,
+                            label: Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Text(
+                                "Automatic",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: transmission == "Automatic"
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
+                              ),
+                            ))),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            transmission = "Manual";
+                          });
+                        },
+                        child: Chip(
+                            backgroundColor: transmission == "Manual"
+                                ? Pallete.mainAppColor
+                                : null,
+                            label: Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Text(
+                                "Manual",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: transmission == "Manual"
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
+                              ),
+                            ))),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            transmission = "Tiptronic";
+                          });
+                        },
+                        child: Chip(
+                            backgroundColor: transmission == "Tiptronic"
+                                ? Pallete.mainAppColor
+                                : null,
+                            label: Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Text(
+                                "Tiptronic",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: transmission == "Tiptronic"
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
+                              ),
+                            ))),
+                    SizedBox(
+                      width: 20,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "Fuel type of the vehicle",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+            ),
+            Center(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    SizedBox(
+                      width: 10,
+                    ),
+                    GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            fuel = "Petrol";
+                          });
+                        },
+                        child: Chip(
+                            backgroundColor:
+                                fuel == "Petrol" ? Pallete.mainAppColor : null,
+                            label: Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Text(
+                                "Petrol",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: fuel == "Petrol"
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
+                              ),
+                            ))),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            fuel = "Diesel";
+                          });
+                        },
+                        child: Chip(
+                            backgroundColor:
+                                fuel == "Diesel" ? Pallete.mainAppColor : null,
+                            label: Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Text(
+                                "Diesel",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: fuel == "Diesel"
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
+                              ),
+                            ))),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            fuel = "Electric";
+                          });
+                        },
+                        child: Chip(
+                            backgroundColor: fuel == "Electric"
+                                ? Pallete.mainAppColor
+                                : null,
+                            label: Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Text(
+                                "Electric",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: fuel == "Electric"
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
+                              ),
+                            ))),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            fuel = "Hybrid";
+                          });
+                        },
+                        child: Chip(
+                            backgroundColor:
+                                fuel == "Hybrid" ? Pallete.mainAppColor : null,
+                            label: Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Text(
+                                "Hybrid",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: fuel == "Hybrid"
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
+                              ),
+                            ))),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            fuel = "Plug-in hybrid";
+                          });
+                        },
+                        child: Chip(
+                            backgroundColor: fuel == "Plug-in hybrid"
+                                ? Pallete.mainAppColor
+                                : null,
+                            label: Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Text(
+                                "Plug-in hybrid",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: fuel == "Plug-in hybrid"
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
+                              ),
+                            ))),
+                    SizedBox(
+                      width: 20,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 50,
             ),
             Container(
               width: width * 0.89,
@@ -579,7 +886,7 @@ class _AddSellState extends State<AddSell> {
                 controller: _price,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  labelText: "* Price",
+                  labelText: "Price",
                   labelStyle:
                       TextStyle(fontSize: 18, color: Colors.grey.shade500),
                   enabledBorder: OutlineInputBorder(
@@ -656,7 +963,7 @@ class _AddSellState extends State<AddSell> {
               height: 20,
             ),
             textBoxContainer(
-                _address, "* Home city", 1, width, false, TextInputType.text),
+                _address, "* Address", 1, width, false, TextInputType.text),
             SizedBox(
               height: 20,
             ),

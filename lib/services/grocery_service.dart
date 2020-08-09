@@ -50,26 +50,6 @@ class GroceryService {
     return docRe.documentID;
   }
 
-  addMainBanner(
-    String grocname,
-    String address,
-    String initialImage,
-    String groceryId,
-    String title,
-  ) async {
-    var uuid = Uuid();
-    await mainBannerRef.add({
-      "id": uuid.v1().toString() + new DateTime.now().toString(),
-      "serviceId": groceryId,
-      "title": title,
-      "type": "grocery",
-      "serviceName": grocname,
-      "intialImage": initialImage,
-      "address": address,
-      "timestamp": timestamp,
-    });
-  }
-
   Future<String> uploadImageGroc(File imageFile) async {
     var uuid = Uuid();
     StorageUploadTask uploadTask = storageRef

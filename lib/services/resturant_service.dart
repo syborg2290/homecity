@@ -54,26 +54,6 @@ class ResturantService {
     return docRe.documentID;
   }
 
-  addMainBanner(
-    String restName,
-    String initialImage,
-    String restId,
-    String title,
-    String address,
-  ) async {
-    var uuid = Uuid();
-    await mainBannerRef.add({
-      "id": uuid.v1().toString() + new DateTime.now().toString(),
-      "serviceId": restId,
-      "title": title,
-      "type": "resturant",
-      "address": address,
-      "serviceName": restName,
-      "intialImage": initialImage,
-      "timestamp": timestamp,
-    });
-  }
-
   Future<String> uploadImageRest(File imageFile) async {
     var uuid = Uuid();
     StorageUploadTask uploadTask = storageRef
