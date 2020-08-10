@@ -18,9 +18,5 @@
     {
         "category_name": "Vocational education",
         "image_path": "assets/icons/vocational.png"
-    },
-    {
-        "category_name": "Stationery shop",
-        "image_path": "assets/icons/stationery.png"
     }
 ]

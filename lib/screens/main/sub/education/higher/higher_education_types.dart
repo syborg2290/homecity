@@ -3,22 +3,28 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:nearby/screens/main/sub/education/pre-school/add_Pre_School.dart';
-import 'package:nearby/screens/main/sub/education/higher/add_higher.dart';
-import 'package:nearby/screens/main/sub/education/private-school/add_private_school.dart';
-import 'package:nearby/screens/main/sub/education/vocational/add_vocational.dart';
-import 'package:nearby/screens/main/sub/education/higher/higher_education_types.dart';
-import 'package:nearby/screens/main/sub/education/tution/tution_subject.dart';
+import 'package:nearby/screens/main/sub/education/add_course.dart';
+import 'package:nearby/screens/main/sub/education/view_course.dart';
 import 'package:nearby/utils/pallete.dart';
 
-class EducationTypes extends StatefulWidget {
-  EducationTypes({Key key}) : super(key: key);
+class HigherEducationTypes extends StatefulWidget {
+  final List courses;
+  HigherEducationTypes({this.courses, Key key}) : super(key: key);
 
   @override
-  _EducationTypesState createState() => _EducationTypesState();
+  _HigherEducationTypesState createState() => _HigherEducationTypesState();
 }
 
-class _EducationTypesState extends State<EducationTypes> {
+class _HigherEducationTypesState extends State<HigherEducationTypes> {
+  List courses = [];
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      courses = widget.courses;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -50,17 +56,51 @@ class _EducationTypesState extends State<EducationTypes> {
         ),
         centerTitle: false,
         title: Text(
-          'Select a category',
+          'Category',
           style: TextStyle(
               color: Colors.grey[700],
               fontFamily: "Roboto",
-              fontSize: 20,
+              fontSize: 18,
               fontWeight: FontWeight.w400),
         ),
+        actions: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: FlatButton(
+              onPressed: () async {
+                if (courses.isNotEmpty) {
+                  List reItems = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ViewCourse(
+                                courses: courses,
+                              )));
+                  if (reItems != null) {
+                    setState(() {
+                      courses = reItems;
+                    });
+                  }
+                }
+              },
+              child: Center(
+                  child: Text("New courses - " + courses.length.toString(),
+                      style: TextStyle(
+                        fontSize: 19,
+                        color: Colors.white,
+                      ))),
+              color: Pallete.mainAppColor,
+              shape: RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(20.0),
+                  side: BorderSide(
+                    color: Pallete.mainAppColor,
+                  )),
+            ),
+          ),
+        ],
       ),
       body: FutureBuilder(
           future: DefaultAssetBundle.of(context)
-              .loadString('assets/json/education.json'),
+              .loadString('assets/json/higher_Education.json'),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return Center(child: SpinKitCircle(color: Pallete.mainAppColor));
@@ -74,49 +114,18 @@ class _EducationTypesState extends State<EducationTypes> {
                   shrinkWrap: true,
                   children: List.generate(myData.length, (index) {
                     return GestureDetector(
-                      onTap: () {
-                        if (myData[index]['category_name'] == "Pre-school") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => PreSchool(
-                                        type: myData[index]['category_name'],
-                                      )));
-                        }
-                        if (myData[index]['category_name'] ==
-                            "Private school") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => PrivateSchool(
-                                        type: myData[index]['category_name'],
-                                      )));
-                        }
-                        if (myData[index]['category_name'] == "Tution") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => TutionSubject(
-                                        type: myData[index]['category_name'],
-                                      )));
-                        }
-                        if (myData[index]['category_name'] ==
-                            "Higher education") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AddHigherEducation(
-                                        type: myData[index]['category_name'],
-                                      )));
-                        }
-                        if (myData[index]['category_name'] ==
-                            "Vocational education") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AddVocational(
-                                        type: myData[index]['category_name'],
-                                      )));
+                      onTap: () async {
+                        var obj = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AddCourse(
+                                      category: myData[index]['category_name'],
+                                      obj: null,
+                                    )));
+                        if (obj != null) {
+                          setState(() {
+                            courses.add(obj);
+                          });
                         }
                       },
                       child: Padding(

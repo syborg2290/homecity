@@ -154,7 +154,7 @@ class _ViewExperiencesState extends State<ViewExperiences> {
                                             )));
                                 if (reExperience != null) {
                                   setState(() {
-                                    experiences.add(reExperience);
+                                    experiences[index] = reExperience;
                                   });
                                 }
                               },

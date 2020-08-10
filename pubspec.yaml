@@ -137,6 +137,9 @@ flutter:
     - assets/icons/theme-park.png
     - assets/icons/trees.png
     - assets/icons/zoo.png
+    - assets/icons/tution_sub.png
+    - assets/icons/higher_cat.png
+    - assets/icons/voca_training.png
     
     - assets/icons/baby_products.png
     - assets/icons/bread.png
@@ -281,10 +284,14 @@ flutter:
     - assets/icons/stationery.png
     - assets/icons/bookmark.png
     - assets/icons/tution_classes.png
+    - assets/icons/schedule.png
     - assets/icons/other.png
     
     - assets/json/services.json
     - assets/json/education.json
+    - assets/json/tution.json
+    - assets/json/higher_Education.json
+    - assets/json/vocational_Edu.json
     - assets/json/sell_vehi.json
     - assets/json/stay_features.json
     - assets/json/night_life.json

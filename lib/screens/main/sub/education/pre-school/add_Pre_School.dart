@@ -18,15 +18,15 @@ import 'package:nearby/utils/pallete.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 
-class PrivateSchool extends StatefulWidget {
+class PreSchool extends StatefulWidget {
   final String type;
-  PrivateSchool({this.type, Key key}) : super(key: key);
+  PreSchool({this.type, Key key}) : super(key: key);
 
   @override
-  _PrivateSchoolState createState() => _PrivateSchoolState();
+  _PreSchoolState createState() => _PreSchoolState();
 }
 
-class _PrivateSchoolState extends State<PrivateSchool> {
+class _PreSchoolState extends State<PreSchool> {
   File intialImage;
   TextEditingController _name = TextEditingController();
   TextEditingController _aboutThe = TextEditingController();
@@ -223,9 +223,15 @@ class _PrivateSchoolState extends State<PrivateSchool> {
                   uploadGallery,
                   uploadExperience,
                   widget.type,
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
                 );
                 await _services.addService(
-                    _name.text.trim(), restId, widget.type, widget.type);
+                    _name.text.trim(), restId, widget.type, "Education");
 
                 pr.hide().whenComplete(() {
                   Navigator.pop(context);
@@ -289,7 +295,7 @@ class _PrivateSchoolState extends State<PrivateSchool> {
           style: TextStyle(
               color: Colors.grey[700],
               fontFamily: "Roboto",
-              fontSize: 18,
+              fontSize: 20,
               fontWeight: FontWeight.w400),
         ),
         actions: <Widget>[

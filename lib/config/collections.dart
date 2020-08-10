@@ -17,3 +17,9 @@ final vehicleServicesRef = Firestore.instance.collection('vehicleServices');
 final nightLifeRef = Firestore.instance.collection('nightlife');
 final stayRef = Firestore.instance.collection('stay');
 final educationRef = Firestore.instance.collection('education');
+final electronicsRef = Firestore.instance.collection('electronics');
+final saloonsandBeautyRef = Firestore.instance.collection('saloonsandBeauty');
+final propertyRef = Firestore.instance.collection('property');
+final homeRef = Firestore.instance.collection('home');
+final hardwareAndMaterialsRef =
+    Firestore.instance.collection('hardwareAndMaterials');

@@ -5,6 +5,10 @@ class Education {
   String ownerId;
   String intialImage;
   String name;
+  String subject;
+  String subjectCategory;
+  String aboutTheInstructor;
+  String tutionType;
   String about;
   String type;
   List experiencesIn;
@@ -17,6 +21,8 @@ class Education {
   String website;
   String email;
   List gallery;
+  List schedule;
+  List courses;
   Timestamp timestamp;
 
   Education({
@@ -36,6 +42,12 @@ class Education {
     this.email,
     this.gallery,
     this.type,
+    this.aboutTheInstructor,
+    this.schedule,
+    this.courses,
+    this.subject,
+    this.subjectCategory,
+    this.tutionType,
     this.timestamp,
   });
 
@@ -57,6 +69,12 @@ class Education {
       telephone2: doc['telephone2'],
       gallery: doc['gallery'],
       type: doc['type'],
+      aboutTheInstructor: doc['aboutTheInstructor'],
+      schedule: doc['schedule'],
+      subject: doc['subject'],
+      tutionType: doc['tutionType'],
+      subjectCategory: doc['subjectCategory'],
+      courses: doc['courses'],
       timestamp: doc['timestamp'],
     );
   }

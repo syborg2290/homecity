@@ -22,9 +22,15 @@ class EducationService {
     List gallery,
     List experience,
     String type,
+    String aboutTheInstructor,
+    List schedule,
+    String subject,
+    String tutionType,
+    String subjectCategory,
+    List courses,
   ) async {
     var uuid = Uuid();
-    DocumentReference docRe = await nightLifeRef.add({
+    DocumentReference docRe = await educationRef.add({
       "id": uuid.v1().toString() + new DateTime.now().toString(),
       "ownerId": ownerId,
       "name": name,
@@ -41,6 +47,12 @@ class EducationService {
       "telephone2": telephone2,
       "gallery": gallery,
       "type": type,
+      "aboutTheInstructor": aboutTheInstructor,
+      "schedule": schedule,
+      "subject": subject,
+      "subjectCategory": subjectCategory,
+      "tutionType": tutionType,
+      "courses": courses,
       "timestamp": timestamp,
     });
     return docRe.documentID;
