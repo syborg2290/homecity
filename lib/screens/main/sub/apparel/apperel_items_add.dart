@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:nearby/screens/main/sub/apparel/apparel_gallery.dart';
 import 'package:nearby/utils/flush_bars.dart';
 import 'package:nearby/utils/image_cropper.dart';
 import 'package:nearby/utils/media_picker/gallery_pick.dart';
@@ -26,6 +27,7 @@ class _ApparelItemsState extends State<ApparelItems> {
   TextEditingController _aboutTheItem = TextEditingController();
   TextEditingController _price = TextEditingController();
   bool isForEdit = false;
+  List gallery = [];
 
   @override
   void initState() {
@@ -38,6 +40,7 @@ class _ApparelItemsState extends State<ApparelItems> {
         _aboutTheItem.text = widget.obj["about"];
         _price.text = widget.obj["price"];
         _brandName.text = widget.obj["brand"];
+        gallery = widget.obj["gallery"];
       });
     }
   }
@@ -54,6 +57,7 @@ class _ApparelItemsState extends State<ApparelItems> {
             "price": _price.text.trim(),
             "about": _aboutTheItem.text.trim(),
             "brand": _brandName.text.trim(),
+            "gallery": gallery,
           };
           Navigator.pop(context, obj);
         } else {
@@ -362,6 +366,54 @@ class _ApparelItemsState extends State<ApparelItems> {
             ),
             textBoxContainer(_aboutTheItem, "About the item", 3, width, false,
                 TextInputType.text),
+            SizedBox(
+              height: 20,
+            ),
+            GestureDetector(
+              onTap: () async {
+                List reGallery = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ApparelGallery(
+                              gallery: gallery,
+                            )));
+                if (reGallery != null) {
+                  setState(() {
+                    gallery = reGallery;
+                  });
+                }
+              },
+              child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: Colors.grey.shade500,
+                      )),
+                  width: width * 0.89,
+                  height: height * 0.09,
+                  child: Center(
+                      child: Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.3,
+                    ),
+                    child: Row(
+                      children: <Widget>[
+                        Image.asset(
+                          'assets/icons/album.png',
+                          width: 30,
+                          height: 30,
+                          color: Colors.grey.shade800,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text("Gallery",
+                              style: TextStyle(
+                                  fontSize: 18, color: Colors.grey.shade800)),
+                        ),
+                      ],
+                    ),
+                  ))),
+            ),
             SizedBox(
               height: 20,
             ),

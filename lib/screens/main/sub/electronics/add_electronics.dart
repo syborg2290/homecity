@@ -5,10 +5,11 @@ import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:nearby/screens/main/sub/grocery/groc_gallery.dart';
-import 'package:nearby/screens/main/sub/grocery/grocery_item_types.dart';
+import 'package:nearby/screens/main/sub/education/education_gallery.dart';
+import 'package:nearby/screens/main/sub/electronics/repair_types.dart';
+import 'package:nearby/screens/main/sub/electronics/sell_electronics_types.dart';
 import 'package:nearby/services/auth_services.dart';
-import 'package:nearby/services/grocery_service.dart';
+import 'package:nearby/services/electronics_service.dart';
 import 'package:nearby/services/services_service.dart';
 import 'package:nearby/utils/compress_media.dart';
 import 'package:nearby/utils/flush_bars.dart';
@@ -17,31 +18,32 @@ import 'package:nearby/utils/maps/locationMap.dart';
 import 'package:nearby/utils/media_picker/gallery_pick.dart';
 import 'package:nearby/utils/pallete.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:intl/intl.dart' as dd;
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:intl/intl.dart' as dd;
 
-class AddGrocery extends StatefulWidget {
-  AddGrocery({Key key}) : super(key: key);
+class AddElectronics extends StatefulWidget {
+  final String type;
+  final String category;
+  AddElectronics({this.type, this.category, Key key}) : super(key: key);
 
   @override
-  _AddGroceryState createState() => _AddGroceryState();
+  _AddElectronicsState createState() => _AddElectronicsState();
 }
 
-class _AddGroceryState extends State<AddGrocery> {
+class _AddElectronicsState extends State<AddElectronics> {
   File intialImage;
-  TextEditingController _grocName = TextEditingController();
-  TextEditingController _about = TextEditingController();
+  TextEditingController _name = TextEditingController();
+  TextEditingController _aboutThe = TextEditingController();
   TextEditingController _address = TextEditingController();
-  TextEditingController _email = TextEditingController();
-  TextEditingController _loaction = TextEditingController();
+  TextEditingController _location = TextEditingController();
   TextEditingController _telephone1 = TextEditingController();
   TextEditingController _telephone2 = TextEditingController();
+  TextEditingController _email = TextEditingController();
+  TextEditingController _website = TextEditingController();
   TextEditingController openController = TextEditingController();
   TextEditingController closeController = TextEditingController();
   TextEditingController _specialHolidaysAndHoursController =
       TextEditingController();
-  double latitude;
-  double longitude;
   List<int> closingDays = [];
   List<String> selectedClosingDays = [];
   List<String> daysOfAWeek = [
@@ -56,6 +58,12 @@ class _AddGroceryState extends State<AddGrocery> {
   final format = dd.DateFormat("HH:mm");
   DateTime open;
   DateTime close;
+  double latitude;
+  double longitude;
+
+  Services _services = Services();
+  AuthServcies _authServcies = AuthServcies();
+  ElectronicsService _electronicsService = ElectronicsService();
   ProgressDialog pr;
   String currentUserId;
   String selectedDistrict = "Colombo";
@@ -86,11 +94,9 @@ class _AddGroceryState extends State<AddGrocery> {
     "Trincomalee",
     "Vavuniya"
   ];
-  List grocItems = [];
   List gallery = [];
-  Services _services = Services();
-  GroceryService _groceryService = GroceryService();
-  AuthServcies _authServcies = AuthServcies();
+  List repairItems = [];
+  List sellingItems = [];
 
   @override
   void initState() {
@@ -120,7 +126,7 @@ class _AddGroceryState extends State<AddGrocery> {
             child: Column(
               children: <Widget>[
                 SpinKitPouringHourglass(color: Pallete.mainAppColor),
-                Text("Creating grocery or market...",
+                Text("Creating " + widget.type.toLowerCase() + "...",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Color.fromRGBO(129, 165, 168, 1),
@@ -136,9 +142,37 @@ class _AddGroceryState extends State<AddGrocery> {
     );
   }
 
+  Widget textBoxContainer(TextEditingController _contro, String hint, int lines,
+      double width, bool autoFocus, TextInputType typeText) {
+    return Container(
+      width: width * 0.89,
+      child: TextField(
+        controller: _contro,
+        maxLines: lines,
+        autofocus: autoFocus,
+        keyboardType: typeText,
+        decoration: InputDecoration(
+          labelText: hint,
+          labelStyle: TextStyle(fontSize: 18, color: Colors.grey.shade500),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(
+              color: Colors.grey.shade500,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(
+                color: Pallete.mainAppColor,
+              )),
+        ),
+      ),
+    );
+  }
+
   done() async {
     if (intialImage != null) {
-      if (_grocName.text.trim() != "") {
+      if (_name.text.trim() != "") {
         if (selectedDistrict != null) {
           if (_address.text.trim() != "") {
             if (latitude != null) {
@@ -149,10 +183,11 @@ class _AddGroceryState extends State<AddGrocery> {
                   if (gallery.isNotEmpty) {
                     for (var ele in gallery) {
                       if (ele["type"] == "image") {
-                        String downUrl = await _groceryService.uploadImageGroc(
-                            await compressImageFile(ele["media"], 80));
-                        String thumbUrl =
-                            await _groceryService.uploadImageGrocThumbnail(
+                        String downUrl =
+                            await _electronicsService.uploadImageElectronics(
+                                await compressImageFile(ele["media"], 80));
+                        String thumbUrl = await _electronicsService
+                            .uploadImageElectronicsThumbnail(
                                 await compressImageFile(ele["media"], 40));
                         var obj = {
                           "url": downUrl,
@@ -162,10 +197,10 @@ class _AddGroceryState extends State<AddGrocery> {
                         uploadGallery.add(json.encode(obj));
                       } else {
                         String downUrl =
-                            await _groceryService.uploadVideoToGroc(
+                            await _electronicsService.uploadVideoToElectronics(
                                 await compressVideoFile(ele["media"]));
-                        String thumbUrl =
-                            await _groceryService.uploadVideoToGrocThumb(
+                        String thumbUrl = await _electronicsService
+                            .uploadVideoToElectronicsThumb(
                                 await getThumbnailForVideo(ele["media"]));
                         var obj = {
                           "url": downUrl,
@@ -176,84 +211,102 @@ class _AddGroceryState extends State<AddGrocery> {
                       }
                     }
                   }
-                  List itemsUpload = [];
-                  if (grocItems.isNotEmpty) {
-                    for (var item in grocItems) {
-                      String downUrl = await _groceryService.uploadImageGroc(
-                          await compressImageFile(item["initialImage"], 80));
 
-                      List uploadGalleryItems = [];
-                      if (item["gallery"].isNotEmpty) {
-                        for (var ele in item["gallery"]) {
-                          if (ele["type"] == "image") {
-                            String downUrl =
-                                await _groceryService.uploadImageGroc(
-                                    await compressImageFile(ele["media"], 80));
-                            String thumbUrl =
-                                await _groceryService.uploadImageGrocThumbnail(
-                                    await compressImageFile(ele["media"], 40));
-                            var obj = {
-                              "url": downUrl,
-                              "thumb": thumbUrl,
-                              "type": "image",
-                            };
-                            uploadGalleryItems.add(json.encode(obj));
-                          } else {
-                            String downUrl =
-                                await _groceryService.uploadVideoToGroc(
-                                    await compressVideoFile(ele["media"]));
-                            String thumbUrl =
-                                await _groceryService.uploadVideoToGrocThumb(
-                                    await getThumbnailForVideo(ele["media"]));
-                            var obj = {
-                              "url": downUrl,
-                              "thumb": thumbUrl,
-                              "type": "video",
-                            };
-                            uploadGalleryItems.add(json.encode(obj));
-                          }
+                  List repairsUpload = [];
+                  List sellingItemsUpload = [];
+
+                  for (var re in repairItems) {
+                    String initialImageUploadRe =
+                        await _electronicsService.uploadImageElectronics(
+                            await compressImageFile(re["initialImage"], 80));
+                    var obj = {
+                      "initialImage": initialImageUploadRe,
+                      "repair_type": re["repair_type"],
+                      "allDevices": re["allDevices"],
+                      "allBrands": re["allBrands"],
+                      "aboutTheReapir": re["aboutTheReapir"],
+                    };
+                    repairsUpload.add(json.encode(obj));
+                  }
+
+                  for (var sel in sellingItems) {
+                    String initialImageUploadSel =
+                        await _electronicsService.uploadImageElectronics(
+                            await compressImageFile(sel["initialImage"], 80));
+                    List sellItemsGallery = [];
+
+                    if (sel["gallery"].isNotEmpty) {
+                      for (var ele in sel["gallery"]) {
+                        if (ele["type"] == "image") {
+                          String downUrl =
+                              await _electronicsService.uploadImageElectronics(
+                                  await compressImageFile(ele["media"], 80));
+                          String thumbUrl = await _electronicsService
+                              .uploadImageElectronicsThumbnail(
+                                  await compressImageFile(ele["media"], 40));
+                          var obj = {
+                            "url": downUrl,
+                            "thumb": thumbUrl,
+                            "type": "image",
+                          };
+                          sellItemsGallery.add(json.encode(obj));
+                        } else {
+                          String downUrl = await _electronicsService
+                              .uploadVideoToElectronics(
+                                  await compressVideoFile(ele["media"]));
+                          String thumbUrl = await _electronicsService
+                              .uploadVideoToElectronicsThumb(
+                                  await getThumbnailForVideo(ele["media"]));
+                          var obj = {
+                            "url": downUrl,
+                            "thumb": thumbUrl,
+                            "type": "video",
+                          };
+                          sellItemsGallery.add(json.encode(obj));
                         }
                       }
-
-                      var obj = {
-                        "initialImage": downUrl,
-                        "item_type": item["item_type"],
-                        "item_name": item["item_name"],
-                        "status": "available",
-                        "price": item["price"],
-                        "about": item["about"],
-                        "brand": item["brand"],
-                        "gallery": uploadGalleryItems,
-                      };
-                      itemsUpload.add(json.encode(obj));
                     }
+
+                    var obj = {
+                      "initialImage": initialImageUploadSel,
+                      "item_type": sel["item_type"],
+                      "item_name": sel["item_name"],
+                      "price": sel["price"],
+                      "about": sel["about"],
+                      "gallery": sellItemsGallery,
+                      "brand": sel["brand"],
+                    };
+
+                    sellingItemsUpload.add(json.encode(obj));
                   }
 
                   String initialImageUpload =
-                      await _groceryService.uploadImageGroc(
+                      await _electronicsService.uploadImageElectronics(
                           await compressImageFile(intialImage, 80));
 
-                  String grocId = await _groceryService.addGrocery(
+                  String restId = await _electronicsService.addElectronics(
                     currentUserId,
-                    _grocName.text.trim(),
-                    _about.text.trim(),
+                    _name.text.trim(),
+                    _aboutThe.text.trim(),
                     initialImageUpload,
                     _address.text.trim(),
                     latitude,
                     longitude,
                     _email.text.trim(),
+                    _website.text.trim(),
                     closingDays,
                     close,
                     open,
                     _telephone1.text.trim(),
                     _telephone2.text.trim(),
                     _specialHolidaysAndHoursController.text.trim(),
-                    itemsUpload,
                     selectedDistrict,
                     uploadGallery,
+                    repairsUpload,
+                    sellingItemsUpload,
                   );
-                  await _services.addService(_grocName.text.trim(), grocId,
-                      "Grocery", "Groceries & markets");
+                  await _services.addService(
+                      _name.text.trim(), restId, widget.type, widget.type);
 
                   pr.hide().whenComplete(() {
                     Navigator.pop(context);
@@ -264,20 +317,21 @@ class _AddGroceryState extends State<AddGrocery> {
                 }
               } else {
                 GradientSnackBar.showMessage(
-                    context, "Grocery telephone number is required");
+                    context, widget.type + " telephone number is required");
               }
             } else {
               GradientSnackBar.showMessage(context, "Please pin the location");
             }
           } else {
             GradientSnackBar.showMessage(
-                context, "Grocery address is required");
+                context, widget.type + " address is required");
           }
         } else {
           GradientSnackBar.showMessage(context, "Please select a district");
         }
       } else {
-        GradientSnackBar.showMessage(context, "Grocery name is required");
+        GradientSnackBar.showMessage(
+            context, widget.type + " name is required");
       }
     } else {
       GradientSnackBar.showMessage(context, "Initial image is required");
@@ -356,34 +410,6 @@ class _AddGroceryState extends State<AddGrocery> {
     );
   }
 
-  Widget textBoxContainer(TextEditingController _contro, String hint, int lines,
-      double width, bool autoFocus, TextInputType typeText) {
-    return Container(
-      width: width * 0.89,
-      child: TextField(
-        controller: _contro,
-        maxLines: lines,
-        autofocus: autoFocus,
-        keyboardType: typeText,
-        decoration: InputDecoration(
-          labelText: hint,
-          labelStyle: TextStyle(fontSize: 18, color: Colors.grey.shade500),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(
-              color: Colors.grey.shade500,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(
-                color: Pallete.mainAppColor,
-              )),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -391,6 +417,7 @@ class _AddGroceryState extends State<AddGrocery> {
 
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -415,7 +442,7 @@ class _AddGroceryState extends State<AddGrocery> {
         ),
         centerTitle: false,
         title: Text(
-          "Add new grocery or market",
+          'Add new ' + widget.type.toLowerCase(),
           style: TextStyle(
               color: Colors.grey[700],
               fontFamily: "Roboto",
@@ -452,7 +479,7 @@ class _AddGroceryState extends State<AddGrocery> {
                 ? Stack(
                     children: <Widget>[
                       Image.asset(
-                        'assets/groc_back.jpg',
+                        'assets/electronics_back.png',
                         height: height * 0.3,
                         width: width,
                         fit: BoxFit.cover,
@@ -468,7 +495,7 @@ class _AddGroceryState extends State<AddGrocery> {
                           children: <Widget>[
                             Center(
                                 child: Text(
-                              "* Add initial image for new grocery",
+                              "* Add initial image",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.white,
@@ -606,13 +633,26 @@ class _AddGroceryState extends State<AddGrocery> {
             SizedBox(
               height: 20,
             ),
-            textBoxContainer(_grocName, "* Name of the grocery or market", 1,
-                width, false, TextInputType.text),
+            textBoxContainer(
+                _name,
+                "* Name of the " + widget.type.toLowerCase(),
+                1,
+                width,
+                false,
+                TextInputType.text),
             SizedBox(
               height: 20,
             ),
-            textBoxContainer(_about, "About the grocery or market", 3, width,
-                false, TextInputType.text),
+            textBoxContainer(
+                _aboutThe,
+                "About the " + widget.type.toLowerCase(),
+                5,
+                width,
+                false,
+                TextInputType.text),
+            SizedBox(
+              height: 20,
+            ),
             SizedBox(
               height: 20,
             ),
@@ -666,8 +706,13 @@ class _AddGroceryState extends State<AddGrocery> {
             SizedBox(
               height: 20,
             ),
-            textBoxContainer(_address, "* Address of the grocery or market", 1,
-                width, false, TextInputType.text),
+            textBoxContainer(
+                _address,
+                "* Address of the " + widget.type.toLowerCase(),
+                1,
+                width,
+                false,
+                TextInputType.text),
             SizedBox(
               height: 20,
             ),
@@ -691,11 +736,11 @@ class _AddGroceryState extends State<AddGrocery> {
                     setState(() {
                       latitude = locationCoord[0];
                       longitude = locationCoord[1];
-                      _loaction.text = "Location pinned";
+                      _location.text = "Location pinned";
                     });
                   }
                 },
-                controller: _loaction,
+                controller: _location,
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(
                   labelText: "* location",
@@ -733,12 +778,49 @@ class _AddGroceryState extends State<AddGrocery> {
             SizedBox(
               height: 20,
             ),
-            Text(
-              "* Mention days of closing of your grocery",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.black.withOpacity(0.5),
-                fontSize: 19,
+            Container(
+              width: width * 0.89,
+              child: TextField(
+                controller: _website,
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(
+                  prefix: Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: Text(
+                      "www.",
+                      style:
+                          TextStyle(fontSize: 18, color: Colors.grey.shade500),
+                    ),
+                  ),
+                  labelText: "Website",
+                  labelStyle:
+                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                      color: Colors.grey.shade500,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(
+                        color: Pallete.mainAppColor,
+                      )),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "Mention days of closing the " + widget.type.toLowerCase(),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.black.withOpacity(0.5),
+                  fontSize: 19,
+                ),
               ),
             ),
             SizedBox(
@@ -882,12 +964,15 @@ class _AddGroceryState extends State<AddGrocery> {
             SizedBox(
               height: 20,
             ),
-            Text(
-              "* Open and close time of your grocery",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.black.withOpacity(0.5),
-                fontSize: 19,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "* Open and close time of the " + widget.type.toLowerCase(),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.black.withOpacity(0.5),
+                  fontSize: 19,
+                ),
               ),
             ),
             SizedBox(
@@ -910,55 +995,114 @@ class _AddGroceryState extends State<AddGrocery> {
                 width,
                 false,
                 TextInputType.text),
-            SizedBox(
-              height: 20,
-            ),
-            GestureDetector(
-              onTap: () async {
-                List itemList = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => GroceryItemType(
-                              items: grocItems,
-                            )));
-                if (itemList != null) {
-                  setState(() {
-                    grocItems = itemList;
-                  });
-                }
-              },
-              child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: Colors.grey.shade500,
-                      )),
-                  width: width * 0.89,
-                  height: height * 0.09,
-                  child: Center(
-                      child: Padding(
-                    padding: EdgeInsets.all(
-                      0,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Image.asset(
-                          'assets/icons/canned-food.png',
-                          width: 30,
-                          height: 30,
-                          color: Colors.grey.shade800,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text("Add items",
-                              style: TextStyle(
-                                  fontSize: 18, color: Colors.grey.shade800)),
-                        ),
-                      ],
-                    ),
-                  ))),
-            ),
+            widget.category == "any" || widget.category == "sell"
+                ? SizedBox(
+                    height: 20,
+                  )
+                : SizedBox.shrink(),
+            widget.category == "any" || widget.category == "sell"
+                ? GestureDetector(
+                    onTap: () async {
+                      List reSllingItems = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SellElectronicsTypes(
+                                    items: sellingItems,
+                                  )));
+                      if (reSllingItems != null) {
+                        setState(() {
+                          sellingItems = reSllingItems;
+                        });
+                      }
+                    },
+                    child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: Colors.grey.shade500,
+                            )),
+                        width: width * 0.89,
+                        height: height * 0.09,
+                        child: Center(
+                            child: Padding(
+                          padding: EdgeInsets.all(
+                            0,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Image.asset(
+                                'assets/icons/sell_electronics.png',
+                                width: 30,
+                                height: 30,
+                                color: Colors.grey.shade800,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Add selling items",
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.grey.shade800)),
+                              ),
+                            ],
+                          ),
+                        ))),
+                  )
+                : SizedBox.shrink(),
+            widget.category == "any" || widget.category == "repair"
+                ? SizedBox(
+                    height: 20,
+                  )
+                : SizedBox.shrink(),
+            widget.category == "any" || widget.category == "repair"
+                ? GestureDetector(
+                    onTap: () async {
+                      List reItems = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => RepairTypes(
+                                    items: repairItems,
+                                  )));
+                      if (reItems != null) {
+                        setState(() {
+                          repairItems = reItems;
+                        });
+                      }
+                    },
+                    child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: Colors.grey.shade500,
+                            )),
+                        width: width * 0.89,
+                        height: height * 0.09,
+                        child: Center(
+                            child: Padding(
+                          padding: EdgeInsets.all(
+                            0,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Image.asset(
+                                'assets/icons/electronics_repair.png',
+                                width: 30,
+                                height: 30,
+                                color: Colors.grey.shade800,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Customize repair",
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.grey.shade800)),
+                              ),
+                            ],
+                          ),
+                        ))),
+                  )
+                : SizedBox.shrink(),
             SizedBox(
               height: 20,
             ),
@@ -967,7 +1111,7 @@ class _AddGroceryState extends State<AddGrocery> {
                 List reGallery = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => GrocGallery(
+                        builder: (context) => EducationGallery(
                               gallery: gallery,
                             )));
                 if (reGallery != null) {

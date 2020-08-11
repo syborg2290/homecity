@@ -2,30 +2,27 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nearby/screens/main/sub/grocery/groc_gallery.dart';
 import 'package:nearby/utils/flush_bars.dart';
 import 'package:nearby/utils/image_cropper.dart';
 import 'package:nearby/utils/media_picker/gallery_pick.dart';
 import 'package:nearby/utils/pallete.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-class GroceryItemsForm extends StatefulWidget {
+class RepairElectronics extends StatefulWidget {
   final String type;
   final obj;
-  GroceryItemsForm({this.type, this.obj, Key key}) : super(key: key);
+  RepairElectronics({this.type, this.obj, Key key}) : super(key: key);
 
   @override
-  _GroceryItemsFormState createState() => _GroceryItemsFormState();
+  _RepairElectronicsState createState() => _RepairElectronicsState();
 }
 
-class _GroceryItemsFormState extends State<GroceryItemsForm> {
+class _RepairElectronicsState extends State<RepairElectronics> {
   File intialImage;
-  TextEditingController _itemName = TextEditingController();
-  TextEditingController _brandName = TextEditingController();
-  TextEditingController _aboutTheItem = TextEditingController();
-  TextEditingController _price = TextEditingController();
+  TextEditingController _itemsOfReparing = TextEditingController();
+  TextEditingController _brandsOfRepairing = TextEditingController();
+  TextEditingController _aboutTheRepairing = TextEditingController();
   bool isForEdit = false;
-  List gallery = [];
 
   @override
   void initState() {
@@ -34,34 +31,27 @@ class _GroceryItemsFormState extends State<GroceryItemsForm> {
       setState(() {
         isForEdit = true;
         intialImage = widget.obj["initialImage"];
-        _itemName.text = widget.obj["item_name"];
-        _aboutTheItem.text = widget.obj["about"];
-        _price.text = widget.obj["price"];
-        _brandName.text = widget.obj["brand"];
-        gallery = widget.obj["gallery"];
+        _itemsOfReparing.text = widget.obj["allDevices"];
+        _brandsOfRepairing.text = widget.obj["allBrands"];
+        _aboutTheRepairing.text = widget.obj["aboutTheReapir"];
       });
     }
   }
 
   done() {
     if (intialImage != null) {
-      if (_itemName.text.trim() != "") {
-        if (_price.text.trim() != "") {
-          var obj = {
-            "initialImage": intialImage,
-            "item_type": widget.type,
-            "item_name": _itemName.text.trim(),
-            "price": _price.text.trim(),
-            "about": _aboutTheItem.text.trim(),
-            "brand": _brandName.text.trim(),
-            "gallery": gallery,
-          };
-          Navigator.pop(context, obj);
-        } else {
-          GradientSnackBar.showMessage(context, "price is required");
-        }
+      if (_itemsOfReparing.text.trim() != "") {
+        var obj = {
+          "initialImage": intialImage,
+          "repair_type": widget.type,
+          "allDevices": _itemsOfReparing.text.trim(),
+          "allBrands": _brandsOfRepairing.text.trim(),
+          "aboutTheReapir": _aboutTheRepairing.text.trim(),
+        };
+        Navigator.pop(context, obj);
       } else {
-        GradientSnackBar.showMessage(context, "Initial name is required");
+        GradientSnackBar.showMessage(
+            context, "All devices that reapir is required");
       }
     } else {
       GradientSnackBar.showMessage(context, "Initial image is required");
@@ -165,7 +155,7 @@ class _GroceryItemsFormState extends State<GroceryItemsForm> {
                 ? Stack(
                     children: <Widget>[
                       Image.asset(
-                        'assets/groc_back.jpg',
+                        'assets/electronics_back.png',
                         height: height * 0.3,
                         width: width,
                         fit: BoxFit.cover,
@@ -181,7 +171,7 @@ class _GroceryItemsFormState extends State<GroceryItemsForm> {
                           children: <Widget>[
                             Center(
                                 child: Text(
-                              "* Add initial image for the item",
+                              "* Add initial image",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.white,
@@ -319,98 +309,18 @@ class _GroceryItemsFormState extends State<GroceryItemsForm> {
             SizedBox(
               height: 20,
             ),
-            textBoxContainer(_itemName, "* Name of the item", 1, width, false,
-                TextInputType.text),
+            textBoxContainer(_itemsOfReparing, "* All devices that repair", 5,
+                width, false, TextInputType.text),
             SizedBox(
               height: 20,
             ),
-            Container(
-              width: width * 0.89,
-              child: TextField(
-                controller: _price,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: "* Price(LKR)",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  suffix: Text(
-                    "LKR",
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
-                ),
-              ),
-            ),
+            textBoxContainer(_brandsOfRepairing, "All brands that repair", 5,
+                width, false, TextInputType.text),
             SizedBox(
               height: 20,
             ),
-            textBoxContainer(_brandName, "Brand of the item", 1, width, false,
-                TextInputType.text),
-            SizedBox(
-              height: 20,
-            ),
-            textBoxContainer(_aboutTheItem, "About the item", 3, width, false,
-                TextInputType.text),
-            SizedBox(
-              height: 20,
-            ),
-            GestureDetector(
-              onTap: () async {
-                List reGallery = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => GrocGallery(
-                              gallery: gallery,
-                            )));
-                if (reGallery != null) {
-                  setState(() {
-                    gallery = reGallery;
-                  });
-                }
-              },
-              child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: Colors.grey.shade500,
-                      )),
-                  width: width * 0.89,
-                  height: height * 0.09,
-                  child: Center(
-                      child: Padding(
-                    padding: EdgeInsets.only(
-                      left: width * 0.3,
-                    ),
-                    child: Row(
-                      children: <Widget>[
-                        Image.asset(
-                          'assets/icons/album.png',
-                          width: 30,
-                          height: 30,
-                          color: Colors.grey.shade800,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text("Gallery",
-                              style: TextStyle(
-                                  fontSize: 18, color: Colors.grey.shade800)),
-                        ),
-                      ],
-                    ),
-                  ))),
-            ),
+            textBoxContainer(_aboutTheRepairing, "About the repairing", 5,
+                width, false, TextInputType.text),
             SizedBox(
               height: 20,
             ),

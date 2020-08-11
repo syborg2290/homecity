@@ -183,6 +183,39 @@ class _AddApparelState extends State<AddApparel> {
                     for (var item in apparelItems) {
                       String downUrl = await _apparelService.uploadImageApparel(
                           await compressImageFile(item["initialImage"], 80));
+                      List uploadGalleryItems = [];
+                      if (item["gallery"].isNotEmpty) {
+                        for (var ele in item["gallery"]) {
+                          if (ele["type"] == "image") {
+                            String downUrl =
+                                await _apparelService.uploadImageApparel(
+                                    await compressImageFile(ele["media"], 80));
+                            String thumbUrl = await _apparelService
+                                .uploadImageApparelThumbnail(
+                                    await compressImageFile(ele["media"], 40));
+                            var obj = {
+                              "url": downUrl,
+                              "thumb": thumbUrl,
+                              "type": "image",
+                            };
+                            uploadGalleryItems.add(json.encode(obj));
+                          } else {
+                            String downUrl =
+                                await _apparelService.uploadVideoToApparel(
+                                    await compressVideoFile(ele["media"]));
+                            String thumbUrl =
+                                await _apparelService.uploadVideoToApparelThumb(
+                                    await getThumbnailForVideo(ele["media"]));
+                            var obj = {
+                              "url": downUrl,
+                              "thumb": thumbUrl,
+                              "type": "video",
+                            };
+                            uploadGalleryItems.add(json.encode(obj));
+                          }
+                        }
+                      }
+
                       var obj = {
                         "initialImage": downUrl,
                         "item_maintype": item["item_maintype"],
@@ -192,6 +225,7 @@ class _AddApparelState extends State<AddApparel> {
                         "price": item["price"],
                         "about": item["about"],
                         "brand": item["brand"],
+                        "gallery": uploadGalleryItems,
                       };
                       itemsUpload.add(json.encode(obj));
                     }

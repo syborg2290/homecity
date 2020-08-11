@@ -308,6 +308,41 @@ class _AddResturantState extends State<AddResturant> {
                         String downUrl = await _resturantService
                             .uploadImageRest(await compressImageFile(
                                 item["initialImage"], 80));
+
+                        List uploadGalleryItems = [];
+                        if (item["gallery"].isNotEmpty) {
+                          for (var ele in item["gallery"]) {
+                            if (ele["type"] == "image") {
+                              String downUrl = await _resturantService
+                                  .uploadImageRest(await compressImageFile(
+                                      ele["media"], 80));
+                              String thumbUrl = await _resturantService
+                                  .uploadImageRestThumbnail(
+                                      await compressImageFile(
+                                          ele["media"], 40));
+                              var obj = {
+                                "url": downUrl,
+                                "thumb": thumbUrl,
+                                "type": "image",
+                              };
+                              uploadGalleryItems.add(json.encode(obj));
+                            } else {
+                              String downUrl =
+                                  await _resturantService.uploadVideoToRest(
+                                      await compressVideoFile(ele["media"]));
+                              String thumbUrl = await _resturantService
+                                  .uploadVideoToRestThumb(
+                                      await getThumbnailForVideo(ele["media"]));
+                              var obj = {
+                                "url": downUrl,
+                                "thumb": thumbUrl,
+                                "type": "video",
+                              };
+                              uploadGalleryItems.add(json.encode(obj));
+                            }
+                          }
+                        }
+
                         var obj = {
                           "initialImage": downUrl,
                           "item_type": item["item_type"],
@@ -318,6 +353,7 @@ class _AddResturantState extends State<AddResturant> {
                           "about": item["about"],
                           "foodTake": item["foodTake"],
                           "foodTimes": item["foodTimes"],
+                          "gallery": uploadGalleryItems,
                         };
                         menuUpload.add(json.encode(obj));
                       }

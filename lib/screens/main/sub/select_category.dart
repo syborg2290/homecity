@@ -6,6 +6,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:nearby/screens/main/sub/apparel/add_apparel.dart';
 import 'package:nearby/screens/main/sub/bar&nightlife/main_types.dart';
 import 'package:nearby/screens/main/sub/education/education_main_types.dart';
+import 'package:nearby/screens/main/sub/electronics/select_services.dart';
 import 'package:nearby/screens/main/sub/events/events_type.dart';
 import 'package:nearby/screens/main/sub/grocery/add_grocery.dart';
 import 'package:nearby/screens/main/sub/place/place_type.dart';
@@ -138,6 +139,13 @@ class _SelectCategoryState extends State<SelectCategory> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => EducationTypes()));
+                        }
+                        if (myData[index]['service'] ==
+                            "Electronics & repairs") {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SelectServices()));
                         }
                       },
                       child: Padding(

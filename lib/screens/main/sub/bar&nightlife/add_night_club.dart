@@ -303,7 +303,7 @@ class _NightClubFormState extends State<NightClubForm> {
                   );
                   await _services.addService(
                       _name.text.trim(), restId, widget.type, widget.type);
-                 
+
                   pr.hide().whenComplete(() {
                     Navigator.pop(context);
                   });
@@ -734,7 +734,7 @@ class _NightClubFormState extends State<NightClubForm> {
               height: 20,
             ),
             Text(
-              "* Mention days of closing the " + widget.type.toLowerCase(),
+              "Mention days of closing the " + widget.type.toLowerCase(),
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.black.withOpacity(0.5),

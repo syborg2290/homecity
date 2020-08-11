@@ -65,6 +65,8 @@ flutter:
     - assets/logo.png
     - assets/profilephoto.png
     - assets/resturant_back.png
+    - assets/electronics_back.png
+    - assets/saloons_back.png
     - assets/vehi_back.png
     - assets/events_back.png
     - assets/apparel_back.jpg
@@ -285,10 +287,19 @@ flutter:
     - assets/icons/bookmark.png
     - assets/icons/tution_classes.png
     - assets/icons/schedule.png
+    - assets/icons/electronics_repair.png
+    - assets/icons/sell_electronics.png
+    - assets/icons/schedule.png
+    - assets/icons/cellphone.png
+    - assets/icons/mp3_electronics.png
+    - assets/icons/gamepad.png
+    - assets/icons/_electrincs_toy.png
     - assets/icons/other.png
     
     - assets/json/services.json
     - assets/json/education.json
+    - assets/json/electronics_repair.json
+    - assets/json/electronics_type.json
     - assets/json/tution.json
     - assets/json/higher_Education.json
     - assets/json/vocational_Edu.json

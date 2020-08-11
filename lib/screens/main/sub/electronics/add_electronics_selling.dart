@@ -2,31 +2,28 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nearby/screens/main/sub/resturant/resturant_gallery.dart';
+import 'package:nearby/screens/main/sub/electronics/electronics_gallery.dart';
 import 'package:nearby/utils/flush_bars.dart';
 import 'package:nearby/utils/image_cropper.dart';
 import 'package:nearby/utils/media_picker/gallery_pick.dart';
 import 'package:nearby/utils/pallete.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-class MenuItemForm extends StatefulWidget {
-  final String itemType;
+class SellItems extends StatefulWidget {
+  final String type;
   final obj;
-
-  MenuItemForm({this.obj, this.itemType, Key key}) : super(key: key);
+  SellItems({this.type, this.obj, Key key}) : super(key: key);
 
   @override
-  _MenuItemFormState createState() => _MenuItemFormState();
+  _SellItemsState createState() => _SellItemsState();
 }
 
-class _MenuItemFormState extends State<MenuItemForm> {
+class _SellItemsState extends State<SellItems> {
   File intialImage;
   TextEditingController _itemName = TextEditingController();
+  TextEditingController _brandName = TextEditingController();
   TextEditingController _aboutTheItem = TextEditingController();
   TextEditingController _price = TextEditingController();
-  TextEditingController _personCount = TextEditingController();
-  List foodTakeTypes = ["Any"];
-  List foodTakeTimes = ["Any Time"];
   bool isForEdit = false;
   List gallery = [];
 
@@ -40,123 +37,26 @@ class _MenuItemFormState extends State<MenuItemForm> {
         _itemName.text = widget.obj["item_name"];
         _aboutTheItem.text = widget.obj["about"];
         _price.text = widget.obj["price"];
-        _personCount.text = widget.obj["portion_count"];
-        foodTakeTypes = widget.obj["foodTake"];
-        foodTakeTimes = widget.obj["foodTimes"];
+        _brandName.text = widget.obj["brand"];
         gallery = widget.obj["gallery"];
       });
     }
-  }
-
-  Widget foodTake(String type, String imagePath, bool isContain) {
-    return Container(
-      width: 120,
-      height: 110,
-      child: Card(
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        child: Container(
-          color: isContain ? Pallete.mainAppColor : Colors.white,
-          child: Column(
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.all(10),
-                child: Column(
-                  children: <Widget>[
-                    Image.asset(
-                      imagePath,
-                      width: 40,
-                      height: 40,
-                      color: foodTakeTypes.contains(type)
-                          ? Colors.white
-                          : Colors.black,
-                    ),
-                    Text(
-                      type,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: foodTakeTypes.contains(type)
-                            ? Colors.white
-                            : Colors.black,
-                        fontSize: 13,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        elevation: 5,
-        margin: EdgeInsets.all(10),
-      ),
-    );
-  }
-
-  Widget foodTime(String type, bool isContain) {
-    return Container(
-      width: 140,
-      height: 70,
-      child: Card(
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        child: Container(
-          color: isContain ? Pallete.mainAppColor : Colors.white,
-          child: Padding(
-            padding: EdgeInsets.all(10),
-            child: Center(
-              child: Text(
-                type,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: foodTakeTimes.contains(type)
-                      ? Colors.white
-                      : Colors.black,
-                  fontSize: 19,
-                ),
-              ),
-            ),
-          ),
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        elevation: 5,
-        margin: EdgeInsets.all(10),
-      ),
-    );
   }
 
   done() {
     if (intialImage != null) {
       if (_itemName.text.trim() != "") {
         if (_price.text.trim() != "") {
-          if (_personCount.text.trim() != "") {
-            if (foodTakeTypes.isNotEmpty) {
-              if (foodTakeTimes.isNotEmpty) {
-                var obj = {
-                  "initialImage": intialImage,
-                  "item_type": widget.itemType,
-                  "item_name": _itemName.text.trim(),
-                  "price": _price.text.trim(),
-                  "portion_count": _personCount.text.trim(),
-                  "about": _aboutTheItem.text.trim(),
-                  "foodTake": foodTakeTypes,
-                  "foodTimes": foodTakeTimes,
-                  "gallery": gallery,
-                };
-                Navigator.pop(context, obj);
-              } else {
-                GradientSnackBar.showMessage(
-                    context, "Time that able to get food item is required");
-              }
-            } else {
-              GradientSnackBar.showMessage(context, "Serve types is required");
-            }
-          } else {
-            GradientSnackBar.showMessage(context, "Person count is required");
-          }
+          var obj = {
+            "initialImage": intialImage,
+            "item_type": widget.type,
+            "item_name": _itemName.text.trim(),
+            "price": _price.text.trim(),
+            "about": _aboutTheItem.text.trim(),
+            "gallery": gallery,
+            "brand": _brandName.text.trim(),
+          };
+          Navigator.pop(context, obj);
         } else {
           GradientSnackBar.showMessage(context, "price is required");
         }
@@ -228,7 +128,7 @@ class _MenuItemFormState extends State<MenuItemForm> {
         ),
         centerTitle: false,
         title: Text(
-          widget.itemType,
+          widget.type,
           style: TextStyle(
               color: Colors.grey[700],
               fontFamily: "Roboto",
@@ -265,9 +165,10 @@ class _MenuItemFormState extends State<MenuItemForm> {
                 ? Stack(
                     children: <Widget>[
                       Image.asset(
-                        'assets/resturant_back.png',
+                        'assets/electronics_back.png',
                         height: height * 0.3,
                         width: width,
+                        fit: BoxFit.cover,
                       ),
                       Container(
                         color: Colors.black.withOpacity(0.5),
@@ -280,7 +181,7 @@ class _MenuItemFormState extends State<MenuItemForm> {
                           children: <Widget>[
                             Center(
                                 child: Text(
-                              "* Add initial image for food item",
+                              "* Add initial image",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.white,
@@ -418,8 +319,8 @@ class _MenuItemFormState extends State<MenuItemForm> {
             SizedBox(
               height: 20,
             ),
-            textBoxContainer(_itemName, "* Name of the food item", 1, width,
-                false, TextInputType.text),
+            textBoxContainer(_itemName, "* Name of the item", 1, width, false,
+                TextInputType.text),
             SizedBox(
               height: 20,
             ),
@@ -429,7 +330,7 @@ class _MenuItemFormState extends State<MenuItemForm> {
                 controller: _price,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  labelText: "* Price per portion(LKR)",
+                  labelText: "* Price(LKR)",
                   labelStyle:
                       TextStyle(fontSize: 18, color: Colors.grey.shade500),
                   enabledBorder: OutlineInputBorder(
@@ -455,238 +356,13 @@ class _MenuItemFormState extends State<MenuItemForm> {
             SizedBox(
               height: 20,
             ),
-            Container(
-              width: width * 0.89,
-              child: TextField(
-                controller: _personCount,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: "* Portion enough(Person count)",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  suffix: Text(
-                    "Person",
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
-                ),
-              ),
-            ),
+            textBoxContainer(_brandName, "Brand of the item", 1, width, false,
+                TextInputType.text),
             SizedBox(
               height: 20,
             ),
-            textBoxContainer(_aboutTheItem, "About the food item", 3, width,
-                false, TextInputType.text),
-            SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "* How to serve this food item",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.black.withOpacity(0.5),
-                  fontSize: 19,
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        foodTakeTypes.clear();
-                        foodTakeTypes.add("Any");
-                      });
-                    },
-                    child: foodTake("Any", 'assets/icons/anyFoodType.png',
-                        foodTakeTypes.contains("Any")),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      if (foodTakeTypes.contains("Any")) {
-                        setState(() {
-                          foodTakeTypes.clear();
-                          foodTakeTypes.add("Dine-in");
-                        });
-                      } else {
-                        if (foodTakeTypes.contains("Dine-in")) {
-                          setState(() {
-                            foodTakeTypes.remove("Dine-in");
-                          });
-                        } else {
-                          setState(() {
-                            foodTakeTypes.add("Dine-in");
-                          });
-                        }
-                      }
-                    },
-                    child: foodTake("Dine-in", 'assets/icons/dining.png',
-                        foodTakeTypes.contains("Dine-in")),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      if (foodTakeTypes.contains("Any")) {
-                        setState(() {
-                          foodTakeTypes.clear();
-                          foodTakeTypes.add("Take-away");
-                        });
-                      } else {
-                        if (foodTakeTypes.contains("Take-away")) {
-                          setState(() {
-                            foodTakeTypes.remove("Take-away");
-                          });
-                        } else {
-                          setState(() {
-                            foodTakeTypes.add("Take-away");
-                          });
-                        }
-                      }
-                    },
-                    child: foodTake("Take-away", 'assets/icons/takeaway.png',
-                        foodTakeTypes.contains("Take-away")),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      if (foodTakeTypes.contains("Any")) {
-                        setState(() {
-                          foodTakeTypes.clear();
-                          foodTakeTypes.add("Delivery");
-                        });
-                      } else {
-                        if (foodTakeTypes.contains("Delivery")) {
-                          setState(() {
-                            foodTakeTypes.remove("Delivery");
-                          });
-                        } else {
-                          setState(() {
-                            foodTakeTypes.add("Delivery");
-                          });
-                        }
-                      }
-                    },
-                    child: foodTake("Delivery", 'assets/icons/delivery.png',
-                        foodTakeTypes.contains("Delivery")),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "* What times able to get this item",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.black.withOpacity(0.5),
-                  fontSize: 19,
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        foodTakeTimes.clear();
-                        foodTakeTimes.add("Any Time");
-                      });
-                    },
-                    child: foodTime(
-                        "Any Time", foodTakeTimes.contains("Any Time")),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      if (foodTakeTimes.contains("Any Time")) {
-                        setState(() {
-                          foodTakeTimes.clear();
-                          foodTakeTimes.add("Breakfast");
-                        });
-                      } else {
-                        if (foodTakeTimes.contains("Breakfast")) {
-                          setState(() {
-                            foodTakeTimes.remove("Breakfast");
-                          });
-                        } else {
-                          setState(() {
-                            foodTakeTimes.add("Breakfast");
-                          });
-                        }
-                      }
-                    },
-                    child: foodTime(
-                        "Breakfast", foodTakeTimes.contains("Breakfast")),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      if (foodTakeTimes.contains("Any Time")) {
-                        setState(() {
-                          foodTakeTimes.clear();
-                          foodTakeTimes.add("Lunch");
-                        });
-                      } else {
-                        if (foodTakeTimes.contains("Lunch")) {
-                          setState(() {
-                            foodTakeTimes.remove("Lunch");
-                          });
-                        } else {
-                          setState(() {
-                            foodTakeTimes.add("Lunch");
-                          });
-                        }
-                      }
-                    },
-                    child: foodTime("Lunch", foodTakeTimes.contains("Lunch")),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      if (foodTakeTimes.contains("Any Time")) {
-                        setState(() {
-                          foodTakeTimes.clear();
-                          foodTakeTimes.add("Dinner");
-                        });
-                      } else {
-                        if (foodTakeTimes.contains("Dinner")) {
-                          setState(() {
-                            foodTakeTimes.remove("Dinner");
-                          });
-                        } else {
-                          setState(() {
-                            foodTakeTimes.add("Dinner");
-                          });
-                        }
-                      }
-                    },
-                    child: foodTime("Dinner", foodTakeTimes.contains("Dinner")),
-                  ),
-                ],
-              ),
-            ),
+            textBoxContainer(_aboutTheItem, "About the item", 3, width, false,
+                TextInputType.text),
             SizedBox(
               height: 20,
             ),
@@ -695,7 +371,7 @@ class _MenuItemFormState extends State<MenuItemForm> {
                 List reGallery = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => RestGallery(
+                        builder: (context) => ElectronicsGallery(
                               gallery: gallery,
                             )));
                 if (reGallery != null) {
