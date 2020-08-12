@@ -301,8 +301,8 @@ class _NightClubFormState extends State<NightClubForm> {
                     selectedDistrict,
                     uploadGallery,
                   );
-                  await _services.addService(
-                      _name.text.trim(), restId, widget.type, widget.type);
+                  await _services.addService(_name.text.trim(), restId,
+                      latitude, longitude, widget.type, "Night-life");
 
                   pr.hide().whenComplete(() {
                     Navigator.pop(context);

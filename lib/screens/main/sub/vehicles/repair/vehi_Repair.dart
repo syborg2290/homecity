@@ -222,7 +222,7 @@ class _VehiRepairState extends State<VehiRepair> {
                     null,
                   );
                   await _services.addService(_serviceName.text.trim(), vehiSeId,
-                      widget.type, "Vehicle services");
+                      latitude, longitude, widget.type, "Vehicle services");
 
                   pr.hide().whenComplete(() {
                     Navigator.pop(context);

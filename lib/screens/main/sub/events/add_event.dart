@@ -187,7 +187,7 @@ class _AddEventState extends State<AddEvent> {
                       selectedDistrict,
                     );
                     await _services.addService(_eventDetails.text.trim(),
-                        eventId, widget.type, "Events");
+                        eventId, latitude, longitude, widget.type, "Events");
 
                     pr.hide().whenComplete(() {
                       Navigator.pop(context);

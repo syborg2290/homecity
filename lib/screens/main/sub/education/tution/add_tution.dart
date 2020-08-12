@@ -174,8 +174,8 @@ class _AddTutionState extends State<AddTution> {
               widget.subject,
               null,
             );
-            await _services.addService(
-                _name.text.trim(), restId, widget.type, "Education");
+            await _services.addService(_name.text.trim(), restId, null, null,
+                widget.type, "Education");
 
             pr.hide().whenComplete(() {
               Navigator.pop(context);

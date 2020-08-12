@@ -253,7 +253,7 @@ class _AddGroceryState extends State<AddGrocery> {
                     uploadGallery,
                   );
                   await _services.addService(_grocName.text.trim(), grocId,
-                      "Grocery", "Groceries & markets");
+                      latitude, longitude, "Grocery", "Groceries & markets");
 
                   pr.hide().whenComplete(() {
                     Navigator.pop(context);

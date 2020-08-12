@@ -385,7 +385,7 @@ class _AddResturantState extends State<AddResturant> {
                       uploadGallery,
                     );
                     await _services.addService(_restName.text.trim(), restId,
-                        widget.type, widget.type);
+                        latitude, longitude, widget.type, widget.type);
 
                     pr.hide().whenComplete(() {
                       Navigator.pop(context);

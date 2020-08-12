@@ -237,8 +237,8 @@ class _AddVocationalState extends State<AddVocational> {
                   null,
                   uploadCourses,
                 );
-                await _services.addService(
-                    _name.text.trim(), restId, widget.type, "Education");
+                await _services.addService(_name.text.trim(), restId, latitude,
+                    longitude, widget.type, "Education");
 
                 pr.hide().whenComplete(() {
                   Navigator.pop(context);

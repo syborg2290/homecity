@@ -187,8 +187,8 @@ class _AddstaysState extends State<Addstays> {
                       customizeObj["features"],
                       _costPerNight.text.trim(),
                     );
-                    await _services.addService(
-                        _stayName.text.trim(), stayId, "Stays", "Stays");
+                    await _services.addService(_stayName.text.trim(), stayId,
+                        latitude, longitude, "Stays", "Stays");
 
                     pr.hide().whenComplete(() {
                       Navigator.pop(context);

@@ -255,8 +255,13 @@ class _AddApparelState extends State<AddApparel> {
                     selectedDistrict,
                     uploadGallery,
                   );
-                  await _services.addService(_apparelName.text.trim(),
-                      apparelId, "Apparel & fashions", "Apparel & fashions");
+                  await _services.addService(
+                      _apparelName.text.trim(),
+                      apparelId,
+                      latitude,
+                      longitude,
+                      "Apparel & fashions",
+                      "Apparel & fashions");
 
                   pr.hide().whenComplete(() {
                     Navigator.pop(context);

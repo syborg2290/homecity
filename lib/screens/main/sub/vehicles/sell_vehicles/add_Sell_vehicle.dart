@@ -11,6 +11,7 @@ import 'package:nearby/services/vehi_service.dart';
 import 'package:nearby/utils/compress_media.dart';
 import 'package:nearby/utils/flush_bars.dart';
 import 'package:nearby/utils/image_cropper.dart';
+import 'package:nearby/utils/maps/locationMap.dart';
 import 'package:nearby/utils/media_picker/gallery_pick.dart';
 import 'package:nearby/utils/pallete.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -30,6 +31,9 @@ class _AddSellState extends State<AddSell> {
   TextEditingController _name = TextEditingController();
   TextEditingController _details = TextEditingController();
   TextEditingController _address = TextEditingController();
+  TextEditingController _location = TextEditingController();
+  double latitude;
+  double longitude;
   Services _services = Services();
   AuthServcies _authServcies = AuthServcies();
   VehiService _vehiService = VehiService();
@@ -169,8 +173,8 @@ class _AddSellState extends State<AddSell> {
                 _details.text.trim(),
                 initialImageUpload,
                 _address.text.trim(),
-                null,
-                null,
+                latitude,
+                longitude,
                 _email.text.trim(),
                 selectedDistrict,
                 null,
@@ -197,8 +201,8 @@ class _AddSellState extends State<AddSell> {
                 transmission,
                 _enginecapacity.text.trim(),
               );
-              await _services.addService(
-                  _name.text.trim(), vehiSeId, widget.type, "Vehicle services");
+              await _services.addService(_name.text.trim(), vehiSeId, latitude,
+                  longitude, widget.type, "Vehicle services");
 
               pr.hide().whenComplete(() {
                 Navigator.pop(context);
@@ -957,6 +961,53 @@ class _AddSellState extends State<AddSell> {
                     ),
                   );
                 },
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              width: width * 0.89,
+              child: TextField(
+                readOnly: true,
+                onTap: () async {
+                  List<double> locationCo = [];
+                  locationCo.add(latitude);
+                  locationCo.add(longitude);
+                  List<double> locationCoord = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => LocationMap(
+                                isFromFeed: false,
+                                locationCoord:
+                                    latitude == null ? null : locationCo,
+                              )));
+                  if (locationCoord != null) {
+                    setState(() {
+                      latitude = locationCoord[0];
+                      longitude = locationCoord[1];
+                      _location.text = "Location pinned";
+                    });
+                  }
+                },
+                controller: _location,
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(
+                  labelText: "Location",
+                  labelStyle:
+                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                      color: Colors.grey.shade500,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(
+                        color: Pallete.mainAppColor,
+                      )),
+                ),
               ),
             ),
             SizedBox(

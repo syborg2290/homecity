@@ -5,11 +5,11 @@ import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:nearby/screens/main/sub/education/education_gallery.dart';
-import 'package:nearby/screens/main/sub/electronics/repair_types.dart';
-import 'package:nearby/screens/main/sub/electronics/sell_electronics_types.dart';
+import 'package:nearby/screens/main/sub/saloonsnProducts/products_category.dart';
+import 'package:nearby/screens/main/sub/saloonsnProducts/saloon_service_types.dart';
+import 'package:nearby/screens/main/sub/saloonsnProducts/saloonsnproducts_gallery.dart';
 import 'package:nearby/services/auth_services.dart';
-import 'package:nearby/services/electronics_service.dart';
+import 'package:nearby/services/saloonNPro_services.dart';
 import 'package:nearby/services/services_service.dart';
 import 'package:nearby/utils/compress_media.dart';
 import 'package:nearby/utils/flush_bars.dart';
@@ -21,16 +21,16 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:intl/intl.dart' as dd;
 
-class AddElectronics extends StatefulWidget {
+class BeautySaloons extends StatefulWidget {
   final String type;
   final String category;
-  AddElectronics({this.type, this.category, Key key}) : super(key: key);
+  BeautySaloons({this.type, this.category, Key key}) : super(key: key);
 
   @override
-  _AddElectronicsState createState() => _AddElectronicsState();
+  _BeautySaloonsState createState() => _BeautySaloonsState();
 }
 
-class _AddElectronicsState extends State<AddElectronics> {
+class _BeautySaloonsState extends State<BeautySaloons> {
   File intialImage;
   TextEditingController _name = TextEditingController();
   TextEditingController _aboutThe = TextEditingController();
@@ -63,7 +63,7 @@ class _AddElectronicsState extends State<AddElectronics> {
 
   Services _services = Services();
   AuthServcies _authServcies = AuthServcies();
-  ElectronicsService _electronicsService = ElectronicsService();
+  SaloonProService _saloonProService = SaloonProService();
   ProgressDialog pr;
   String currentUserId;
   String selectedDistrict = "Colombo";
@@ -95,8 +95,8 @@ class _AddElectronicsState extends State<AddElectronics> {
     "Vavuniya"
   ];
   List gallery = [];
-  List repairItems = [];
-  List sellingItems = [];
+  List beautyItems = [];
+  List saloonCustomize = [];
 
   @override
   void initState() {
@@ -183,11 +183,10 @@ class _AddElectronicsState extends State<AddElectronics> {
                   if (gallery.isNotEmpty) {
                     for (var ele in gallery) {
                       if (ele["type"] == "image") {
-                        String downUrl =
-                            await _electronicsService.uploadImageElectronics(
-                                await compressImageFile(ele["media"], 80));
-                        String thumbUrl = await _electronicsService
-                            .uploadImageElectronicsThumbnail(
+                        String downUrl = await _saloonProService.uploadImage(
+                            await compressImageFile(ele["media"], 80));
+                        String thumbUrl =
+                            await _saloonProService.uploadImageThumbnail(
                                 await compressImageFile(ele["media"], 40));
                         var obj = {
                           "url": downUrl,
@@ -196,11 +195,10 @@ class _AddElectronicsState extends State<AddElectronics> {
                         };
                         uploadGallery.add(json.encode(obj));
                       } else {
-                        String downUrl =
-                            await _electronicsService.uploadVideoToElectronics(
-                                await compressVideoFile(ele["media"]));
-                        String thumbUrl = await _electronicsService
-                            .uploadVideoToElectronicsThumb(
+                        String downUrl = await _saloonProService
+                            .uploadVideo(await compressVideoFile(ele["media"]));
+                        String thumbUrl =
+                            await _saloonProService.uploadVideoToThumb(
                                 await getThumbnailForVideo(ele["media"]));
                         var obj = {
                           "url": downUrl,
@@ -212,37 +210,21 @@ class _AddElectronicsState extends State<AddElectronics> {
                     }
                   }
 
-                  List repairsUpload = [];
-                  List sellingItemsUpload = [];
+                  List productsUpload = [];
 
-                  for (var re in repairItems) {
-                    String initialImageUploadRe =
-                        await _electronicsService.uploadImageElectronics(
-                            await compressImageFile(re["initialImage"], 80));
-                    var obj = {
-                      "initialImage": initialImageUploadRe,
-                      "repair_type": re["repair_type"],
-                      "allDevices": re["allDevices"],
-                      "allBrands": re["allBrands"],
-                      "aboutTheReapir": re["aboutTheReapir"],
-                    };
-                    repairsUpload.add(json.encode(obj));
-                  }
-
-                  for (var sel in sellingItems) {
+                  for (var sel in beautyItems) {
                     String initialImageUploadSel =
-                        await _electronicsService.uploadImageElectronics(
+                        await _saloonProService.uploadImage(
                             await compressImageFile(sel["initialImage"], 80));
                     List sellItemsGallery = [];
 
                     if (sel["gallery"].isNotEmpty) {
                       for (var ele in sel["gallery"]) {
                         if (ele["type"] == "image") {
-                          String downUrl =
-                              await _electronicsService.uploadImageElectronics(
-                                  await compressImageFile(ele["media"], 80));
-                          String thumbUrl = await _electronicsService
-                              .uploadImageElectronicsThumbnail(
+                          String downUrl = await _saloonProService.uploadImage(
+                              await compressImageFile(ele["media"], 80));
+                          String thumbUrl =
+                              await _saloonProService.uploadImageThumbnail(
                                   await compressImageFile(ele["media"], 40));
                           var obj = {
                             "url": downUrl,
@@ -251,11 +233,10 @@ class _AddElectronicsState extends State<AddElectronics> {
                           };
                           sellItemsGallery.add(json.encode(obj));
                         } else {
-                          String downUrl = await _electronicsService
-                              .uploadVideoToElectronics(
-                                  await compressVideoFile(ele["media"]));
-                          String thumbUrl = await _electronicsService
-                              .uploadVideoToElectronicsThumb(
+                          String downUrl = await _saloonProService.uploadVideo(
+                              await compressVideoFile(ele["media"]));
+                          String thumbUrl =
+                              await _saloonProService.uploadVideoToThumb(
                                   await getThumbnailForVideo(ele["media"]));
                           var obj = {
                             "url": downUrl,
@@ -277,14 +258,13 @@ class _AddElectronicsState extends State<AddElectronics> {
                       "brand": sel["brand"],
                     };
 
-                    sellingItemsUpload.add(json.encode(obj));
+                    productsUpload.add(json.encode(obj));
                   }
 
-                  String initialImageUpload =
-                      await _electronicsService.uploadImageElectronics(
-                          await compressImageFile(intialImage, 80));
+                  String initialImageUpload = await _saloonProService
+                      .uploadImage(await compressImageFile(intialImage, 80));
 
-                  String restId = await _electronicsService.addElectronics(
+                  String restId = await _saloonProService.addSaloonNPro(
                     currentUserId,
                     _name.text.trim(),
                     _aboutThe.text.trim(),
@@ -302,16 +282,16 @@ class _AddElectronicsState extends State<AddElectronics> {
                     _specialHolidaysAndHoursController.text.trim(),
                     selectedDistrict,
                     uploadGallery,
-                    repairsUpload,
-                    sellingItemsUpload,
+                    saloonCustomize,
+                    productsUpload,
                   );
                   await _services.addService(
                       _name.text.trim(),
                       restId,
                       latitude,
                       longitude,
-                      "Electronics & repairs",
-                      "Electronics & repairs");
+                      "Saloons & beauty products",
+                      "Saloons & beauty products");
 
                   pr.hide().whenComplete(() {
                     Navigator.pop(context);
@@ -484,13 +464,13 @@ class _AddElectronicsState extends State<AddElectronics> {
                 ? Stack(
                     children: <Widget>[
                       Image.asset(
-                        'assets/electronics_back.png',
+                        'assets/saloons_back.png',
                         height: height * 0.3,
                         width: width,
                         fit: BoxFit.cover,
                       ),
                       Container(
-                        color: Colors.black.withOpacity(0.5),
+                        color: Colors.black.withOpacity(0.3),
                         width: width,
                         height: height * 0.3,
                       ),
@@ -1000,23 +980,23 @@ class _AddElectronicsState extends State<AddElectronics> {
                 width,
                 false,
                 TextInputType.text),
-            widget.category == "any" || widget.category == "sell"
+            widget.category == "any" || widget.category == "products"
                 ? SizedBox(
                     height: 20,
                   )
                 : SizedBox.shrink(),
-            widget.category == "any" || widget.category == "sell"
+            widget.category == "any" || widget.category == "products"
                 ? GestureDetector(
                     onTap: () async {
                       List reSllingItems = await Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => SellElectronicsTypes(
-                                    items: sellingItems,
+                              builder: (context) => ProductsCategory(
+                                    items: beautyItems,
                                   )));
                       if (reSllingItems != null) {
                         setState(() {
-                          sellingItems = reSllingItems;
+                          beautyItems = reSllingItems;
                         });
                       }
                     },
@@ -1037,14 +1017,14 @@ class _AddElectronicsState extends State<AddElectronics> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               Image.asset(
-                                'assets/icons/sell_electronics.png',
+                                'assets/icons/makeup.png',
                                 width: 30,
                                 height: 30,
                                 color: Colors.grey.shade800,
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Text("Add selling items",
+                                child: Text("Add produts & items",
                                     style: TextStyle(
                                         fontSize: 18,
                                         color: Colors.grey.shade800)),
@@ -1054,23 +1034,23 @@ class _AddElectronicsState extends State<AddElectronics> {
                         ))),
                   )
                 : SizedBox.shrink(),
-            widget.category == "any" || widget.category == "repair"
+            widget.category == "any" || widget.category == "saloon"
                 ? SizedBox(
                     height: 20,
                   )
                 : SizedBox.shrink(),
-            widget.category == "any" || widget.category == "repair"
+            widget.category == "any" || widget.category == "saloon"
                 ? GestureDetector(
                     onTap: () async {
                       List reItems = await Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => RepairTypes(
-                                    items: repairItems,
+                              builder: (context) => SaloonServicesTypes(
+                                    services: saloonCustomize,
                                   )));
                       if (reItems != null) {
                         setState(() {
-                          repairItems = reItems;
+                          saloonCustomize = reItems;
                         });
                       }
                     },
@@ -1091,14 +1071,14 @@ class _AddElectronicsState extends State<AddElectronics> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               Image.asset(
-                                'assets/icons/electronics_repair.png',
+                                'assets/icons/salon.png',
                                 width: 30,
                                 height: 30,
                                 color: Colors.grey.shade800,
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Text("Customize repair",
+                                child: Text("Customize saloon",
                                     style: TextStyle(
                                         fontSize: 18,
                                         color: Colors.grey.shade800)),
@@ -1116,7 +1096,7 @@ class _AddElectronicsState extends State<AddElectronics> {
                 List reGallery = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => EducationGallery(
+                        builder: (context) => SaloonsNProductsGallery(
                               gallery: gallery,
                             )));
                 if (reGallery != null) {

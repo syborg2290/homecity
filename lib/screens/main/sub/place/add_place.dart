@@ -180,8 +180,8 @@ class _AddPlaceState extends State<AddPlace> {
                 selectedDistrict,
                 uploadGallery,
               );
-              await _services.addService(
-                  _placeName.text.trim(), placeId, widget.type, "Places");
+              await _services.addService(_placeName.text.trim(), placeId,
+                  latitude, longitude, widget.type, "Places");
 
               pr.hide().whenComplete(() {
                 Navigator.pop(context);

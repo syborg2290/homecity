@@ -11,6 +11,7 @@ import 'package:nearby/screens/main/sub/events/events_type.dart';
 import 'package:nearby/screens/main/sub/grocery/add_grocery.dart';
 import 'package:nearby/screens/main/sub/place/place_type.dart';
 import 'package:nearby/screens/main/sub/resturant/add_resturant.dart';
+import 'package:nearby/screens/main/sub/saloonsnProducts/main_category.dart';
 import 'package:nearby/screens/main/sub/stays/add_stays.dart';
 import 'package:nearby/screens/main/sub/vehicles/vehicle_service_type.dart';
 import 'package:nearby/utils/pallete.dart';
@@ -146,6 +147,13 @@ class _SelectCategoryState extends State<SelectCategory> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => SelectServices()));
+                        }
+                        if (myData[index]['service'] ==
+                            "Beauty salons & products") {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SaloonsMain()));
                         }
                       },
                       child: Padding(

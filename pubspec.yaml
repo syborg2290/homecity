@@ -290,6 +290,8 @@ flutter:
     - assets/icons/electronics_repair.png
     - assets/icons/sell_electronics.png
     - assets/icons/schedule.png
+    - assets/icons/makeup.png
+    - assets/icons/any_saloons.png
     - assets/icons/cellphone.png
     - assets/icons/mp3_electronics.png
     - assets/icons/gamepad.png
@@ -298,6 +300,8 @@ flutter:
     
     - assets/json/services.json
     - assets/json/education.json
+    - assets/json/beauty_products.json
+    - assets/json/saloon_services.json
     - assets/json/electronics_repair.json
     - assets/json/electronics_type.json
     - assets/json/tution.json

@@ -230,8 +230,8 @@ class _PreSchoolState extends State<PreSchool> {
                   null,
                   null,
                 );
-                await _services.addService(
-                    _name.text.trim(), restId, widget.type, "Education");
+                await _services.addService(_name.text.trim(), restId, latitude,
+                    longitude, widget.type, "Education");
 
                 pr.hide().whenComplete(() {
                   Navigator.pop(context);
