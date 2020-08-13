@@ -1,0 +1,22 @@
+[
+    {
+        "category_name": "Land",
+        "image_path": "assets/icons/land.png"
+    },
+    {
+        "category_name": "Houses",
+        "image_path": "assets/icons/houses.png"
+    },
+    {
+        "category_name": "Apartments",
+        "image_path": "assets/icons/apartment.png"
+    },
+    {
+        "category_name": "Rooms & annexes",
+        "image_path": "assets/icons/room.png"
+    },
+    {
+        "category_name": "Commercial property",
+        "image_path": "assets/icons/land.png"
+    }
+]

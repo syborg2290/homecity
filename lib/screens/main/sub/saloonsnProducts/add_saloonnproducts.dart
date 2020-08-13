@@ -638,9 +638,7 @@ class _BeautySaloonsState extends State<BeautySaloons> {
             SizedBox(
               height: 20,
             ),
-            SizedBox(
-              height: 20,
-            ),
+           
             Container(
               width: width * 0.89,
               decoration:

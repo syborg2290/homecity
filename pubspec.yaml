@@ -139,6 +139,12 @@ flutter:
     - assets/icons/theme-park.png
     - assets/icons/trees.png
     - assets/icons/zoo.png
+    - assets/icons/houses.png
+    - assets/icons/apartment.png
+    - assets/icons/room.png
+    - assets/icons/rental.png
+    - assets/icons/commercial-land.png
+    - assets/icons/land.png
     - assets/icons/tution_sub.png
     - assets/icons/higher_cat.png
     - assets/icons/voca_training.png
@@ -299,6 +305,7 @@ flutter:
     - assets/icons/other.png
     
     - assets/json/services.json
+    - assets/json/properties.json
     - assets/json/education.json
     - assets/json/beauty_products.json
     - assets/json/saloon_services.json

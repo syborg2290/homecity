@@ -10,6 +10,7 @@ import 'package:nearby/screens/main/sub/electronics/select_services.dart';
 import 'package:nearby/screens/main/sub/events/events_type.dart';
 import 'package:nearby/screens/main/sub/grocery/add_grocery.dart';
 import 'package:nearby/screens/main/sub/place/place_type.dart';
+import 'package:nearby/screens/main/sub/properties/property_category.dart';
 import 'package:nearby/screens/main/sub/resturant/add_resturant.dart';
 import 'package:nearby/screens/main/sub/saloonsnProducts/main_category.dart';
 import 'package:nearby/screens/main/sub/stays/add_stays.dart';
@@ -154,6 +155,14 @@ class _SelectCategoryState extends State<SelectCategory> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => SaloonsMain()));
+                        }
+
+                        if (myData[index]['service'] ==
+                            "Properties & renting") {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => PropertyCategory()));
                         }
                       },
                       child: Padding(
