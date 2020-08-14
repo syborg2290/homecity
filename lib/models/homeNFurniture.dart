@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Electronics {
+class HomeNFurniture {
   String id;
   String ownerId;
   String intialImage;
@@ -19,12 +19,10 @@ class Electronics {
   Timestamp openingTime;
   String specialHolidayshoursOfClosing;
   List gallery;
-  List repairs;
-  List rent;
-  List sellingItems;
+  List items;
   Timestamp timestamp;
 
-  Electronics({
+  HomeNFurniture({
     this.id,
     this.ownerId,
     this.intialImage,
@@ -43,14 +41,12 @@ class Electronics {
     this.openingTime,
     this.specialHolidayshoursOfClosing,
     this.gallery,
-    this.repairs,
-    this.rent,
-    this.sellingItems,
+    this.items,
     this.timestamp,
   });
 
-  factory Electronics.fromDocument(DocumentSnapshot doc) {
-    return Electronics(
+  factory HomeNFurniture.fromDocument(DocumentSnapshot doc) {
+    return HomeNFurniture(
       id: doc['id'],
       ownerId: doc['ownerId'],
       name: doc['name'],
@@ -69,9 +65,7 @@ class Electronics {
       telephone2: doc['telephone2'],
       specialHolidayshoursOfClosing: doc['specialHolidayshoursOfClosing'],
       gallery: doc['gallery'],
-      rent: doc['rent'],
-      repairs: doc['repairs'],
-      sellingItems: doc['sellingItems'],
+      items: doc['items'],
       timestamp: doc['timestamp'],
     );
   }

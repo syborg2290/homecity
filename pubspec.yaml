@@ -78,6 +78,8 @@ flutter:
     
     - assets/icons/eye_open.png
     - assets/icons/eye_close.png
+    - assets/icons/homeware.png
+    - assets/icons/furniture_icon.png
     - assets/icons/bell.png
     - assets/icons/chat.png
     - assets/icons/user.png
@@ -301,11 +303,22 @@ flutter:
     - assets/icons/cellphone.png
     - assets/icons/mp3_electronics.png
     - assets/icons/gamepad.png
+    - assets/icons/suit.png
+    - assets/icons/sew.png
+    - assets/icons/builder.png
+    - assets/icons/hardware_tools.png
     - assets/icons/_electrincs_toy.png
     - assets/icons/other.png
     
     - assets/json/services.json
+    - assets/json/apparel/rent_apparel.json
+    - assets/json/apparel/tailor.json
+    - assets/json/services.json
     - assets/json/properties.json
+    - assets/json/tools_rent.json
+    - assets/json/hardware.json
+    - assets/json/furniture.json
+    - assets/json/homeware.json
     - assets/json/education.json
     - assets/json/beauty_products.json
     - assets/json/saloon_services.json

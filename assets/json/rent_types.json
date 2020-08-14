@@ -28,10 +28,6 @@
         "image_path": "assets/icons/heavytruck.png"
     },
     {
-        "category_name": "Heavy Machinery and Tractors",
-        "image_path": "assets/icons/excavator.png"
-    },
-    {
         "category_name": "Other",
         "image_path": "assets/icons/other.png"
     }

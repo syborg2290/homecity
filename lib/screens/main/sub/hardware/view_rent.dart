@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:nearby/screens/main/sub/electronics/add_electronics_selling.dart';
 import 'package:nearby/utils/pallete.dart';
 
-class ViewElectronics extends StatefulWidget {
+import 'add_rent.dart';
+
+class ViewRent extends StatefulWidget {
   final List items;
-  ViewElectronics({this.items, Key key}) : super(key: key);
+  ViewRent({this.items, Key key}) : super(key: key);
 
   @override
-  _ViewElectronicsState createState() => _ViewElectronicsState();
+  _ViewRentState createState() => _ViewRentState();
 }
 
-class _ViewElectronicsState extends State<ViewElectronics> {
+class _ViewRentState extends State<ViewRent> {
   List items = [];
   bool isLoading = true;
 
@@ -85,7 +86,7 @@ class _ViewElectronicsState extends State<ViewElectronics> {
                           var obj = await Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => SellItems(
+                                  builder: (context) => RentTools(
                                         type: items[index]['item_type'],
                                         obj: items[index],
                                       )));

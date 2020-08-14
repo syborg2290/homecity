@@ -1,0 +1,34 @@
+[
+    {
+        "category_name": "Wedding dresses",
+        "image_path": "assets/icons/suit.png"
+    },
+    {
+        "category_name": "Kids wear",
+        "image_path": "assets/icons/suit.png"
+    },
+    {
+        "category_name": "Suit & blazer",
+        "image_path": "assets/icons/suit.png"
+    },
+    {
+        "category_name": "Shirts & polo",
+        "image_path": "assets/icons/suit.png"
+    },
+    {
+        "category_name": "Tuxedo suits (men/women)",
+        "image_path": "assets/icons/suit.png"
+    },
+    {
+        "category_name": "Frock & Saree",
+        "image_path": "assets/icons/suit.png"
+    },
+    {
+        "category_name": "Accessories",
+        "image_path": "assets/icons/suit.png"
+    },
+    {
+        "category_name": "Other",
+        "image_path": "assets/icons/other.png"
+    }
+]

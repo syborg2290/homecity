@@ -1,0 +1,70 @@
+[
+    {
+        "category_name": "Lawn & hardware",
+        "image_path": "assets/icons/hardware_tools.png"
+    },
+    {
+        "category_name": "Builder Tools and Instruments",
+        "image_path": "assets/icons/hardware_tools.png"
+    },
+    {
+        "category_name": "Building materials",
+        "image_path": "assets/icons/hardware_tools.png"
+    },
+    {
+        "category_name": "Masonry Products/Concrete/Cement",
+        "image_path": "assets/icons/hardware_tools.png"
+    },
+    {
+        "category_name": "Lighting and Electrical",
+        "image_path": "assets/icons/hardware_tools.png"
+    },
+    {
+        "category_name": "Paint and Supplies",
+        "image_path": "assets/icons/hardware_tools.png"
+    },
+    {
+        "category_name": "Plumbing",
+        "image_path": "assets/icons/hardware_tools.png"
+    },
+    {
+        "category_name": "Aluminum Products",
+        "image_path": "assets/icons/hardware_tools.png"
+    },
+    {
+        "category_name": "Ceiling Products",
+        "image_path": "assets/icons/hardware_tools.png"
+    },
+    {
+        "category_name": "Fasteners, Nails, Nuts, Bolts, Rivets, Screws",
+        "image_path": "assets/icons/hardware_tools.png"
+    },
+    {
+        "category_name": "Flooring and Floor Coverings",
+        "image_path": "assets/icons/hardware_tools.png"
+    },
+    {
+        "category_name": "Hand Tools & Accessories",
+        "image_path": "assets/icons/hardware_tools.png"
+    },
+    {
+        "category_name": "Locksets, Keys & Accessories",
+        "image_path": "assets/icons/hardware_tools.png"
+    },
+    {
+        "category_name": "Lumber/Wood Products",
+        "image_path": "assets/icons/hardware_tools.png"
+    },
+    {
+        "category_name": "Roofing",
+        "image_path": "assets/icons/hardware_tools.png"
+    },
+    {
+        "category_name": "Wire",
+        "image_path": "assets/icons/hardware_tools.png"
+    },
+    {
+        "category_name": "Other",
+        "image_path": "assets/icons/other.png"
+    }
+]

@@ -1,0 +1,50 @@
+[
+    {
+        "category_name": "Air Compressors & Air tools",
+        "image_path": "assets/icons/builder.png"
+    },
+    {
+        "category_name": "Welder Tools and Instruments",
+        "image_path": "assets/icons/builder.png"
+    },
+    {
+        "category_name": "Builder Tools and Instruments",
+        "image_path": "assets/icons/builder.png"
+    },
+    {
+        "category_name": "Concrete & masonry",
+        "image_path": "assets/icons/builder.png"
+    },
+    {
+        "category_name": "Generators/Portable Power",
+        "image_path": "assets/icons/builder.png"
+    },
+    {
+        "category_name": "Hand Tools & Accessories",
+        "image_path": "assets/icons/builder.png"
+    },
+    {
+        "category_name": "Folklifts",
+        "image_path": "assets/icons/builder.png"
+    },
+    {
+        "category_name": "Surface preperations tools & Accessories",
+        "image_path": "assets/icons/builder.png"
+    },
+    {
+        "category_name": "Power Tools & Accessories/Portable Power",
+        "image_path": "assets/icons/builder.png"
+    },
+    {
+        "category_name": "Power Washers",
+        "image_path": "assets/icons/builder.png"
+    },
+    {
+        "category_name": "Machinery & earthmoving equipment",
+        "image_path": "assets/icons/builder.png"
+    },
+    {
+        "category_name": "Other",
+        "image_path": "assets/icons/other.png"
+    }
+]

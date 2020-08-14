@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nearby/screens/main/sub/electronics/add_electronics.dart';
 
-class SelectServices extends StatefulWidget {
-  SelectServices({Key key}) : super(key: key);
+import 'add_apparel.dart';
+
+class MainApparelServices extends StatefulWidget {
+  MainApparelServices({Key key}) : super(key: key);
 
   @override
-  _SelectServicesState createState() => _SelectServicesState();
+  _MainServicesApparelState createState() => _MainServicesApparelState();
 }
 
-class _SelectServicesState extends State<SelectServices> {
+class _MainServicesApparelState extends State<MainApparelServices> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -42,7 +43,7 @@ class _SelectServicesState extends State<SelectServices> {
         ),
         centerTitle: false,
         title: Text(
-          'Electronics services',
+          'Apparel and fashions',
           style: TextStyle(
               color: Colors.grey[700],
               fontFamily: "Roboto",
@@ -67,9 +68,8 @@ class _SelectServicesState extends State<SelectServices> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => AddElectronics(
+                            builder: (context) => AddApparel(
                                   category: "any",
-                                  type: "electronic center",
                                 )));
                   },
                   child: Card(
@@ -84,13 +84,13 @@ class _SelectServicesState extends State<SelectServices> {
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Image.asset('assets/icons/electronics.png',
+                          child: Image.asset('assets/icons/jacket.png',
                               width: width * 0.3,
                               height: height * 0.1,
                               color: Colors.grey[700]),
                         ),
                         Text(
-                          "Any service",
+                          "Any",
                           style: TextStyle(
                               color: Colors.grey[700],
                               fontFamily: "Roboto",
@@ -109,9 +109,8 @@ class _SelectServicesState extends State<SelectServices> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => AddElectronics(
+                            builder: (context) => AddApparel(
                                   category: "sell",
-                                  type: "electronic center",
                                 )));
                   },
                   child: Card(
@@ -126,14 +125,13 @@ class _SelectServicesState extends State<SelectServices> {
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Image.asset(
-                              'assets/icons/sell_electronics.png',
+                          child: Image.asset('assets/icons/apparel.png',
                               width: width * 0.3,
                               height: height * 0.1,
                               color: Colors.grey[700]),
                         ),
                         Text(
-                          "Sell electronics",
+                          "Only sell",
                           style: TextStyle(
                               color: Colors.grey[700],
                               fontFamily: "Roboto",
@@ -152,9 +150,8 @@ class _SelectServicesState extends State<SelectServices> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => AddElectronics(
-                                  category: "repair",
-                                  type: "electronic center",
+                            builder: (context) => AddApparel(
+                                  category: "tailor",
                                 )));
                   },
                   child: Card(
@@ -169,14 +166,13 @@ class _SelectServicesState extends State<SelectServices> {
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Image.asset(
-                              'assets/icons/electronics_repair.png',
+                          child: Image.asset('assets/icons/sew.png',
                               width: width * 0.3,
                               height: height * 0.1,
                               color: Colors.grey[700]),
                         ),
                         Text(
-                          "Repair electronics",
+                          "Custom tailor",
                           style: TextStyle(
                               color: Colors.grey[700],
                               fontFamily: "Roboto",
@@ -187,7 +183,7 @@ class _SelectServicesState extends State<SelectServices> {
                     ),
                   ),
                 ),
-                 SizedBox(
+                SizedBox(
                   height: 20,
                 ),
                 GestureDetector(
@@ -195,9 +191,8 @@ class _SelectServicesState extends State<SelectServices> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => AddElectronics(
+                            builder: (context) => AddApparel(
                                   category: "rent",
-                                  type: "electronic center",
                                 )));
                   },
                   child: Card(
@@ -212,14 +207,13 @@ class _SelectServicesState extends State<SelectServices> {
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Image.asset(
-                              'assets/icons/electronics_repair.png',
+                          child: Image.asset('assets/icons/suit.png',
                               width: width * 0.3,
                               height: height * 0.1,
                               color: Colors.grey[700]),
                         ),
                         Text(
-                          "Rent electronics",
+                          "Rent",
                           style: TextStyle(
                               color: Colors.grey[700],
                               fontFamily: "Roboto",

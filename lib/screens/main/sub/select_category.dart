@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:nearby/screens/main/sub/apparel/add_apparel.dart';
+import 'package:nearby/screens/main/sub/apparel/main_services.dart';
 import 'package:nearby/screens/main/sub/bar&nightlife/main_types.dart';
 import 'package:nearby/screens/main/sub/education/education_main_types.dart';
 import 'package:nearby/screens/main/sub/electronics/select_services.dart';
 import 'package:nearby/screens/main/sub/events/events_type.dart';
+import 'package:nearby/screens/main/sub/furnitureNhome/add_furmitureNHome.dart';
 import 'package:nearby/screens/main/sub/grocery/add_grocery.dart';
 import 'package:nearby/screens/main/sub/place/place_type.dart';
 import 'package:nearby/screens/main/sub/properties/property_category.dart';
@@ -16,6 +18,9 @@ import 'package:nearby/screens/main/sub/saloonsnProducts/main_category.dart';
 import 'package:nearby/screens/main/sub/stays/add_stays.dart';
 import 'package:nearby/screens/main/sub/vehicles/vehicle_service_type.dart';
 import 'package:nearby/utils/pallete.dart';
+
+import 'hardware/add_hardware.dart';
+import 'hardware/main_Services.dart';
 
 class SelectCategory extends StatefulWidget {
   SelectCategory({Key key}) : super(key: key);
@@ -115,7 +120,7 @@ class _SelectCategoryState extends State<SelectCategory> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => AddApparel()));
+                                  builder: (context) => MainApparelServices()));
                         }
                         if (myData[index]['service'] == "Vehicle services") {
                           Navigator.push(
@@ -163,6 +168,22 @@ class _SelectCategoryState extends State<SelectCategory> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => PropertyCategory()));
+                        }
+
+                        if (myData[index]['service'] == "Home & furnitures") {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AddFurnitureNHome()));
+                        }
+
+                        if (myData[index]['service'] ==
+                            "Hardware,tools & materials") {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      HardwareNToolsServices()));
                         }
                       },
                       child: Padding(

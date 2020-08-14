@@ -5,12 +5,10 @@ import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:nearby/screens/main/sub/apparel/apparel_gallery.dart';
-import 'package:nearby/screens/main/sub/apparel/apparel_main_type.dart';
-import 'package:nearby/screens/main/sub/apparel/rent_apparel_types.dart';
-import 'package:nearby/screens/main/sub/apparel/tailor_types.dart';
-import 'package:nearby/services/apparel_service.dart';
+import 'package:nearby/screens/main/sub/furnitureNhome/furnitureNGallery.dart';
+import 'package:nearby/screens/main/sub/furnitureNhome/main_categories.dart';
 import 'package:nearby/services/auth_services.dart';
+import 'package:nearby/services/homeNFurniture_service.dart';
 import 'package:nearby/services/services_service.dart';
 import 'package:nearby/utils/compress_media.dart';
 import 'package:nearby/utils/flush_bars.dart';
@@ -22,30 +20,27 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:intl/intl.dart' as dd;
 
-class AddApparel extends StatefulWidget {
-  final String category;
-  AddApparel({this.category, Key key}) : super(key: key);
+class AddFurnitureNHome extends StatefulWidget {
+  AddFurnitureNHome({Key key}) : super(key: key);
 
   @override
-  _AddApparelState createState() => _AddApparelState();
+  _AddFurnitureNHomeState createState() => _AddFurnitureNHomeState();
 }
 
-class _AddApparelState extends State<AddApparel> {
+class _AddFurnitureNHomeState extends State<AddFurnitureNHome> {
   File intialImage;
-  TextEditingController _apparelName = TextEditingController();
-  TextEditingController _about = TextEditingController();
+  TextEditingController _name = TextEditingController();
+  TextEditingController _aboutThe = TextEditingController();
   TextEditingController _address = TextEditingController();
-  TextEditingController _email = TextEditingController();
-  TextEditingController _loaction = TextEditingController();
+  TextEditingController _location = TextEditingController();
   TextEditingController _telephone1 = TextEditingController();
   TextEditingController _telephone2 = TextEditingController();
+  TextEditingController _email = TextEditingController();
+  TextEditingController _website = TextEditingController();
   TextEditingController openController = TextEditingController();
   TextEditingController closeController = TextEditingController();
   TextEditingController _specialHolidaysAndHoursController =
       TextEditingController();
-  TextEditingController _website = TextEditingController();
-  double latitude;
-  double longitude;
   List<int> closingDays = [];
   List<String> selectedClosingDays = [];
   List<String> daysOfAWeek = [
@@ -60,6 +55,12 @@ class _AddApparelState extends State<AddApparel> {
   final format = dd.DateFormat("HH:mm");
   DateTime open;
   DateTime close;
+  double latitude;
+  double longitude;
+
+  Services _services = Services();
+  AuthServcies _authServcies = AuthServcies();
+  HomeNFurnitureService _homeNFurnitureService = HomeNFurnitureService();
   ProgressDialog pr;
   String currentUserId;
   String selectedDistrict = "Colombo";
@@ -90,13 +91,8 @@ class _AddApparelState extends State<AddApparel> {
     "Trincomalee",
     "Vavuniya"
   ];
-  List apparelItems = [];
-  List rent = [];
-  List customTailor = [];
   List gallery = [];
-  Services _services = Services();
-  ApparelService _apparelService = ApparelService();
-  AuthServcies _authServcies = AuthServcies();
+  List items = [];
 
   @override
   void initState() {
@@ -126,7 +122,7 @@ class _AddApparelState extends State<AddApparel> {
             child: Column(
               children: <Widget>[
                 SpinKitPouringHourglass(color: Pallete.mainAppColor),
-                Text("Creating apparel & fashions...",
+                Text("Creating Home & furniture",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Color.fromRGBO(129, 165, 168, 1),
@@ -142,9 +138,37 @@ class _AddApparelState extends State<AddApparel> {
     );
   }
 
+  Widget textBoxContainer(TextEditingController _contro, String hint, int lines,
+      double width, bool autoFocus, TextInputType typeText) {
+    return Container(
+      width: width * 0.89,
+      child: TextField(
+        controller: _contro,
+        maxLines: lines,
+        autofocus: autoFocus,
+        keyboardType: typeText,
+        decoration: InputDecoration(
+          labelText: hint,
+          labelStyle: TextStyle(fontSize: 18, color: Colors.grey.shade500),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(
+              color: Colors.grey.shade500,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(
+                color: Pallete.mainAppColor,
+              )),
+        ),
+      ),
+    );
+  }
+
   done() async {
     if (intialImage != null) {
-      if (_apparelName.text.trim() != "") {
+      if (_name.text.trim() != "") {
         if (selectedDistrict != null) {
           if (_address.text.trim() != "") {
             if (latitude != null) {
@@ -156,10 +180,10 @@ class _AddApparelState extends State<AddApparel> {
                     for (var ele in gallery) {
                       if (ele["type"] == "image") {
                         String downUrl =
-                            await _apparelService.uploadImageApparel(
+                            await _homeNFurnitureService.uploadImage(
                                 await compressImageFile(ele["media"], 80));
                         String thumbUrl =
-                            await _apparelService.uploadImageApparelThumbnail(
+                            await _homeNFurnitureService.uploadImageThumbnail(
                                 await compressImageFile(ele["media"], 40));
                         var obj = {
                           "url": downUrl,
@@ -168,11 +192,10 @@ class _AddApparelState extends State<AddApparel> {
                         };
                         uploadGallery.add(json.encode(obj));
                       } else {
-                        String downUrl =
-                            await _apparelService.uploadVideoToApparel(
-                                await compressVideoFile(ele["media"]));
+                        String downUrl = await _homeNFurnitureService
+                            .uploadVideo(await compressVideoFile(ele["media"]));
                         String thumbUrl =
-                            await _apparelService.uploadVideoToApparelThumb(
+                            await _homeNFurnitureService.uploadVideoToThumb(
                                 await getThumbnailForVideo(ele["media"]));
                         var obj = {
                           "url": downUrl,
@@ -183,188 +206,90 @@ class _AddApparelState extends State<AddApparel> {
                       }
                     }
                   }
+
                   List itemsUpload = [];
-                  List tailorUpload = [];
-                  List rentUpload = [];
-                  if (apparelItems.isNotEmpty) {
-                    for (var item in apparelItems) {
-                      String downUrl = await _apparelService.uploadImageApparel(
-                          await compressImageFile(item["initialImage"], 80));
-                      List uploadGalleryItems = [];
-                      if (item["gallery"].isNotEmpty) {
-                        for (var ele in item["gallery"]) {
-                          if (ele["type"] == "image") {
-                            String downUrl =
-                                await _apparelService.uploadImageApparel(
-                                    await compressImageFile(ele["media"], 80));
-                            String thumbUrl = await _apparelService
-                                .uploadImageApparelThumbnail(
-                                    await compressImageFile(ele["media"], 40));
-                            var obj = {
-                              "url": downUrl,
-                              "thumb": thumbUrl,
-                              "type": "image",
-                            };
-                            uploadGalleryItems.add(json.encode(obj));
-                          } else {
-                            String downUrl =
-                                await _apparelService.uploadVideoToApparel(
-                                    await compressVideoFile(ele["media"]));
-                            String thumbUrl =
-                                await _apparelService.uploadVideoToApparelThumb(
-                                    await getThumbnailForVideo(ele["media"]));
-                            var obj = {
-                              "url": downUrl,
-                              "thumb": thumbUrl,
-                              "type": "video",
-                            };
-                            uploadGalleryItems.add(json.encode(obj));
-                          }
+
+                  for (var sel in items) {
+                    String initialImageUploadSel =
+                        await _homeNFurnitureService.uploadImage(
+                            await compressImageFile(sel["initialImage"], 80));
+                    List sellItemsGallery = [];
+
+                    if (sel["gallery"].isNotEmpty) {
+                      for (var ele in sel["gallery"]) {
+                        if (ele["type"] == "image") {
+                          String downUrl =
+                              await _homeNFurnitureService.uploadImage(
+                                  await compressImageFile(ele["media"], 80));
+                          String thumbUrl =
+                              await _homeNFurnitureService.uploadImageThumbnail(
+                                  await compressImageFile(ele["media"], 40));
+                          var obj = {
+                            "url": downUrl,
+                            "thumb": thumbUrl,
+                            "type": "image",
+                          };
+                          sellItemsGallery.add(json.encode(obj));
+                        } else {
+                          String downUrl =
+                              await _homeNFurnitureService.uploadVideo(
+                                  await compressVideoFile(ele["media"]));
+                          String thumbUrl =
+                              await _homeNFurnitureService.uploadVideoToThumb(
+                                  await getThumbnailForVideo(ele["media"]));
+                          var obj = {
+                            "url": downUrl,
+                            "thumb": thumbUrl,
+                            "type": "video",
+                          };
+                          sellItemsGallery.add(json.encode(obj));
                         }
                       }
-
-                      var obj = {
-                        "initialImage": downUrl,
-                        "item_maintype": item["item_maintype"],
-                        "item_subtype": item["item_subtype"],
-                        "status": "available",
-                        "item_name": item["item_name"],
-                        "price": item["price"],
-                        "about": item["about"],
-                        "brand": item["brand"],
-                        "gallery": uploadGalleryItems,
-                      };
-                      itemsUpload.add(json.encode(obj));
                     }
+
+                    var obj = {
+                      "initialImage": initialImageUploadSel,
+                      "main_type": sel["main_type"],
+                      "item_type": sel["item_type"],
+                      "item_name": sel["item_name"],
+                      "price": sel["price"],
+                      "about": sel["about"],
+                      "gallery": sellItemsGallery,
+                    };
+
+                    itemsUpload.add(json.encode(obj));
                   }
 
-                  if (customTailor.isNotEmpty) {
-                    for (var item in customTailor) {
-                      String downUrl = await _apparelService.uploadImageApparel(
-                          await compressImageFile(item["initialImage"], 80));
-                      List uploadGalleryItems = [];
-                      if (item["gallery"].isNotEmpty) {
-                        for (var ele in item["gallery"]) {
-                          if (ele["type"] == "image") {
-                            String downUrl =
-                                await _apparelService.uploadImageApparel(
-                                    await compressImageFile(ele["media"], 80));
-                            String thumbUrl = await _apparelService
-                                .uploadImageApparelThumbnail(
-                                    await compressImageFile(ele["media"], 40));
-                            var obj = {
-                              "url": downUrl,
-                              "thumb": thumbUrl,
-                              "type": "image",
-                            };
-                            uploadGalleryItems.add(json.encode(obj));
-                          } else {
-                            String downUrl =
-                                await _apparelService.uploadVideoToApparel(
-                                    await compressVideoFile(ele["media"]));
-                            String thumbUrl =
-                                await _apparelService.uploadVideoToApparelThumb(
-                                    await getThumbnailForVideo(ele["media"]));
-                            var obj = {
-                              "url": downUrl,
-                              "thumb": thumbUrl,
-                              "type": "video",
-                            };
-                            uploadGalleryItems.add(json.encode(obj));
-                          }
-                        }
-                      }
+                  String initialImageUpload = await _homeNFurnitureService
+                      .uploadImage(await compressImageFile(intialImage, 80));
 
-                      var obj = {
-                        "initialImage": downUrl,
-                        "item_type": item["item_type"],
-                        "about": item["about"],
-                        "gallery": uploadGalleryItems,
-                      };
-                      tailorUpload.add(json.encode(obj));
-                    }
-                  }
-
-                  if (rent.isNotEmpty) {
-                    for (var item in rent) {
-                      String downUrl = await _apparelService.uploadImageApparel(
-                          await compressImageFile(item["initialImage"], 80));
-                      List uploadGalleryItems = [];
-                      if (item["gallery"].isNotEmpty) {
-                        for (var ele in item["gallery"]) {
-                          if (ele["type"] == "image") {
-                            String downUrl =
-                                await _apparelService.uploadImageApparel(
-                                    await compressImageFile(ele["media"], 80));
-                            String thumbUrl = await _apparelService
-                                .uploadImageApparelThumbnail(
-                                    await compressImageFile(ele["media"], 40));
-                            var obj = {
-                              "url": downUrl,
-                              "thumb": thumbUrl,
-                              "type": "image",
-                            };
-                            uploadGalleryItems.add(json.encode(obj));
-                          } else {
-                            String downUrl =
-                                await _apparelService.uploadVideoToApparel(
-                                    await compressVideoFile(ele["media"]));
-                            String thumbUrl =
-                                await _apparelService.uploadVideoToApparelThumb(
-                                    await getThumbnailForVideo(ele["media"]));
-                            var obj = {
-                              "url": downUrl,
-                              "thumb": thumbUrl,
-                              "type": "video",
-                            };
-                            uploadGalleryItems.add(json.encode(obj));
-                          }
-                        }
-                      }
-
-                      var obj = {
-                        "initialImage": downUrl,
-                        "item_type": item["item_type"],
-                        "about": item["about"],
-                        "gallery": uploadGalleryItems,
-                      };
-                      rentUpload.add(json.encode(obj));
-                    }
-                  }
-
-                  String initialImageUpload =
-                      await _apparelService.uploadImageApparel(
-                          await compressImageFile(intialImage, 80));
-
-                  String apparelId = await _apparelService.addApparel(
-                    currentUserId,
-                    _apparelName.text.trim(),
-                    _about.text.trim(),
-                    initialImageUpload,
-                    _address.text.trim(),
-                    latitude,
-                    longitude,
-                    _email.text.trim(),
-                    _website.text.trim(),
-                    closingDays,
-                    close,
-                    open,
-                    _telephone1.text.trim(),
-                    _telephone2.text.trim(),
-                    _specialHolidaysAndHoursController.text.trim(),
-                    itemsUpload,
-                    selectedDistrict,
-                    uploadGallery,
-                    rentUpload,
-                    tailorUpload,
-                  );
+                  String restId =
+                      await _homeNFurnitureService.addHomeNFurniture(
+                          currentUserId,
+                          _name.text.trim(),
+                          _aboutThe.text.trim(),
+                          initialImageUpload,
+                          _address.text.trim(),
+                          latitude,
+                          longitude,
+                          _email.text.trim(),
+                          _website.text.trim(),
+                          closingDays,
+                          close,
+                          open,
+                          _telephone1.text.trim(),
+                          _telephone2.text.trim(),
+                          _specialHolidaysAndHoursController.text.trim(),
+                          selectedDistrict,
+                          uploadGallery,
+                          items);
                   await _services.addService(
-                      _apparelName.text.trim(),
-                      apparelId,
+                      _name.text.trim(),
+                      restId,
                       latitude,
                       longitude,
-                      "Apparel & fashions",
-                      "Apparel & fashions");
+                      "Home & furnitures",
+                      "Home & furnitures");
 
                   pr.hide().whenComplete(() {
                     Navigator.pop(context);
@@ -381,13 +306,13 @@ class _AddApparelState extends State<AddApparel> {
               GradientSnackBar.showMessage(context, "Please pin the location");
             }
           } else {
-            GradientSnackBar.showMessage(context, "shop address is required");
+            GradientSnackBar.showMessage(context, "Shop address is required");
           }
         } else {
           GradientSnackBar.showMessage(context, "Please select a district");
         }
       } else {
-        GradientSnackBar.showMessage(context, "shop name is required");
+        GradientSnackBar.showMessage(context, "Shop name is required");
       }
     } else {
       GradientSnackBar.showMessage(context, "Initial image is required");
@@ -466,34 +391,6 @@ class _AddApparelState extends State<AddApparel> {
     );
   }
 
-  Widget textBoxContainer(TextEditingController _contro, String hint, int lines,
-      double width, bool autoFocus, TextInputType typeText) {
-    return Container(
-      width: width * 0.89,
-      child: TextField(
-        controller: _contro,
-        maxLines: lines,
-        autofocus: autoFocus,
-        keyboardType: typeText,
-        decoration: InputDecoration(
-          labelText: hint,
-          labelStyle: TextStyle(fontSize: 18, color: Colors.grey.shade500),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(
-              color: Colors.grey.shade500,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(
-                color: Pallete.mainAppColor,
-              )),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -501,6 +398,7 @@ class _AddApparelState extends State<AddApparel> {
 
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -525,11 +423,11 @@ class _AddApparelState extends State<AddApparel> {
         ),
         centerTitle: false,
         title: Text(
-          "Add new apparel and fashion",
+          'Add new home & furniture',
           style: TextStyle(
               color: Colors.grey[700],
               fontFamily: "Roboto",
-              fontSize: 20,
+              fontSize: 18,
               fontWeight: FontWeight.w400),
         ),
         actions: <Widget>[
@@ -568,7 +466,7 @@ class _AddApparelState extends State<AddApparel> {
                         fit: BoxFit.cover,
                       ),
                       Container(
-                        color: Colors.black.withOpacity(0.5),
+                        color: Colors.black.withOpacity(0.3),
                         width: width,
                         height: height * 0.3,
                       ),
@@ -578,7 +476,7 @@ class _AddApparelState extends State<AddApparel> {
                           children: <Widget>[
                             Center(
                                 child: Text(
-                              "* Add initial image for the shop",
+                              "* Add initial image",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.white,
@@ -716,13 +614,13 @@ class _AddApparelState extends State<AddApparel> {
             SizedBox(
               height: 20,
             ),
-            textBoxContainer(_apparelName, "* Name of the shop", 1, width,
-                false, TextInputType.text),
+            textBoxContainer(_name, "* Name of the shop", 1, width, false,
+                TextInputType.text),
             SizedBox(
               height: 20,
             ),
-            textBoxContainer(
-                _about, "Details", 3, width, false, TextInputType.text),
+            textBoxContainer(_aboutThe, "About the shop", 5, width, false,
+                TextInputType.text),
             SizedBox(
               height: 20,
             ),
@@ -801,11 +699,11 @@ class _AddApparelState extends State<AddApparel> {
                     setState(() {
                       latitude = locationCoord[0];
                       longitude = locationCoord[1];
-                      _loaction.text = "Location pinned";
+                      _location.text = "Location pinned";
                     });
                   }
                 },
-                controller: _loaction,
+                controller: _location,
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(
                   labelText: "* location",
@@ -877,12 +775,15 @@ class _AddApparelState extends State<AddApparel> {
             SizedBox(
               height: 20,
             ),
-            Text(
-              "* Mention days of closing of your shop",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.black.withOpacity(0.5),
-                fontSize: 19,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "Mention days of closing the shop",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.black.withOpacity(0.5),
+                  fontSize: 19,
+                ),
               ),
             ),
             SizedBox(
@@ -1026,12 +927,15 @@ class _AddApparelState extends State<AddApparel> {
             SizedBox(
               height: 20,
             ),
-            Text(
-              "* Open and close time of your shop",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.black.withOpacity(0.5),
-                fontSize: 19,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "* Open and close time of the shop",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.black.withOpacity(0.5),
+                  fontSize: 19,
+                ),
               ),
             ),
             SizedBox(
@@ -1054,168 +958,55 @@ class _AddApparelState extends State<AddApparel> {
                 width,
                 false,
                 TextInputType.text),
-            widget.category == "any" || widget.category == "sell"
-                ? SizedBox(
-                    height: 20,
-                  )
-                : SizedBox.shrink(),
-            widget.category == "any" || widget.category == "sell"
-                ? GestureDetector(
-                    onTap: () async {
-                      List reItems = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ApparelMainType(
-                                    items: apparelItems,
-                                  )));
-                      if (reItems != null) {
-                        setState(() {
-                          apparelItems = reItems;
-                        });
-                      }
-                    },
-                    child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: Colors.grey.shade500,
-                            )),
-                        width: width * 0.89,
-                        height: height * 0.09,
-                        child: Center(
-                            child: Padding(
-                          padding: EdgeInsets.all(
-                            0,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Image.asset(
-                                'assets/icons/jacket.png',
-                                width: 30,
-                                height: 30,
-                                color: Colors.grey.shade800,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text("Add items",
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.grey.shade800)),
-                              ),
-                            ],
-                          ),
-                        ))),
-                  )
-                : SizedBox.shrink(),
-            widget.category == "any" || widget.category == "tailor"
-                ? SizedBox(
-                    height: 20,
-                  )
-                : SizedBox.shrink(),
-            widget.category == "any" || widget.category == "tailor"
-                ? GestureDetector(
-                    onTap: () async {
-                      List reItems = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => TailorTypes(
-                                    items: customTailor,
-                                  )));
-                      if (reItems != null) {
-                        setState(() {
-                          customTailor = reItems;
-                        });
-                      }
-                    },
-                    child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: Colors.grey.shade500,
-                            )),
-                        width: width * 0.89,
-                        height: height * 0.09,
-                        child: Center(
-                            child: Padding(
-                          padding: EdgeInsets.all(
-                            0,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Image.asset(
-                                'assets/icons/sew.png',
-                                width: 30,
-                                height: 30,
-                                color: Colors.grey.shade800,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text("Customize tailor",
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.grey.shade800)),
-                              ),
-                            ],
-                          ),
-                        ))),
-                  )
-                : SizedBox.shrink(),
-            widget.category == "any" || widget.category == "rent"
-                ? SizedBox(
-                    height: 20,
-                  )
-                : SizedBox.shrink(),
-            widget.category == "any" || widget.category == "rent"
-                ? GestureDetector(
-                    onTap: () async {
-                      List reItems = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => RentApparel(
-                                    items: rent,
-                                  )));
-                      if (reItems != null) {
-                        setState(() {
-                          rent = reItems;
-                        });
-                      }
-                    },
-                    child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: Colors.grey.shade500,
-                            )),
-                        width: width * 0.89,
-                        height: height * 0.09,
-                        child: Center(
-                            child: Padding(
-                          padding: EdgeInsets.all(
-                            0,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Image.asset(
-                                'assets/icons/suit.png',
-                                width: 30,
-                                height: 30,
-                                color: Colors.grey.shade800,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text("Customize rent",
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.grey.shade800)),
-                              ),
-                            ],
-                          ),
-                        ))),
-                  )
-                : SizedBox.shrink(),
+            SizedBox(
+              height: 20,
+            ),
+            GestureDetector(
+              onTap: () async {
+                List reSllingItems = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MainCategories(
+                              items: items,
+                            )));
+                if (reSllingItems != null) {
+                  setState(() {
+                    items = reSllingItems;
+                  });
+                }
+              },
+              child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: Colors.grey.shade500,
+                      )),
+                  width: width * 0.89,
+                  height: height * 0.09,
+                  child: Center(
+                      child: Padding(
+                    padding: EdgeInsets.all(
+                      0,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Image.asset(
+                          'assets/icons/furniture.png',
+                          width: 30,
+                          height: 30,
+                          color: Colors.grey.shade800,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text("Add items",
+                              style: TextStyle(
+                                  fontSize: 18, color: Colors.grey.shade800)),
+                        ),
+                      ],
+                    ),
+                  ))),
+            ),
             SizedBox(
               height: 20,
             ),
@@ -1224,7 +1015,7 @@ class _AddApparelState extends State<AddApparel> {
                 List reGallery = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ApparelGallery(
+                        builder: (context) => FurnitureNGallery(
                               gallery: gallery,
                             )));
                 if (reGallery != null) {

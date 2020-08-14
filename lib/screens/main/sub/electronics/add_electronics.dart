@@ -5,7 +5,7 @@ import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:nearby/screens/main/sub/education/education_gallery.dart';
+import 'package:nearby/screens/main/sub/electronics/renting_types.dart';
 import 'package:nearby/screens/main/sub/electronics/repair_types.dart';
 import 'package:nearby/screens/main/sub/electronics/sell_electronics_types.dart';
 import 'package:nearby/services/auth_services.dart';
@@ -20,6 +20,8 @@ import 'package:nearby/utils/pallete.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:intl/intl.dart' as dd;
+
+import 'electronics_gallery.dart';
 
 class AddElectronics extends StatefulWidget {
   final String type;
@@ -96,6 +98,7 @@ class _AddElectronicsState extends State<AddElectronics> {
   ];
   List gallery = [];
   List repairItems = [];
+  List rentingItems = [];
   List sellingItems = [];
 
   @override
@@ -214,6 +217,7 @@ class _AddElectronicsState extends State<AddElectronics> {
 
                   List repairsUpload = [];
                   List sellingItemsUpload = [];
+                  List rentUpload = [];
 
                   for (var re in repairItems) {
                     String initialImageUploadRe =
@@ -280,6 +284,57 @@ class _AddElectronicsState extends State<AddElectronics> {
                     sellingItemsUpload.add(json.encode(obj));
                   }
 
+                  for (var rent in rentingItems) {
+                    String initialImageUploadSel =
+                        await _electronicsService.uploadImageElectronics(
+                            await compressImageFile(rent["initialImage"], 80));
+                    List sellItemsGallery = [];
+
+                    if (rent["gallery"].isNotEmpty) {
+                      for (var ele in rent["gallery"]) {
+                        if (ele["type"] == "image") {
+                          String downUrl =
+                              await _electronicsService.uploadImageElectronics(
+                                  await compressImageFile(ele["media"], 80));
+                          String thumbUrl = await _electronicsService
+                              .uploadImageElectronicsThumbnail(
+                                  await compressImageFile(ele["media"], 40));
+                          var obj = {
+                            "url": downUrl,
+                            "thumb": thumbUrl,
+                            "type": "image",
+                          };
+                          sellItemsGallery.add(json.encode(obj));
+                        } else {
+                          String downUrl = await _electronicsService
+                              .uploadVideoToElectronics(
+                                  await compressVideoFile(ele["media"]));
+                          String thumbUrl = await _electronicsService
+                              .uploadVideoToElectronicsThumb(
+                                  await getThumbnailForVideo(ele["media"]));
+                          var obj = {
+                            "url": downUrl,
+                            "thumb": thumbUrl,
+                            "type": "video",
+                          };
+                          sellItemsGallery.add(json.encode(obj));
+                        }
+                      }
+                    }
+
+                    var obj = {
+                      "initialImage": initialImageUploadSel,
+                      "item_type": rent["item_type"],
+                      "item_name": rent["item_name"],
+                      "price": rent["price"],
+                      "about": rent["about"],
+                      "gallery": sellItemsGallery,
+                      "brand": rent["brand"],
+                    };
+
+                    rentUpload.add(json.encode(obj));
+                  }
+
                   String initialImageUpload =
                       await _electronicsService.uploadImageElectronics(
                           await compressImageFile(intialImage, 80));
@@ -304,6 +359,7 @@ class _AddElectronicsState extends State<AddElectronics> {
                     uploadGallery,
                     repairsUpload,
                     sellingItemsUpload,
+                    rentUpload,
                   );
                   await _services.addService(
                       _name.text.trim(),
@@ -1108,6 +1164,60 @@ class _AddElectronicsState extends State<AddElectronics> {
                         ))),
                   )
                 : SizedBox.shrink(),
+            widget.category == "any" || widget.category == "rent"
+                ? SizedBox(
+                    height: 20,
+                  )
+                : SizedBox.shrink(),
+            widget.category == "any" || widget.category == "rent"
+                ? GestureDetector(
+                    onTap: () async {
+                      List reItems = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ElecRentTypes(
+                                    items: rentingItems,
+                                  )));
+                      if (reItems != null) {
+                        setState(() {
+                          rentingItems = reItems;
+                        });
+                      }
+                    },
+                    child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: Colors.grey.shade500,
+                            )),
+                        width: width * 0.89,
+                        height: height * 0.09,
+                        child: Center(
+                            child: Padding(
+                          padding: EdgeInsets.all(
+                            0,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Image.asset(
+                                'assets/icons/electronics_repair.png',
+                                width: 30,
+                                height: 30,
+                                color: Colors.grey.shade800,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Customize rent",
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.grey.shade800)),
+                              ),
+                            ],
+                          ),
+                        ))),
+                  )
+                : SizedBox.shrink(),
             SizedBox(
               height: 20,
             ),
@@ -1116,7 +1226,7 @@ class _AddElectronicsState extends State<AddElectronics> {
                 List reGallery = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => EducationGallery(
+                        builder: (context) => ElectronicsGallery(
                               gallery: gallery,
                             )));
                 if (reGallery != null) {

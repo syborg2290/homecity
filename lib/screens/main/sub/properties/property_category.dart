@@ -10,6 +10,8 @@ import 'package:nearby/screens/main/sub/properties/add_houses.dart';
 import 'package:nearby/screens/main/sub/properties/add_land.dart';
 import 'package:nearby/utils/pallete.dart';
 
+import 'add_short_term_rooms.dart';
+
 class PropertyCategory extends StatefulWidget {
   PropertyCategory({Key key}) : super(key: key);
 
@@ -117,6 +119,15 @@ class _PropertyCategoryState extends State<PropertyCategory> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => AddCommercialProperty(
+                                        type: myData[index]['category_name'],
+                                      )));
+                        }
+                        if (myData[index]['category_name'] ==
+                            "Short-term rooms") {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AddShortTermRoom(
                                         type: myData[index]['category_name'],
                                       )));
                         }

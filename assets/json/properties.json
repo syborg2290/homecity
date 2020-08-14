@@ -12,6 +12,10 @@
         "image_path": "assets/icons/apartment.png"
     },
     {
+        "category_name": "Short-term room",
+        "image_path": "assets/icons/room.png"
+    },
+    {
         "category_name": "Rooms & annexes",
         "image_path": "assets/icons/room.png"
     },

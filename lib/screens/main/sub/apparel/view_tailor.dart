@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:nearby/screens/main/sub/electronics/add_electronics_selling.dart';
 import 'package:nearby/utils/pallete.dart';
 
-class ViewElectronics extends StatefulWidget {
+import 'add_tailor.dart';
+
+class ViewTailor extends StatefulWidget {
   final List items;
-  ViewElectronics({this.items, Key key}) : super(key: key);
+  ViewTailor({this.items, Key key}) : super(key: key);
 
   @override
-  _ViewElectronicsState createState() => _ViewElectronicsState();
+  _ViewTailorState createState() => _ViewTailorState();
 }
 
-class _ViewElectronicsState extends State<ViewElectronics> {
+class _ViewTailorState extends State<ViewTailor> {
   List items = [];
   bool isLoading = true;
 
@@ -85,7 +86,7 @@ class _ViewElectronicsState extends State<ViewElectronics> {
                           var obj = await Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => SellItems(
+                                  builder: (context) => AddTailor(
                                         type: items[index]['item_type'],
                                         obj: items[index],
                                       )));
@@ -156,33 +157,15 @@ class _ViewElectronicsState extends State<ViewElectronics> {
                                     ),
                                     Padding(
                                       padding: EdgeInsets.only(
-                                        top: height * 0.04,
+                                        top: height * 0.01,
                                       ),
                                       child: Column(
                                         children: <Widget>[
-                                          Text(
-                                            items[index]["item_name"],
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontSize: 22,
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
                                           SizedBox(
                                             height: 10,
                                           ),
                                           Text(
-                                            items[index]["item_type"],
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontSize: 19,
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          Text(
-                                            items[index]["price"] + " LKR",
+                                            "Tailor " + (index + 1).toString(),
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                               fontSize: 18,

@@ -25,6 +25,8 @@ class ApparelService {
     List items,
     String district,
     List gallery,
+    List rent,
+    List tailor,
   ) async {
     var uuid = Uuid();
     DocumentReference docRe = await apparelRef.add({
@@ -46,6 +48,8 @@ class ApparelService {
       "telephone2": telephone2,
       "specialHolidayshoursOfClosing": specialHolidayshoursOfClosing,
       "items": items,
+      "rent": rent,
+      "tailor": tailor,
       "gallery": gallery,
       "timestamp": timestamp,
     });

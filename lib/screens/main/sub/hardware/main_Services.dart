@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nearby/screens/main/sub/electronics/add_electronics.dart';
 
-class SelectServices extends StatefulWidget {
-  SelectServices({Key key}) : super(key: key);
+import 'add_hardware.dart';
+
+class HardwareNToolsServices extends StatefulWidget {
+  HardwareNToolsServices({Key key}) : super(key: key);
 
   @override
-  _SelectServicesState createState() => _SelectServicesState();
+  _HardwareNToolsServicesState createState() => _HardwareNToolsServicesState();
 }
 
-class _SelectServicesState extends State<SelectServices> {
+class _HardwareNToolsServicesState extends State<HardwareNToolsServices> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -42,7 +43,7 @@ class _SelectServicesState extends State<SelectServices> {
         ),
         centerTitle: false,
         title: Text(
-          'Electronics services',
+          'Tools & hardware services',
           style: TextStyle(
               color: Colors.grey[700],
               fontFamily: "Roboto",
@@ -67,9 +68,8 @@ class _SelectServicesState extends State<SelectServices> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => AddElectronics(
+                            builder: (context) => AddHardware(
                                   category: "any",
-                                  type: "electronic center",
                                 )));
                   },
                   child: Card(
@@ -84,7 +84,7 @@ class _SelectServicesState extends State<SelectServices> {
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Image.asset('assets/icons/electronics.png',
+                          child: Image.asset('assets/icons/constru.png',
                               width: width * 0.3,
                               height: height * 0.1,
                               color: Colors.grey[700]),
@@ -109,9 +109,8 @@ class _SelectServicesState extends State<SelectServices> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => AddElectronics(
+                            builder: (context) => AddHardware(
                                   category: "sell",
-                                  type: "electronic center",
                                 )));
                   },
                   child: Card(
@@ -126,14 +125,13 @@ class _SelectServicesState extends State<SelectServices> {
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Image.asset(
-                              'assets/icons/sell_electronics.png',
+                          child: Image.asset('assets/icons/hardware_tools.png',
                               width: width * 0.3,
                               height: height * 0.1,
                               color: Colors.grey[700]),
                         ),
                         Text(
-                          "Sell electronics",
+                          "Sell hardware",
                           style: TextStyle(
                               color: Colors.grey[700],
                               fontFamily: "Roboto",
@@ -152,52 +150,8 @@ class _SelectServicesState extends State<SelectServices> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => AddElectronics(
-                                  category: "repair",
-                                  type: "electronic center",
-                                )));
-                  },
-                  child: Card(
-                    semanticContainer: true,
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    elevation: 10,
-                    margin: EdgeInsets.all(10),
-                    child: Row(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Image.asset(
-                              'assets/icons/electronics_repair.png',
-                              width: width * 0.3,
-                              height: height * 0.1,
-                              color: Colors.grey[700]),
-                        ),
-                        Text(
-                          "Repair electronics",
-                          style: TextStyle(
-                              color: Colors.grey[700],
-                              fontFamily: "Roboto",
-                              fontSize: 25,
-                              fontWeight: FontWeight.w400),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                 SizedBox(
-                  height: 20,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AddElectronics(
+                            builder: (context) => AddHardware(
                                   category: "rent",
-                                  type: "electronic center",
                                 )));
                   },
                   child: Card(
@@ -212,14 +166,13 @@ class _SelectServicesState extends State<SelectServices> {
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Image.asset(
-                              'assets/icons/electronics_repair.png',
+                          child: Image.asset('assets/icons/builder.png',
                               width: width * 0.3,
                               height: height * 0.1,
                               color: Colors.grey[700]),
                         ),
                         Text(
-                          "Rent electronics",
+                          "Rent tools",
                           style: TextStyle(
                               color: Colors.grey[700],
                               fontFamily: "Roboto",

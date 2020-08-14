@@ -19,6 +19,8 @@ class Apparel {
   Timestamp openingTime;
   String specialHolidayshoursOfClosing;
   List items;
+  List tailor;
+  List rent;
   List gallery;
   Timestamp timestamp;
 
@@ -41,6 +43,8 @@ class Apparel {
     this.openingTime,
     this.specialHolidayshoursOfClosing,
     this.items,
+    this.tailor,
+    this.rent,
     this.gallery,
     this.timestamp,
   });
@@ -65,6 +69,8 @@ class Apparel {
       telephone2: doc['telephone2'],
       specialHolidayshoursOfClosing: doc['specialHolidayshoursOfClosing'],
       items: doc['items'],
+      rent: doc['rent'],
+      tailor: doc['tailor'],
       gallery: doc['gallery'],
       timestamp: doc['timestamp'],
     );
