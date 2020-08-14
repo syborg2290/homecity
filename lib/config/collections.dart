@@ -23,3 +23,5 @@ final propertyRef = Firestore.instance.collection('property');
 final homeRef = Firestore.instance.collection('home');
 final hardwareAndMaterialsRef =
     Firestore.instance.collection('hardwareAndMaterials');
+final musicRef = Firestore.instance.collection('music');
+final sportsNwellnessRef = Firestore.instance.collection('sportsNwellness');

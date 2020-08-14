@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:nearby/screens/main/sub/apparel/add_apparel.dart';
 import 'package:nearby/screens/main/sub/apparel/main_services.dart';
 import 'package:nearby/screens/main/sub/bar&nightlife/main_types.dart';
 import 'package:nearby/screens/main/sub/education/education_main_types.dart';
@@ -15,12 +14,13 @@ import 'package:nearby/screens/main/sub/place/place_type.dart';
 import 'package:nearby/screens/main/sub/properties/property_category.dart';
 import 'package:nearby/screens/main/sub/resturant/add_resturant.dart';
 import 'package:nearby/screens/main/sub/saloonsnProducts/main_category.dart';
+import 'package:nearby/screens/main/sub/sportsNwellNess/add_sportsNwellness.dart';
 import 'package:nearby/screens/main/sub/stays/add_stays.dart';
 import 'package:nearby/screens/main/sub/vehicles/vehicle_service_type.dart';
 import 'package:nearby/utils/pallete.dart';
 
-import 'hardware/add_hardware.dart';
 import 'hardware/main_Services.dart';
+import 'musicl_instruments/main_services.dart';
 
 class SelectCategory extends StatefulWidget {
   SelectCategory({Key key}) : super(key: key);
@@ -184,6 +184,22 @@ class _SelectCategoryState extends State<SelectCategory> {
                               MaterialPageRoute(
                                   builder: (context) =>
                                       HardwareNToolsServices()));
+                        }
+
+                        if (myData[index]['service'] ==
+                            "Music instruments & services") {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => MusicMainServices()));
+                        }
+
+                        if (myData[index]['service'] ==
+                            "Sports,wellness & outdoors") {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AddSportsNwellness()));
                         }
                       },
                       child: Padding(

@@ -62,6 +62,7 @@ flutter:
   uses-material-design: true
   
   assets:
+    #direct assets
     - assets/logo.png
     - assets/profilephoto.png
     - assets/resturant_back.png
@@ -76,15 +77,31 @@ flutter:
     - assets/groc_back.jpg
     - assets/place_background.png
     
+    #others
+    - assets/icons/left-arrow.png
+    - assets/icons/forward.png
+    - assets/icons/done.png
+    - assets/icons/camera.png
+    - assets/icons/video-camera.png
+    - assets/icons/dot.png
     - assets/icons/eye_open.png
     - assets/icons/eye_close.png
-    - assets/icons/homeware.png
-    - assets/icons/furniture_icon.png
+    - assets/icons/plus.png
+    - assets/icons/add.png
+    - assets/icons/close.png
+    - assets/icons/play.png
+    - assets/icons/cut.png
+    - assets/icons/crop.png
+    - assets/icons/album.png
+    
+    #bottombar
     - assets/icons/bell.png
     - assets/icons/chat.png
     - assets/icons/user.png
     - assets/icons/home.png
-    - assets/icons/plus.png
+    - assets/icons/bookmark.png
+    
+    #main services
     - assets/icons/resturant.png
     - assets/icons/hotel.png
     - assets/icons/bar.png
@@ -97,87 +114,15 @@ flutter:
     - assets/icons/constru.png
     - assets/icons/salon.png
     - assets/icons/electronics.png
-    - assets/icons/left-arrow.png
-    - assets/icons/forward.png
-    - assets/icons/done.png
-    - assets/icons/camera.png
-    - assets/icons/video-camera.png
-    - assets/icons/dot.png
-    - assets/icons/dining.png
-    - assets/icons/takeaway.png
-    - assets/icons/delivery.png
-    - assets/icons/pencil.png
-    - assets/icons/anyFoodType.png
-    - assets/icons/cut.png
-    - assets/icons/crop.png
-    - assets/icons/foodmenu.png
-    - assets/icons/album.png
-    - assets/icons/hotdishes.png
-    - assets/icons/meat.png
-    - assets/icons/vegetarian.png
-    - assets/icons/drink.png
-    - assets/icons/fast-food.png
-    - assets/icons/desserts.png
-    - assets/icons/add.png
-    - assets/icons/close.png
-    - assets/icons/play.png
+    - assets/icons/night_club.png
     - assets/icons/property.png
-    - assets/icons/experience.png
     - assets/icons/furniture.png
-    - assets/icons/beach.png
-    - assets/icons/agri.png
-    - assets/icons/botnical_gardens.png
-    - assets/icons/dive.png
-    - assets/icons/forest.png
-    - assets/icons/hike.png
-    - assets/icons/historical.png
-    - assets/icons/local.png
-    - assets/icons/meditaion.png
-    - assets/icons/mountain.png
-    - assets/icons/museum.png
-    - assets/icons/national-park.png
-    - assets/icons/river.png
-    - assets/icons/temple.png
-    - assets/icons/theme-park.png
-    - assets/icons/trees.png
-    - assets/icons/zoo.png
-    - assets/icons/houses.png
-    - assets/icons/apartment.png
-    - assets/icons/room.png
-    - assets/icons/rental.png
-    - assets/icons/commercial-land.png
-    - assets/icons/land.png
-    - assets/icons/tution_sub.png
-    - assets/icons/higher_cat.png
-    - assets/icons/voca_training.png
+    - assets/icons/guitar.png
+    - assets/icons/children_items.png
+    - assets/icons/sports_wellness.png
+    - assets/icons/stationery_items.png
     
-    - assets/icons/baby_products.png
-    - assets/icons/bread.png
-    - assets/icons/canned-food.png
-    - assets/icons/detergent.png
-    - assets/icons/flour.png
-    - assets/icons/ice-cream.png
-    - assets/icons/medicine.png
-    - assets/icons/milk.png
-    - assets/icons/soap.png
-    - assets/icons/toilet-paper.png
-    - assets/icons/vegetable.png
-    - assets/icons/beverages.png
-    - assets/icons/meatgroc.png
-    
-    - assets/icons/award.png
-    - assets/icons/cleanup.png
-    - assets/icons/conference.png
-    - assets/icons/help.png
-    - assets/icons/launch.png
-    - assets/icons/meetup.png
-    - assets/icons/music.png
-    - assets/icons/parties.png
-    - assets/icons/seminar.png
-    - assets/icons/sports.png
-    - assets/icons/tradeshow.png
-    - assets/icons/workshop.png
-    
+    #apparel
     - assets/icons/bag.png
     - assets/icons/belt.png
     - assets/icons/cufflinks.png
@@ -227,7 +172,10 @@ flutter:
     - assets/icons/underwear.png
     - assets/icons/boy_bag.png
     - assets/icons/bag_pack.png
-    - assets/icons/seafood.png
+    - assets/icons/suit.png
+    - assets/icons/sew.png
+    
+    #vehicle
     - assets/icons/spare_parts.png
     - assets/icons/sell_car.png
     - assets/icons/cabs.png
@@ -259,13 +207,119 @@ flutter:
     - assets/icons/lorry.png
     - assets/icons/rickshaw.png
     - assets/icons/hire.png
-    - assets/icons/night_club.png
+    
+    #saloons N beauty products
+    - assets/icons/makeup.png
+    - assets/icons/any_saloons.png
+    
+    #education
+    - assets/icons/tution_sub.png
+    - assets/icons/higher_cat.png
+    - assets/icons/voca_training.png
+    - assets/icons/pre_school.png
+    - assets/icons/vocational.png
+    - assets/icons/higher.png
+    - assets/icons/school.png
+    - assets/icons/school2.png
+    - assets/icons/tution_classes.png
+    - assets/icons/schedule.png
+    
+    #electronics
+    - assets/icons/electronics_repair.png
+    - assets/icons/sell_electronics.png
+    - assets/icons/cellphone.png
+    - assets/icons/mp3_electronics.png
+    - assets/icons/gamepad.png
+    - assets/icons/_electrincs_toy.png
+    
+    #events
+    - assets/icons/award.png
+    - assets/icons/cleanup.png
+    - assets/icons/conference.png
+    - assets/icons/help.png
+    - assets/icons/launch.png
+    - assets/icons/meetup.png
+    - assets/icons/music.png
+    - assets/icons/parties.png
+    - assets/icons/seminar.png
+    - assets/icons/sports.png
+    - assets/icons/tradeshow.png
+    - assets/icons/workshop.png
+    
+    #food
+    - assets/icons/dining.png
+    - assets/icons/takeaway.png
+    - assets/icons/delivery.png
+    - assets/icons/anyFoodType.png
+    - assets/icons/foodmenu.png
+    - assets/icons/hotdishes.png
+    - assets/icons/meat.png
+    - assets/icons/vegetarian.png
+    - assets/icons/drink.png
+    - assets/icons/fast-food.png
+    - assets/icons/desserts.png
+    - assets/icons/seafood.png
+    
+    #furniture N home
+    - assets/icons/homeware.png
+    - assets/icons/furniture_icon.png
+    
+    #grocery
+    - assets/icons/baby_products.png
+    - assets/icons/bread.png
+    - assets/icons/canned-food.png
+    - assets/icons/detergent.png
+    - assets/icons/flour.png
+    - assets/icons/ice-cream.png
+    - assets/icons/medicine.png
+    - assets/icons/milk.png
+    - assets/icons/soap.png
+    - assets/icons/toilet-paper.png
+    - assets/icons/vegetable.png
+    - assets/icons/beverages.png
+    - assets/icons/meatgroc.png
+    
+    #hardware N tools
+    - assets/icons/builder.png
+    - assets/icons/hardware_tools.png
+    
+    #night_life
     - assets/icons/festival.png
     - assets/icons/live_music.png
     - assets/icons/pub.png
     - assets/icons/night_Rest.png
     - assets/icons/cafe.png
     - assets/icons/_night_bar.png
+    
+    #places
+    - assets/icons/experience.png
+    - assets/icons/beach.png
+    - assets/icons/agri.png
+    - assets/icons/botnical_gardens.png
+    - assets/icons/dive.png
+    - assets/icons/forest.png
+    - assets/icons/hike.png
+    - assets/icons/historical.png
+    - assets/icons/local.png
+    - assets/icons/meditaion.png
+    - assets/icons/mountain.png
+    - assets/icons/museum.png
+    - assets/icons/national-park.png
+    - assets/icons/river.png
+    - assets/icons/temple.png
+    - assets/icons/theme-park.png
+    - assets/icons/trees.png
+    - assets/icons/zoo.png
+    
+    #property
+    - assets/icons/houses.png
+    - assets/icons/apartment.png
+    - assets/icons/room.png
+    - assets/icons/rental.png
+    - assets/icons/commercial-land.png
+    - assets/icons/land.png
+    
+    #stay
     - assets/icons/air-conditioner.png
     - assets/icons/bath_tub.png
     - assets/icons/bbq.png
@@ -286,34 +340,24 @@ flutter:
     - assets/icons/television.png
     - assets/icons/wifi.png
     - assets/icons/parking.png
-    - assets/icons/pre_school.png
-    - assets/icons/vocational.png
-    - assets/icons/higher.png
-    - assets/icons/school.png
-    - assets/icons/school2.png
+    
+    #stationery
+    - assets/icons/pencil.png
     - assets/icons/stationery.png
-    - assets/icons/bookmark.png
-    - assets/icons/tution_classes.png
-    - assets/icons/schedule.png
-    - assets/icons/electronics_repair.png
-    - assets/icons/sell_electronics.png
-    - assets/icons/schedule.png
-    - assets/icons/makeup.png
-    - assets/icons/any_saloons.png
-    - assets/icons/cellphone.png
-    - assets/icons/mp3_electronics.png
-    - assets/icons/gamepad.png
-    - assets/icons/suit.png
-    - assets/icons/sew.png
-    - assets/icons/builder.png
-    - assets/icons/hardware_tools.png
-    - assets/icons/_electrincs_toy.png
+    
+    
     - assets/icons/other.png
     
+    
+    #all jsons
     - assets/json/services.json
     - assets/json/apparel/rent_apparel.json
     - assets/json/apparel/tailor.json
     - assets/json/services.json
+    - assets/json/sports_wellness.json
+    - assets/json/music_rent.json
+    - assets/json/music_repairs.json
+    - assets/json/musical_instruments.json
     - assets/json/properties.json
     - assets/json/tools_rent.json
     - assets/json/hardware.json

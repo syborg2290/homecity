@@ -52,6 +52,14 @@
         "image_path": "assets/icons/furniture.png"
     },
     {
+        "service": "Sports,wellness & outdoors",
+        "image_path": "assets/icons/sports_wellness.png"
+    },
+    {
+        "service": "Music instruments & services",
+        "image_path": "assets/icons/guitar.png"
+    },
+    {
         "service": "Hardware,tools & materials",
         "image_path": "assets/icons/constru.png"
     }

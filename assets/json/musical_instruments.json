@@ -1,0 +1,54 @@
+[
+    {
+        "category_name": "Guitars & Gear",
+        "image_path": "assets/icons/guitar.png"
+    },
+    {
+        "category_name": "DJ & VJ Equipment",
+        "image_path": "assets/icons/guitar.png"
+    },
+    {
+        "category_name": "Drums & Percussion",
+        "image_path": "assets/icons/guitar.png"
+    },
+    {
+        "category_name": "Karaoke Equipment",
+        "image_path": "assets/icons/guitar.png"
+    },
+    {
+        "category_name": "Microphones",
+        "image_path": "assets/icons/guitar.png"
+    },
+    {
+        "category_name": "PA & Stage",
+        "image_path": "assets/icons/guitar.png"
+    },
+    {
+        "category_name": "Piano & Keyboard",
+        "image_path": "assets/icons/guitar.png"
+    },
+    {
+        "category_name": "Recording & Computer",
+        "image_path": "assets/icons/guitar.png"
+    },
+    {
+        "category_name": "String Instruments",
+        "image_path": "assets/icons/guitar.png"
+    },
+    {
+        "category_name": "Synthesizer & Sampler",
+        "image_path": "assets/icons/guitar.png"
+    },
+    {
+        "category_name": "Wind Instruments",
+        "image_path": "assets/icons/guitar.png"
+    },
+    {
+        "category_name": "Classical Instruments",
+        "image_path": "assets/icons/guitar.png"
+    },
+    {
+        "category_name": "Other",
+        "image_path": "assets/icons/other.png"
+    }
+]

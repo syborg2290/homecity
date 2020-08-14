@@ -1,0 +1,106 @@
+[
+    {
+        "category_name": "Cricket",
+        "image_path": "assets/icons/sports_wellness.png"
+    },
+    {
+        "category_name": "Volleyball",
+        "image_path": "assets/icons/sports_wellness.png"
+    },
+    {
+        "category_name": "Hiking & camping",
+        "image_path": "assets/icons/sports_wellness.png"
+    },
+    {
+        "category_name": "Climbing",
+        "image_path": "assets/icons/sports_wellness.png"
+    },
+    {
+        "category_name": "Golf",
+        "image_path": "assets/icons/sports_wellness.png"
+    },
+    {
+        "category_name": "Gymnastics",
+        "image_path": "assets/icons/sports_wellness.png"
+    },
+    {
+        "category_name": "Martial Arts",
+        "image_path": "assets/icons/sports_wellness.png"
+    },
+    {
+        "category_name": "Rugby",
+        "image_path": "assets/icons/sports_wellness.png"
+    },
+    {
+        "category_name": "Hockey",
+        "image_path": "assets/icons/sports_wellness.png"
+    },
+    {
+        "category_name": "Basketball",
+        "image_path": "assets/icons/sports_wellness.png"
+    },
+    {
+        "category_name": "Badminton",
+        "image_path": "assets/icons/sports_wellness.png"
+    },
+    {
+        "category_name": "Exercise & fitness",
+        "image_path": "assets/icons/sports_wellness.png"
+    },
+    {
+        "category_name": "Running",
+        "image_path": "assets/icons/sports_wellness.png"
+    },
+    {
+        "category_name": "Skates, Skateboards & Scooters",
+        "image_path": "assets/icons/sports_wellness.png"
+    },
+    {
+        "category_name": "Cycling",
+        "image_path": "assets/icons/sports_wellness.png"
+    },
+    {
+        "category_name": "Football",
+        "image_path": "assets/icons/sports_wellness.png"
+    },
+    {
+        "category_name": "Tennis",
+        "image_path": "assets/icons/sports_wellness.png"
+    },
+    {
+        "category_name": "Baseball",
+        "image_path": "assets/icons/sports_wellness.png"
+    },
+    {
+        "category_name": "Billiards",
+        "image_path": "assets/icons/sports_wellness.png"
+    },
+    {
+        "category_name": "Boxing",
+        "image_path": "assets/icons/sports_wellness.png"
+    },
+    {
+        "category_name": "Table tennis",
+        "image_path": "assets/icons/sports_wellness.png"
+    },
+    {
+        "category_name": "Swimming",
+        "image_path": "assets/icons/sports_wellness.png"
+    },
+    {
+        "category_name": "Sports shoes",
+        "image_path": "assets/icons/sports_wellness.png"
+    },
+    {
+        "category_name": "Sports apparel",
+        "image_path": "assets/icons/sports_wellness.png"
+    },
+    {
+        "category_name": "Trophies, Medals & Awards",
+        "image_path": "assets/icons/sports_wellness.png"
+    },
+    {
+        "category_name": "Other",
+        "image_path": "assets/icons/other.png"
+    }
+]
