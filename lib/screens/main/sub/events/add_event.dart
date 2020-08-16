@@ -129,7 +129,8 @@ class _AddEventState extends State<AddEvent> {
         if (_address.text.trim() != "") {
           if (selectedDistrict != null) {
             if (latitude != null) {
-              if (_telephone1.text.trim() != "") {
+              if (_telephone1.text.trim() != "" ||
+                  _telephone2.text.trim() != "") {
                 if (heldOn != null) {
                   if (startTime != null) {
                     pr.show();
@@ -202,7 +203,7 @@ class _AddEventState extends State<AddEvent> {
                 }
               } else {
                 GradientSnackBar.showMessage(
-                    context, "Telephone number is required");
+                    context, "Only one telephone number is required");
               }
             } else {
               GradientSnackBar.showMessage(context, "Please pin the location");

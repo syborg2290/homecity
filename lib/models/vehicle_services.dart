@@ -15,7 +15,6 @@ class VehicleS {
   String website;
   String telephone1;
   String telephone2;
-  List closingDays;
   Timestamp closingTime;
   Timestamp openingTime;
   String specialHolidayshoursOfClosing;
@@ -51,7 +50,6 @@ class VehicleS {
     this.website,
     this.telephone1,
     this.telephone2,
-    this.closingDays,
     this.closingTime,
     this.openingTime,
     this.specialHolidayshoursOfClosing,
@@ -89,7 +87,6 @@ class VehicleS {
       website: doc['website'],
       telephone1: doc['telephone1'],
       telephone2: doc['telephone2'],
-      closingDays: doc['closingDays'],
       closingTime: doc['closingTime'],
       openingTime: doc['openingTime'],
       specialHolidayshoursOfClosing: doc['specialHolidayshoursOfClosing'],

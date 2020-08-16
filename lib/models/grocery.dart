@@ -13,7 +13,6 @@ class Grocery {
   String email;
   String telephone1;
   String telephone2;
-  List closingDays;
   Timestamp closingTime;
   Timestamp openingTime;
   String specialHolidayshoursOfClosing;
@@ -34,7 +33,6 @@ class Grocery {
     this.telephone1,
     this.telephone2,
     this.email,
-    this.closingDays,
     this.closingTime,
     this.openingTime,
     this.specialHolidayshoursOfClosing,
@@ -55,7 +53,6 @@ class Grocery {
       latitude: doc['latitude'],
       longitude: doc['longitude'],
       email: doc['email'],
-      closingDays: doc['closingDays'],
       closingTime: doc['closingTime'],
       openingTime: doc['openingTime'],
       telephone1: doc['telephone1'],

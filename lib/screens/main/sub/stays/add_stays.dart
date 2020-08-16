@@ -123,7 +123,7 @@ class _AddstaysState extends State<Addstays> {
   done() async {
     if (intialImage != null) {
       if (_stayName.text.trim() != "") {
-        if (_telephone1.text.trim() != "") {
+        if (_telephone1.text.trim() != "" || _telephone2.text.trim() != "") {
           if (_aboutTheStay.text.trim() != null) {
             if (selectedDistrict != null) {
               if (_address.text.trim() != null) {
@@ -212,7 +212,8 @@ class _AddstaysState extends State<Addstays> {
                 context, "Give a small description about the stay");
           }
         } else {
-          GradientSnackBar.showMessage(context, "Telephone number is required");
+          GradientSnackBar.showMessage(
+              context, "Only one telephone number is required");
         }
       } else {
         GradientSnackBar.showMessage(context, "Stay name is required");

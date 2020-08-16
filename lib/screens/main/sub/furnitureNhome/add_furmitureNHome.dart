@@ -41,17 +41,7 @@ class _AddFurnitureNHomeState extends State<AddFurnitureNHome> {
   TextEditingController closeController = TextEditingController();
   TextEditingController _specialHolidaysAndHoursController =
       TextEditingController();
-  List<int> closingDays = [];
-  List<String> selectedClosingDays = [];
-  List<String> daysOfAWeek = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday"
-  ];
+
   final format = dd.DateFormat("HH:mm");
   DateTime open;
   DateTime close;
@@ -172,7 +162,7 @@ class _AddFurnitureNHomeState extends State<AddFurnitureNHome> {
         if (selectedDistrict != null) {
           if (_address.text.trim() != "") {
             if (latitude != null) {
-              if (_telephone1.text != "") {
+              if (_telephone1.text != "" || _telephone2.text != "") {
                 if (openController.text != "" && closeController.text != "") {
                   pr.show();
                   List uploadGallery = [];
@@ -274,7 +264,6 @@ class _AddFurnitureNHomeState extends State<AddFurnitureNHome> {
                           longitude,
                           _email.text.trim(),
                           _website.text.trim(),
-                          closingDays,
                           close,
                           open,
                           _telephone1.text.trim(),
@@ -300,7 +289,7 @@ class _AddFurnitureNHomeState extends State<AddFurnitureNHome> {
                 }
               } else {
                 GradientSnackBar.showMessage(
-                    context, "Shop telephone number is required");
+                    context, "Only one telephone number is required");
               }
             } else {
               GradientSnackBar.showMessage(context, "Please pin the location");
@@ -772,158 +761,6 @@ class _AddFurnitureNHomeState extends State<AddFurnitureNHome> {
                 ),
               ),
             ),
-            SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "Mention days of closing the shop",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.black.withOpacity(0.5),
-                  fontSize: 19,
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            SizedBox(
-                height: height * 0.1,
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    left: 10,
-                    right: 10,
-                  ),
-                  child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: daysOfAWeek.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            if (daysOfAWeek[index] == "Monday") {
-                              if (selectedClosingDays.contains("Monday")) {
-                                setState(() {
-                                  closingDays.remove(1);
-                                  selectedClosingDays.remove("Monday");
-                                });
-                              } else {
-                                setState(() {
-                                  closingDays.add(1);
-                                  selectedClosingDays.add("Monday");
-                                });
-                              }
-                            }
-                            if (daysOfAWeek[index] == "Tuesday") {
-                              if (selectedClosingDays.contains("Tuesday")) {
-                                setState(() {
-                                  closingDays.remove(2);
-                                  selectedClosingDays.remove("Tuesday");
-                                });
-                              } else {
-                                setState(() {
-                                  closingDays.add(2);
-                                  selectedClosingDays.add("Tuesday");
-                                });
-                              }
-                            }
-                            if (daysOfAWeek[index] == "Wednesday") {
-                              if (selectedClosingDays.contains("Wednesday")) {
-                                setState(() {
-                                  closingDays.remove(3);
-                                  selectedClosingDays.remove("Wednesday");
-                                });
-                              } else {
-                                setState(() {
-                                  closingDays.add(3);
-                                  selectedClosingDays.add("Wednesday");
-                                });
-                              }
-                            }
-                            if (daysOfAWeek[index] == "Thursday") {
-                              if (selectedClosingDays.contains("Thursday")) {
-                                setState(() {
-                                  closingDays.remove(4);
-                                  selectedClosingDays.remove("Thursday");
-                                });
-                              } else {
-                                setState(() {
-                                  closingDays.add(4);
-                                  selectedClosingDays.add("Thursday");
-                                });
-                              }
-                            }
-                            if (daysOfAWeek[index] == "Friday") {
-                              if (selectedClosingDays.contains("Friday")) {
-                                setState(() {
-                                  closingDays.remove(5);
-                                  selectedClosingDays.remove("Friday");
-                                });
-                              } else {
-                                setState(() {
-                                  closingDays.add(5);
-                                  selectedClosingDays.add("Friday");
-                                });
-                              }
-                            }
-                            if (daysOfAWeek[index] == "Saturday") {
-                              if (selectedClosingDays.contains("Saturday")) {
-                                setState(() {
-                                  closingDays.remove(6);
-                                  selectedClosingDays.remove("Saturday");
-                                });
-                              } else {
-                                setState(() {
-                                  closingDays.add(6);
-                                  selectedClosingDays.add("Saturday");
-                                });
-                              }
-                            }
-                            if (daysOfAWeek[index] == "Sunday") {
-                              if (selectedClosingDays.contains("Sunday")) {
-                                setState(() {
-                                  closingDays.remove(7);
-                                  selectedClosingDays.remove("Sunday");
-                                });
-                              } else {
-                                setState(() {
-                                  closingDays.add(7);
-                                  selectedClosingDays.add("Sunday");
-                                });
-                              }
-                            }
-                          },
-                          child: Container(
-                            width: width * 0.3,
-                            height: height * 0.1,
-                            child: Card(
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              color: selectedClosingDays
-                                      .contains(daysOfAWeek[index])
-                                  ? Colors.red
-                                  : Colors.white,
-                              child: Center(
-                                child: Text(daysOfAWeek[index],
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: selectedClosingDays
-                                              .contains(daysOfAWeek[index])
-                                          ? Colors.white
-                                          : Colors.black,
-                                      fontSize: 17,
-                                    )),
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              elevation: 5,
-                              margin: EdgeInsets.all(10),
-                            ),
-                          ),
-                        );
-                      }),
-                )),
             SizedBox(
               height: 20,
             ),

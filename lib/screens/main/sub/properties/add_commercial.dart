@@ -123,7 +123,7 @@ class _AddCommercialPropertyState extends State<AddCommercialProperty> {
         if (selectedDistrict != null) {
           if (_address.text.trim() != "") {
             if (latitude != null) {
-              if (_telephone1.text != "") {
+              if (_telephone1.text != "" || _telephone2.text != "") {
                 if (_size.text.trim() != "") {
                   if (_price.text.trim() != "") {
                     pr.show();
@@ -197,7 +197,7 @@ class _AddCommercialPropertyState extends State<AddCommercialProperty> {
                 }
               } else {
                 GradientSnackBar.showMessage(
-                    context, widget.type + " telephone number is required");
+                    context, "Only one telephone number is required");
               }
             } else {
               GradientSnackBar.showMessage(context, "Please pin the location");
@@ -474,13 +474,8 @@ class _AddCommercialPropertyState extends State<AddCommercialProperty> {
             SizedBox(
               height: 20,
             ),
-            textBoxContainer(
-                _propertyDetails,
-                "Property details ",
-                8,
-                width,
-                false,
-                TextInputType.text),
+            textBoxContainer(_propertyDetails, "Property details ", 8, width,
+                false, TextInputType.text),
             SizedBox(
               height: 20,
             ),

@@ -95,7 +95,7 @@ class _AddTutionState extends State<AddTution> {
     if (intialImage != null) {
       if (_name.text.trim() != "") {
         if (_subject.text.trim() != "") {
-          if (_telephone1.text != "") {
+          if (_telephone1.text != "" || _telephone2.text != "") {
             pr.show();
             List uploadGallery = [];
             if (gallery.isNotEmpty) {
@@ -182,7 +182,7 @@ class _AddTutionState extends State<AddTution> {
             });
           } else {
             GradientSnackBar.showMessage(
-                context, widget.type + " telephone number is required");
+                context, "Only one telephone number is required");
           }
         } else {
           GradientSnackBar.showMessage(

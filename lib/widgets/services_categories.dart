@@ -5,7 +5,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:nearby/utils/pallete.dart';
 
 class MainCategory extends StatefulWidget {
-  MainCategory({Key key}) : super(key: key);
+  final int restCount;
+  MainCategory({this.restCount, Key key}) : super(key: key);
 
   @override
   _MainCategoryState createState() => _MainCategoryState();
@@ -16,12 +17,11 @@ class _MainCategoryState extends State<MainCategory> {
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
-    var orientation = MediaQuery.of(context).orientation;
 
     return Padding(
         padding: EdgeInsets.only(top: 0),
         child: Container(
-          height: height * 0.17,
+          height: height * 0.2,
           color: Colors.white,
           child: FutureBuilder(
               future: DefaultAssetBundle.of(context)
@@ -38,71 +38,7 @@ class _MainCategoryState extends State<MainCategory> {
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
                       return GestureDetector(
-                        onTap: () {
-                          // if (myData[index]['category_name'] == "Garages") {
-                          //   Navigator.push(
-                          //       context,
-                          //       MaterialPageRoute(
-                          //           builder: (context) => Garages(
-                          //             currentUser: widget.currentUser,
-                          //           )));
-                          // }
-                          // if (myData[index]['category_name'] == "Parkings") {
-                          //   Navigator.push(
-                          //       context,
-                          //       MaterialPageRoute(
-                          //           builder: (context) => Parking()));
-                          // }
-                          // if (myData[index]['category_name'] ==
-                          //     "Service centers") {
-                          //   Navigator.push(
-                          //       context,
-                          //       MaterialPageRoute(
-                          //           builder: (context) => ServiceCenters()));
-                          // }
-                          // if (myData[index]['category_name'] ==
-                          //     "Spare parts/accessories") {
-                          //   Navigator.push(
-                          //       context,
-                          //       MaterialPageRoute(
-                          //           builder: (context) => SpareParts()));
-                          // }
-                          // if (myData[index]['category_name'] ==
-                          //     "Emergency vehicles") {
-                          //   Navigator.push(
-                          //       context,
-                          //       MaterialPageRoute(
-                          //           builder: (context) => EmergencyTruck()));
-                          // }
-                          // if (myData[index]['category_name'] ==
-                          //     "Vehicle Modifications") {
-                          //   Navigator.push(
-                          //       context,
-                          //       MaterialPageRoute(
-                          //           builder: (context) => VehicleModify()));
-                          // }
-                          // if (myData[index]['category_name'] ==
-                          //     "Tire services & shops") {
-                          //   Navigator.push(
-                          //       context,
-                          //       MaterialPageRoute(
-                          //           builder: (context) => TireService()));
-                          // }
-                          // if (myData[index]['category_name'] ==
-                          //     "Hiring vehicles") {
-                          //   Navigator.push(
-                          //       context,
-                          //       MaterialPageRoute(
-                          //           builder: (context) => HireVehicles()));
-                          // }
-                          // if (myData[index]['category_name'] ==
-                          //     "Renting vehicles") {
-                          //   Navigator.push(
-                          //       context,
-                          //       MaterialPageRoute(
-                          //           builder: (context) => RentVehicles()));
-                          // }
-                        },
+                        onTap: () {},
                         child: Padding(
                           padding: EdgeInsets.only(
                             left: 5,
@@ -110,7 +46,7 @@ class _MainCategoryState extends State<MainCategory> {
                           ),
                           child: Container(
                             width: width * 0.28,
-                            height: height * 0.17,
+                            height: height * 0.2,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10.0),
                                 border: Border.all(
@@ -140,6 +76,29 @@ class _MainCategoryState extends State<MainCategory> {
                                     color: Colors.black.withOpacity(0.6),
                                     fit: BoxFit.contain,
                                   ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  myData[index]['service'] ==
+                                          "Resturants & cafes"
+                                      ? Container(
+                                          decoration: BoxDecoration(
+                                            color: Pallete.mainAppColor,
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(4.0),
+                                            child: Text(
+                                              widget.restCount.toString(),
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                          ))
+                                      : SizedBox.shrink(),
                                 ],
                               ),
                               shape: RoundedRectangleBorder(

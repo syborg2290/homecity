@@ -130,7 +130,7 @@ class _AddSellState extends State<AddSell> {
       if (_name.text.trim() != "") {
         if (selectedDistrict != null) {
           if (_address.text.trim() != "") {
-            if (_telephone1.text != "") {
+            if (_telephone1.text != "" || _telephone2.text != "") {
               pr.show();
 
               List uploadGallery = [];
@@ -180,7 +180,6 @@ class _AddSellState extends State<AddSell> {
                 null,
                 null,
                 null,
-                null,
                 _telephone1.text.trim(),
                 _telephone1.text.trim(),
                 null,
@@ -209,7 +208,7 @@ class _AddSellState extends State<AddSell> {
               });
             } else {
               GradientSnackBar.showMessage(
-                  context, "Telephone number is required");
+                  context, "Only one telephone number is required");
             }
           } else {
             GradientSnackBar.showMessage(context, "Address is required");

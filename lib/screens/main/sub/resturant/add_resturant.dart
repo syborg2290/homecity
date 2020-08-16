@@ -47,17 +47,7 @@ class _AddResturantState extends State<AddResturant> {
   double latitude;
   double longitude;
   List foodTakeTypes = ["Any"];
-  List<int> closingDays = [];
-  List<String> selectedClosingDays = [];
-  List<String> daysOfAWeek = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday"
-  ];
+
   final format = dd.DateFormat("HH:mm");
   DateTime open;
   DateTime close;
@@ -125,7 +115,10 @@ class _AddResturantState extends State<AddResturant> {
             child: Column(
               children: <Widget>[
                 SpinKitPouringHourglass(color: Pallete.mainAppColor),
-                Text("Creating resturant...",
+                SizedBox(
+                  height: 10,
+                ),
+                Text("Creating resturant & cafe...",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Color.fromRGBO(129, 165, 168, 1),
@@ -266,7 +259,7 @@ class _AddResturantState extends State<AddResturant> {
         if (selectedDistrict != null) {
           if (_address.text.trim() != "") {
             if (latitude != null) {
-              if (_telephone1.text != "") {
+              if (_telephone1.text != "" || _telephone2.text != "") {
                 if (foodTakeTypes.isNotEmpty) {
                   if (openController.text != "" && closeController.text != "") {
                     pr.show();
@@ -373,7 +366,6 @@ class _AddResturantState extends State<AddResturant> {
                       longitude,
                       _email.text.trim(),
                       _website.text.trim(),
-                      closingDays,
                       close,
                       open,
                       _telephone1.text.trim(),
@@ -396,24 +388,25 @@ class _AddResturantState extends State<AddResturant> {
                   }
                 } else {
                   GradientSnackBar.showMessage(
-                      context, "Resturant type of service is required");
+                      context, "Resturant features is required");
                 }
               } else {
                 GradientSnackBar.showMessage(
-                    context, "Resturant telephone number is required");
+                    context, "Only one telephone number is required");
               }
             } else {
               GradientSnackBar.showMessage(context, "Please pin the location");
             }
           } else {
             GradientSnackBar.showMessage(
-                context, "Resturant address is required");
+                context, "Resturant or cafe address is required");
           }
         } else {
           GradientSnackBar.showMessage(context, "Please select a district");
         }
       } else {
-        GradientSnackBar.showMessage(context, "Resturant name is required");
+        GradientSnackBar.showMessage(
+            context, "Resturant or cafe name is required");
       }
     } else {
       GradientSnackBar.showMessage(context, "Initial image is required");
@@ -480,11 +473,11 @@ class _AddResturantState extends State<AddResturant> {
         ),
         centerTitle: false,
         title: Text(
-          'Add new resturant',
+          'Add new resturant & cafe',
           style: TextStyle(
               color: Colors.grey[700],
               fontFamily: "Roboto",
-              fontSize: 20,
+              fontSize: 18,
               fontWeight: FontWeight.w400),
         ),
         actions: <Widget>[
@@ -533,7 +526,7 @@ class _AddResturantState extends State<AddResturant> {
                           children: <Widget>[
                             Center(
                                 child: Text(
-                              "* Add initial image for your resturant",
+                              "* Add initial image for your resturant or cafe",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.white,
@@ -671,13 +664,13 @@ class _AddResturantState extends State<AddResturant> {
             SizedBox(
               height: 20,
             ),
-            textBoxContainer(_restName, "* Name of the resturant", 1, width,
-                false, TextInputType.text),
+            textBoxContainer(_restName, "* Name of the resturant or cafe", 1,
+                width, false, TextInputType.text),
             SizedBox(
               height: 20,
             ),
-            textBoxContainer(_aboutTheRest, "About the resturant", 3, width,
-                false, TextInputType.text),
+            textBoxContainer(_aboutTheRest, "About the resturant or cafe", 3,
+                width, false, TextInputType.text),
             SizedBox(
               height: 20,
             ),
@@ -731,8 +724,8 @@ class _AddResturantState extends State<AddResturant> {
             SizedBox(
               height: 20,
             ),
-            textBoxContainer(_address, "* Address of the resturant", 1, width,
-                false, TextInputType.text),
+            textBoxContainer(_address, "* Address of the resturant or cafe", 1,
+                width, false, TextInputType.text),
             SizedBox(
               height: 20,
             ),
@@ -835,7 +828,7 @@ class _AddResturantState extends State<AddResturant> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                "* Type of services your resturant able to provide",
+                "* Features that your resturant or cafe able to provide",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.black.withOpacity(0.5),
@@ -926,6 +919,94 @@ class _AddResturantState extends State<AddResturant> {
                     child: foodTake("Delivery", 'assets/icons/delivery.png',
                         foodTakeTypes.contains("Delivery")),
                   ),
+                  GestureDetector(
+                    onTap: () {
+                      if (foodTakeTypes.contains("Any")) {
+                        setState(() {
+                          foodTakeTypes.clear();
+                          foodTakeTypes.add("Wifi");
+                        });
+                      } else {
+                        if (foodTakeTypes.contains("Wifi")) {
+                          setState(() {
+                            foodTakeTypes.remove("Wifi");
+                          });
+                        } else {
+                          setState(() {
+                            foodTakeTypes.add("Wifi");
+                          });
+                        }
+                      }
+                    },
+                    child: foodTake("Wifi", 'assets/icons/wifi.png',
+                        foodTakeTypes.contains("Wifi")),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      if (foodTakeTypes.contains("Any")) {
+                        setState(() {
+                          foodTakeTypes.clear();
+                          foodTakeTypes.add("Parking");
+                        });
+                      } else {
+                        if (foodTakeTypes.contains("Parking")) {
+                          setState(() {
+                            foodTakeTypes.remove("Parking");
+                          });
+                        } else {
+                          setState(() {
+                            foodTakeTypes.add("Parking");
+                          });
+                        }
+                      }
+                    },
+                    child: foodTake("Parking", 'assets/icons/car_park.png',
+                        foodTakeTypes.contains("Parking")),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      if (foodTakeTypes.contains("Any")) {
+                        setState(() {
+                          foodTakeTypes.clear();
+                          foodTakeTypes.add("Drinks");
+                        });
+                      } else {
+                        if (foodTakeTypes.contains("Drinks")) {
+                          setState(() {
+                            foodTakeTypes.remove("Drinks");
+                          });
+                        } else {
+                          setState(() {
+                            foodTakeTypes.add("Drinks");
+                          });
+                        }
+                      }
+                    },
+                    child: foodTake("Drinks", 'assets/icons/wine.png',
+                        foodTakeTypes.contains("Drinks")),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      if (foodTakeTypes.contains("Any")) {
+                        setState(() {
+                          foodTakeTypes.clear();
+                          foodTakeTypes.add("Celebrations");
+                        });
+                      } else {
+                        if (foodTakeTypes.contains("Celebrations")) {
+                          setState(() {
+                            foodTakeTypes.remove("Celebrations");
+                          });
+                        } else {
+                          setState(() {
+                            foodTakeTypes.add("Celebrations");
+                          });
+                        }
+                      }
+                    },
+                    child: foodTake("Celebrations", 'assets/icons/birthday.png',
+                        foodTakeTypes.contains("Celebrations")),
+                  ),
                 ],
               ),
             ),
@@ -967,161 +1048,15 @@ class _AddResturantState extends State<AddResturant> {
             SizedBox(
               height: 20,
             ),
-            Text(
-              "* Mention days of closing your resturant",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.black.withOpacity(0.5),
-                fontSize: 19,
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            SizedBox(
-                height: height * 0.1,
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    left: 10,
-                    right: 10,
-                  ),
-                  child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: daysOfAWeek.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            if (daysOfAWeek[index] == "Monday") {
-                              if (selectedClosingDays.contains("Monday")) {
-                                setState(() {
-                                  closingDays.remove(1);
-                                  selectedClosingDays.remove("Monday");
-                                });
-                              } else {
-                                setState(() {
-                                  closingDays.add(1);
-                                  selectedClosingDays.add("Monday");
-                                });
-                              }
-                            }
-                            if (daysOfAWeek[index] == "Tuesday") {
-                              if (selectedClosingDays.contains("Tuesday")) {
-                                setState(() {
-                                  closingDays.remove(2);
-                                  selectedClosingDays.remove("Tuesday");
-                                });
-                              } else {
-                                setState(() {
-                                  closingDays.add(2);
-                                  selectedClosingDays.add("Tuesday");
-                                });
-                              }
-                            }
-                            if (daysOfAWeek[index] == "Wednesday") {
-                              if (selectedClosingDays.contains("Wednesday")) {
-                                setState(() {
-                                  closingDays.remove(3);
-                                  selectedClosingDays.remove("Wednesday");
-                                });
-                              } else {
-                                setState(() {
-                                  closingDays.add(3);
-                                  selectedClosingDays.add("Wednesday");
-                                });
-                              }
-                            }
-                            if (daysOfAWeek[index] == "Thursday") {
-                              if (selectedClosingDays.contains("Thursday")) {
-                                setState(() {
-                                  closingDays.remove(4);
-                                  selectedClosingDays.remove("Thursday");
-                                });
-                              } else {
-                                setState(() {
-                                  closingDays.add(4);
-                                  selectedClosingDays.add("Thursday");
-                                });
-                              }
-                            }
-                            if (daysOfAWeek[index] == "Friday") {
-                              if (selectedClosingDays.contains("Friday")) {
-                                setState(() {
-                                  closingDays.remove(5);
-                                  selectedClosingDays.remove("Friday");
-                                });
-                              } else {
-                                setState(() {
-                                  closingDays.add(5);
-                                  selectedClosingDays.add("Friday");
-                                });
-                              }
-                            }
-                            if (daysOfAWeek[index] == "Saturday") {
-                              if (selectedClosingDays.contains("Saturday")) {
-                                setState(() {
-                                  closingDays.remove(6);
-                                  selectedClosingDays.remove("Saturday");
-                                });
-                              } else {
-                                setState(() {
-                                  closingDays.add(6);
-                                  selectedClosingDays.add("Saturday");
-                                });
-                              }
-                            }
-                            if (daysOfAWeek[index] == "Sunday") {
-                              if (selectedClosingDays.contains("Sunday")) {
-                                setState(() {
-                                  closingDays.remove(7);
-                                  selectedClosingDays.remove("Sunday");
-                                });
-                              } else {
-                                setState(() {
-                                  closingDays.add(7);
-                                  selectedClosingDays.add("Sunday");
-                                });
-                              }
-                            }
-                          },
-                          child: Container(
-                            width: width * 0.3,
-                            height: height * 0.1,
-                            child: Card(
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              color: selectedClosingDays
-                                      .contains(daysOfAWeek[index])
-                                  ? Colors.red
-                                  : Colors.white,
-                              child: Center(
-                                child: Text(daysOfAWeek[index],
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: selectedClosingDays
-                                              .contains(daysOfAWeek[index])
-                                          ? Colors.white
-                                          : Colors.black,
-                                      fontSize: 17,
-                                    )),
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              elevation: 5,
-                              margin: EdgeInsets.all(10),
-                            ),
-                          ),
-                        );
-                      }),
-                )),
-            SizedBox(
-              height: 20,
-            ),
-            Text(
-              "* Open and close time of the resturant",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.black.withOpacity(0.5),
-                fontSize: 19,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "* Open and close time of the resturant or cafe",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.black.withOpacity(0.5),
+                  fontSize: 19,
+                ),
               ),
             ),
             SizedBox(

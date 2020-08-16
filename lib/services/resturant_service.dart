@@ -16,7 +16,6 @@ class ResturantService {
     double longitude,
     String email,
     String website,
-    List closingDays,
     DateTime closingTime,
     DateTime openingTime,
     String telephone1,
@@ -40,7 +39,6 @@ class ResturantService {
       "longitude": longitude,
       "email": email,
       "website": website,
-      "closingDays": closingDays,
       "closingTime": closingTime,
       "openingTime": openingTime,
       "telephone1": telephone1,
@@ -52,6 +50,14 @@ class ResturantService {
       "timestamp": timestamp,
     });
     return docRe.documentID;
+  }
+
+  Future<QuerySnapshot> getAllResturant() async {
+    return resturantsRef.orderBy('timestamp', descending: true).getDocuments();
+  }
+
+  Stream<QuerySnapshot> streamResturant() {
+    return resturantsRef.orderBy('timestamp', descending: true).snapshots();
   }
 
   Future<String> uploadImageRest(File imageFile) async {

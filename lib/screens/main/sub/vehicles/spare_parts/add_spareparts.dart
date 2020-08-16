@@ -123,7 +123,7 @@ class _SparePartsState extends State<SpareParts> {
       if (_name.text.trim() != "") {
         if (_homecity.text.trim() != "") {
           if (selectedDistrict != null) {
-            if (_telephone1.text != "") {
+            if (_telephone1.text != "" || _telephone2.text != "") {
               pr.show();
 
               List uploadGallery = [];
@@ -173,7 +173,6 @@ class _SparePartsState extends State<SpareParts> {
                 null,
                 null,
                 null,
-                null,
                 _telephone1.text.trim(),
                 _telephone1.text.trim(),
                 null,
@@ -202,7 +201,7 @@ class _SparePartsState extends State<SpareParts> {
               });
             } else {
               GradientSnackBar.showMessage(
-                  context, "Telephone number is required");
+                  context, "Only one telephone number is required");
             }
           } else {
             GradientSnackBar.showMessage(context, "Please select a district");

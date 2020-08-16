@@ -155,7 +155,7 @@ class _AddVocationalState extends State<AddVocational> {
         if (selectedDistrict != null) {
           if (_address.text.trim() != "") {
             if (latitude != null) {
-              if (_telephone1.text != "") {
+              if (_telephone1.text != "" || _telephone2.text != "") {
                 pr.show();
                 List uploadGallery = [];
                 if (gallery.isNotEmpty) {
@@ -245,10 +245,7 @@ class _AddVocationalState extends State<AddVocational> {
                 });
               } else {
                 GradientSnackBar.showMessage(
-                    context,
-                    widget.type +
-                        " center's" +
-                        " telephone number is required");
+                    context, "Only one telephone number is required");
               }
             } else {
               GradientSnackBar.showMessage(context, "Please pin the location");

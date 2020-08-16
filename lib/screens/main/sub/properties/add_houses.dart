@@ -123,7 +123,7 @@ class _AddHousesState extends State<AddHouses> {
         if (selectedDistrict != null) {
           if (_address.text.trim() != "") {
             if (latitude != null) {
-              if (_telephone1.text != "") {
+              if (_telephone1.text != "" || _telephone2.text != "") {
                 if (_perches.text.trim() != "") {
                   if (_price.text.trim() != "") {
                     pr.show();
@@ -197,7 +197,7 @@ class _AddHousesState extends State<AddHouses> {
                 }
               } else {
                 GradientSnackBar.showMessage(
-                    context, widget.type + " telephone number is required");
+                    context,  "Only one telephone number is required");
               }
             } else {
               GradientSnackBar.showMessage(context, "Please pin the location");

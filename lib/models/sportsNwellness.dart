@@ -14,7 +14,6 @@ class SportsNwellness {
   String telephone2;
   String website;
   String email;
-  List closingDays;
   Timestamp closingTime;
   Timestamp openingTime;
   String specialHolidayshoursOfClosing;
@@ -36,7 +35,6 @@ class SportsNwellness {
     this.telephone2,
     this.website,
     this.email,
-    this.closingDays,
     this.closingTime,
     this.openingTime,
     this.specialHolidayshoursOfClosing,
@@ -58,7 +56,6 @@ class SportsNwellness {
       longitude: doc['longitude'],
       email: doc['email'],
       website: doc['website'],
-      closingDays: doc['closingDays'],
       closingTime: doc['closingTime'],
       openingTime: doc['openingTime'],
       telephone1: doc['telephone1'],

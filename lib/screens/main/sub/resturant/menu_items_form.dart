@@ -152,7 +152,7 @@ class _MenuItemFormState extends State<MenuItemForm> {
                     context, "Time that able to get food item is required");
               }
             } else {
-              GradientSnackBar.showMessage(context, "Serve types is required");
+              GradientSnackBar.showMessage(context, "How to get this item is required");
             }
           } else {
             GradientSnackBar.showMessage(context, "Person count is required");
@@ -495,7 +495,7 @@ class _MenuItemFormState extends State<MenuItemForm> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                "* How to serve this food item",
+                "* How to get this food item",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.black.withOpacity(0.5),
