@@ -200,6 +200,7 @@ class _GroceryItemsFormState extends State<GroceryItemsForm> {
                                         builder: (context) => GalleryPick(
                                               isOnlyImage: true,
                                               isSingle: true,
+                                              isPano: false,
                                             )));
                                 if (obj != null) {
                                   if (obj["type"] == "gallery") {
@@ -254,6 +255,7 @@ class _GroceryItemsFormState extends State<GroceryItemsForm> {
                                       builder: (context) => GalleryPick(
                                             isOnlyImage: true,
                                             isSingle: true,
+                                            isPano: false,
                                           )));
                               if (obj != null) {
                                 if (obj["type"] == "gallery") {

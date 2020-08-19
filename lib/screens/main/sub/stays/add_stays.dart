@@ -355,6 +355,7 @@ class _AddstaysState extends State<Addstays> {
                                         builder: (context) => GalleryPick(
                                               isOnlyImage: true,
                                               isSingle: true,
+                                              isPano: false,
                                             )));
                                 if (obj != null) {
                                   if (obj["type"] == "gallery") {
@@ -409,6 +410,7 @@ class _AddstaysState extends State<Addstays> {
                                       builder: (context) => GalleryPick(
                                             isOnlyImage: true,
                                             isSingle: true,
+                                            isPano: false,
                                           )));
                               if (obj != null) {
                                 if (obj["type"] == "gallery") {

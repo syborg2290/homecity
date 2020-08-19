@@ -7,7 +7,9 @@ import 'package:permission_handler/permission_handler.dart';
 class GalleryPick extends StatefulWidget {
   final bool isOnlyImage;
   final bool isSingle;
-  GalleryPick({this.isOnlyImage, this.isSingle, Key key}) : super(key: key);
+  final bool isPano;
+  GalleryPick({this.isOnlyImage, this.isPano, this.isSingle, Key key})
+      : super(key: key);
 
   @override
   _GalleryPickState createState() => _GalleryPickState();
@@ -43,66 +45,68 @@ class _GalleryPickState extends State<GalleryPick> {
               Navigator.pop(context);
             }),
         actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(
-              right: 10,
-            ),
-            child: IconButton(
-                icon: Image.asset(
-                  'assets/icons/camera.png',
-                  width: width * 0.08,
-                  height: height * 0.08,
+          widget.isPano
+              ? SizedBox.shrink()
+              : Padding(
+                  padding: const EdgeInsets.only(
+                    right: 10,
+                  ),
+                  child: IconButton(
+                      icon: Image.asset(
+                        'assets/icons/camera.png',
+                        width: width * 0.08,
+                        height: height * 0.08,
+                      ),
+                      onPressed: () async {
+                        var status = await Permission.camera.status;
+                        if (status.isUndetermined) {
+                          var statusRe = await Permission.camera.request();
+
+                          if (statusRe.isGranted) {
+                            final pickedFile = await ImagePicker().getImage(
+                              source: ImageSource.camera,
+                            );
+                            if (pickedFile != null) {
+                              var obj = {
+                                "mediaFile": pickedFile,
+                                "type": "camPhoto",
+                              };
+
+                              Navigator.pop(context, obj);
+                            }
+                          }
+                        }
+
+                        if (status.isGranted) {
+                          final pickedFile = await ImagePicker().getImage(
+                            source: ImageSource.camera,
+                          );
+                          if (pickedFile != null) {
+                            var obj = {
+                              "mediaFile": pickedFile,
+                              "type": "camPhoto",
+                            };
+
+                            Navigator.pop(context, obj);
+                          }
+                        } else {
+                          var statusRe2 = await Permission.camera.request();
+                          if (statusRe2.isGranted) {
+                            final pickedFile = await ImagePicker().getImage(
+                              source: ImageSource.camera,
+                            );
+                            if (pickedFile != null) {
+                              var obj = {
+                                "mediaFile": pickedFile,
+                                "type": "camPhoto",
+                              };
+
+                              Navigator.pop(context, obj);
+                            }
+                          }
+                        }
+                      }),
                 ),
-                onPressed: () async {
-                  var status = await Permission.camera.status;
-                  if (status.isUndetermined) {
-                    var statusRe = await Permission.camera.request();
-
-                    if (statusRe.isGranted) {
-                      final pickedFile = await ImagePicker().getImage(
-                        source: ImageSource.camera,
-                      );
-                      if (pickedFile != null) {
-                        var obj = {
-                          "mediaFile": pickedFile,
-                          "type": "camPhoto",
-                        };
-
-                        Navigator.pop(context, obj);
-                      }
-                    }
-                  }
-
-                  if (status.isGranted) {
-                    final pickedFile = await ImagePicker().getImage(
-                      source: ImageSource.camera,
-                    );
-                    if (pickedFile != null) {
-                      var obj = {
-                        "mediaFile": pickedFile,
-                        "type": "camPhoto",
-                      };
-
-                      Navigator.pop(context, obj);
-                    }
-                  } else {
-                    var statusRe2 = await Permission.camera.request();
-                    if (statusRe2.isGranted) {
-                      final pickedFile = await ImagePicker().getImage(
-                        source: ImageSource.camera,
-                      );
-                      if (pickedFile != null) {
-                        var obj = {
-                          "mediaFile": pickedFile,
-                          "type": "camPhoto",
-                        };
-
-                        Navigator.pop(context, obj);
-                      }
-                    }
-                  }
-                }),
-          ),
           widget.isOnlyImage
               ? SizedBox.shrink()
               : Padding(

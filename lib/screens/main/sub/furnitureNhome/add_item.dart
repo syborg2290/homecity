@@ -199,6 +199,7 @@ class _AddItemState extends State<AddItem> {
                                         builder: (context) => GalleryPick(
                                               isOnlyImage: true,
                                               isSingle: true,
+                                              isPano: false,
                                             )));
                                 if (obj != null) {
                                   if (obj["type"] == "gallery") {
@@ -253,6 +254,7 @@ class _AddItemState extends State<AddItem> {
                                       builder: (context) => GalleryPick(
                                             isOnlyImage: true,
                                             isSingle: true,
+                                            isPano: false,
                                           )));
                               if (obj != null) {
                                 if (obj["type"] == "gallery") {

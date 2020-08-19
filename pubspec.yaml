@@ -47,6 +47,10 @@ dependencies:
   fancy_shimmer_image: ^1.2.0
   flick_video_player: ^0.1.1
   provider: ^4.3.2
+  flutter_rating_bar: ^3.0.1+1
+  flutter_icons: ^1.1.0
+  pie_chart: ^3.1.1
+  panorama: ^0.0.2
 
 dev_dependencies:
   
@@ -97,6 +101,8 @@ flutter:
     - assets/icons/cut.png
     - assets/icons/crop.png
     - assets/icons/album.png
+    - assets/icons/pana.png
+    - assets/icons/arrows.png
     - assets/icons/direction.png
     
     #bottombar

@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:nearby/config/collections.dart';
+import 'package:nearby/models/resturant.dart';
 import 'package:uuid/uuid.dart';
 
 class ResturantService {
@@ -58,6 +60,116 @@ class ResturantService {
 
   Stream<QuerySnapshot> streamResturant() {
     return resturantsRef.orderBy('timestamp', descending: true).snapshots();
+  }
+
+  Stream<QuerySnapshot> streamSingleRest(String id) {
+    return resturantsRef.where("id", isEqualTo: id).snapshots();
+  }
+
+  setRatingsToFoodItem(
+      int index, String restId, double rate, String userId) async {
+    DocumentSnapshot docSnap = await resturantsRef.document(restId).get();
+    Resturant rest = Resturant.fromDocument(docSnap);
+    var obj = json.decode(rest.menu[index]);
+    List ratings = [];
+    if (obj["ratings"] != null) {
+      ratings = obj["ratings"];
+    }
+
+    if (ratings != null) {
+      if (ratings.isNotEmpty) {
+        var rateObj = {
+          "rate": rate.toInt(),
+          "userId": userId,
+          "timestamp": timestamp.toIso8601String(),
+        };
+        bool status = ratings
+            .where((element) => element["userId"] == userId)
+            .toList()
+            .isEmpty;
+        if (!status) {
+          ratings.add(rateObj);
+        } else {
+          int indexRe =
+              ratings.indexWhere((element) => element["userId"] == userId);
+          ratings[indexRe]["rate"] = rate;
+        }
+      } else {
+        var rateObj = {
+          "rate": rate.toInt(),
+          "userId": userId,
+          "timestamp": timestamp.toIso8601String(),
+        };
+        ratings.add(rateObj);
+      }
+    } else {
+      var rateObj = {
+        "rate": rate.toInt(),
+        "userId": userId,
+        "timestamp": timestamp.toIso8601String(),
+      };
+      ratings.add(rateObj);
+    }
+
+    var updatedObj = {
+      "initialImage": obj["initialImage"],
+      "item_type": obj["item_type"],
+      "item_name": obj["item_name"],
+      "price": obj["price"],
+      "portion_count": obj["portion_count"],
+      "about": obj["about"],
+      "foodTake": obj["foodTake"],
+      "gallery": obj["gallery"],
+      "ratings": ratings,
+    };
+
+    List menuItems = rest.menu;
+    menuItems[index] = json.encode(updatedObj);
+    await resturantsRef.document(restId).updateData({
+      "menu": menuItems,
+    });
+  }
+
+  setReviewToFoodItem(int index, String restId, String review, dynamic media,
+      String userId) async {
+    DocumentSnapshot docSnap = await resturantsRef.document(restId).get();
+    Resturant rest = Resturant.fromDocument(docSnap);
+    var obj = json.decode(rest.menu[index]);
+
+    List reviewsList = [];
+    if (obj["review"] != null) {
+      reviewsList = obj["review"];
+    }
+
+    var reviewObj = {
+      "review": review,
+      "media": json.encode(media),
+      "userId": userId,
+      "reactions": null,
+      "replys": null,
+      "timestamp": timestamp.toIso8601String(),
+    };
+
+    reviewsList.add(reviewObj);
+
+    var updatedObj = {
+      "initialImage": obj["initialImage"],
+      "item_type": obj["item_type"],
+      "item_name": obj["item_name"],
+      "price": obj["price"],
+      "portion_count": obj["portion_count"],
+      "about": obj["about"],
+      "foodTake": obj["foodTake"],
+      "gallery": obj["gallery"],
+      "ratings": obj["ratings"],
+      "review": reviewsList,
+    };
+
+    List menuItems = rest.menu;
+    menuItems[index] = json.encode(updatedObj);
+    await resturantsRef.document(restId).updateData({
+      "menu": menuItems,
+    });
   }
 
   Future<String> uploadImageRest(File imageFile) async {

@@ -199,6 +199,7 @@ class _StaysGalleryState extends State<StaysGallery> {
                               builder: (context) => GalleryPick(
                                     isOnlyImage: false,
                                     isSingle: false,
+                                    isPano: false,
                                   )));
                       if (obj != null) {
                         if (obj["type"] == "gallery") {

@@ -3,15 +3,23 @@ import 'dart:convert';
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:nearby/models/resturant.dart';
+import 'package:nearby/services/auth_services.dart';
+import 'package:nearby/services/resturant_service.dart';
 import 'package:nearby/utils/pallete.dart';
+import 'package:nearby/utils/rate_algorithm.dart';
 import 'package:nearby/utils/videoplayers/network_player.dart';
 import 'package:nearby/utils/full_screen_network_file.dart';
 import 'package:intl/intl.dart' as dd;
 
+import 'menu_item_detail.dart';
+
 class ResturantDetailView extends StatefulWidget {
   final Resturant rest;
-  ResturantDetailView({this.rest, Key key}) : super(key: key);
+  final String docId;
+  ResturantDetailView({this.rest, this.docId, Key key}) : super(key: key);
 
   @override
   _ResturantDetailViewState createState() => _ResturantDetailViewState();
@@ -21,11 +29,19 @@ class _ResturantDetailViewState extends State<ResturantDetailView> {
   List restGallery = [];
   String currentMedia;
   int currentMediaIndex = 0;
+  AuthServcies _authServcies = AuthServcies();
+  ResturantService _resturantService = ResturantService();
+  String currentUserId;
   final format = dd.DateFormat("HH:mm");
 
   @override
   void initState() {
     super.initState();
+    _authServcies.getCurrentUser().then((fUser) {
+      setState(() {
+        currentUserId = fUser.uid;
+      });
+    });
     if (widget.rest.gallery.isNotEmpty) {
       setState(() {
         currentMedia = widget.rest.gallery[0];
@@ -256,12 +272,12 @@ class _ResturantDetailViewState extends State<ResturantDetailView> {
                       fontSize: 20,
                       fontWeight: FontWeight.w700),
                 ),
-                widget.rest.email == null
+                widget.rest.email != ""
                     ? SizedBox(
                         height: 10,
                       )
                     : SizedBox.shrink(),
-                widget.rest.email == null
+                widget.rest.email != ""
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -284,12 +300,12 @@ class _ResturantDetailViewState extends State<ResturantDetailView> {
                         ],
                       )
                     : SizedBox.shrink(),
-                widget.rest.website == null
+                widget.rest.website != ""
                     ? SizedBox(
                         height: 10,
                       )
                     : SizedBox.shrink(),
-                widget.rest.website == null
+                widget.rest.website != ""
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -314,12 +330,12 @@ class _ResturantDetailViewState extends State<ResturantDetailView> {
                     : SizedBox.shrink(),
               ],
             ),
-            widget.rest.telephone1 != null
+            widget.rest.telephone1 != ""
                 ? SizedBox(
                     height: 10,
                   )
                 : SizedBox.shrink(),
-            widget.rest.telephone1 != null
+            widget.rest.telephone1 != ""
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
@@ -342,12 +358,12 @@ class _ResturantDetailViewState extends State<ResturantDetailView> {
                     ],
                   )
                 : SizedBox.shrink(),
-            widget.rest.telephone2 != null
+            widget.rest.telephone2 != ""
                 ? SizedBox(
                     height: 10,
                   )
                 : SizedBox.shrink(),
-            widget.rest.telephone2 != null
+            widget.rest.telephone2 != ""
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
@@ -605,61 +621,72 @@ class _ResturantDetailViewState extends State<ResturantDetailView> {
                 ],
               ),
             ),
-            widget.rest.aboutRest == null
+            widget.rest.aboutRest != ""
                 ? SizedBox(
                     height: 20,
                   )
                 : SizedBox.shrink(),
-            widget.rest.aboutRest == null
-                ? Text(
-                    "About the shop",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Colors.grey[800],
-                        fontFamily: "Roboto",
-                        fontSize: 30,
-                        fontWeight: FontWeight.w700),
+            widget.rest.aboutRest != ""
+                ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "About the shop",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 30,
+                          fontWeight: FontWeight.w700),
+                    ),
                   )
                 : SizedBox.shrink(),
-            widget.rest.aboutRest == null
-                ? Text(
-                    widget.rest.aboutRest,
-                    textAlign: TextAlign.justify,
-                    style: TextStyle(
-                        color: Colors.grey[700],
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700),
+            widget.rest.aboutRest != ""
+                ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      widget.rest.aboutRest + ".",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.black.withOpacity(0.6),
+                        fontSize: 20,
+                      ),
+                    ),
                   )
                 : SizedBox.shrink(),
-            widget.rest.specialHolidayshoursOfClosing == null
+            widget.rest.specialHolidayshoursOfClosing != ""
                 ? SizedBox(
                     height: 20,
                   )
                 : SizedBox.shrink(),
-            widget.rest.specialHolidayshoursOfClosing == null
-                ? Text(
-                    "Special hours and holidays that close the shop",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Colors.grey[800],
-                        fontFamily: "Roboto",
-                        fontSize: 30,
-                        fontWeight: FontWeight.w700),
+            widget.rest.specialHolidayshoursOfClosing != ""
+                ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "Special hours and holidays that close the shop",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700),
+                    ),
                   )
                 : SizedBox.shrink(),
-            widget.rest.specialHolidayshoursOfClosing == null
-                ? Text(
-                    widget.rest.specialHolidayshoursOfClosing,
-                    textAlign: TextAlign.justify,
-                    style: TextStyle(
-                        color: Colors.grey[700],
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700),
+            widget.rest.specialHolidayshoursOfClosing != ""
+                ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "* " + widget.rest.specialHolidayshoursOfClosing + ".",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.black.withOpacity(0.6),
+                        fontSize: 20,
+                      ),
+                    ),
                   )
                 : SizedBox.shrink(),
             SizedBox(
               height: 20,
             ),
+            Divider(),
             widget.rest.menu.isNotEmpty
                 ? Text(
                     "Menu items",
@@ -679,12 +706,94 @@ class _ResturantDetailViewState extends State<ResturantDetailView> {
                         shrinkWrap: true,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
+                          int total = 0;
+
+                          List ratings =
+                              json.decode(widget.rest.menu[index])["ratings"];
+                          if (ratings != null) {
+                            if (ratings.isNotEmpty) {
+                              ratings.forEach((element) {
+                                total = total + element["rate"];
+                              });
+                            }
+                          }
+
                           return ResturantMenuItems(
                             restMenu: json.decode(widget.rest.menu[index]),
+                            currentUserId: currentUserId,
+                            docId: widget.docId,
+                            index: index,
+                            id: widget.rest.id,
+                            rate: total == 0 ? 0.0 : rateAlgorithm(total),
                           );
                         }),
                   )
                 : SizedBox.shrink(),
+            SizedBox(
+              height: 20,
+            ),
+            Divider(),
+            Text(
+              "Post a review & see all reviews",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Colors.grey[600],
+                  fontFamily: "Roboto",
+                  fontSize: 25,
+                  fontWeight: FontWeight.w400),
+            ),
+            RatingBar(
+              initialRating: 0,
+              minRating: 0,
+              itemSize: 60,
+              unratedColor: Colors.grey[300],
+              direction: Axis.horizontal,
+              allowHalfRating: true,
+              glow: true,
+              glowColor: Colors.white,
+              itemCount: 5,
+              itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+              itemBuilder: (context, _) => Icon(
+                MaterialIcons.star,
+                color: Pallete.mainAppColor,
+              ),
+              onRatingUpdate: (rating) {
+                print(rating);
+              },
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              height: 50.0,
+              width: width * 0.7,
+              color: Colors.transparent,
+              child: Container(
+                decoration: BoxDecoration(
+                    border: Border.all(
+                        color: Colors.black,
+                        style: BorderStyle.solid,
+                        width: 1.0),
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(3.0)),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Center(
+                    child: Text(
+                      'Write & see all reviews',
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
             SizedBox(
               height: 20,
             ),
@@ -697,19 +806,36 @@ class _ResturantDetailViewState extends State<ResturantDetailView> {
 
 class ResturantMenuItems extends StatelessWidget {
   final restMenu;
+  final String currentUserId;
+  final String docId;
+  final String id;
+  final int index;
+  final double rate;
 
-  const ResturantMenuItems({this.restMenu, Key key}) : super(key: key);
+  const ResturantMenuItems(
+      {this.restMenu,
+      this.id,
+      this.index,
+      this.currentUserId,
+      this.docId,
+      this.rate,
+      Key key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigator.push(
-        //     context,
-        //     MaterialPageRoute(
-        //         builder: (context) => ResturantDetailView(
-        //               rest: rest,
-        //             )));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => MenuItemDetail(
+                      menuItem: restMenu,
+                      currentUserId: currentUserId,
+                      docId: docId,
+                      index: index,
+                      id: id,
+                    )));
       },
       child: Container(
         width: MediaQuery.of(context).size.width * 0.6,
@@ -727,11 +853,11 @@ class ResturantMenuItems extends StatelessWidget {
               ),
               Padding(
                 padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height * 0.18,
+                  top: MediaQuery.of(context).size.height * 0.15,
                 ),
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.6,
-                  height: 80,
+                  height: 100,
                   decoration: new BoxDecoration(
                       color: Colors.black.withOpacity(0.8),
                       borderRadius: new BorderRadius.all(Radius.circular(0.0))),
@@ -761,6 +887,24 @@ class ResturantMenuItems extends StatelessWidget {
                       ),
                       SizedBox(
                         height: 5,
+                      ),
+                      RatingBar(
+                        initialRating: rate == 0.0 ? 0.0 : rate,
+                        minRating: 0,
+                        itemSize: 20,
+                        unratedColor: Colors.grey,
+                        direction: Axis.horizontal,
+                        allowHalfRating: true,
+                        glow: true,
+                        tapOnlyMode: true,
+                        glowColor: Colors.white,
+                        itemCount: 5,
+                        itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                        itemBuilder: (context, _) => Icon(
+                          MaterialIcons.star,
+                          color: Pallete.mainAppColor,
+                        ),
+                        onRatingUpdate: (rating) {},
                       ),
                     ],
                   ),

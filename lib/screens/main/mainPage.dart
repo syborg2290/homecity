@@ -12,7 +12,7 @@ import 'package:nearby/utils/shimmers/card_row_shimmer.dart';
 import 'package:nearby/utils/shimmers/main_window.dart';
 import 'package:nearby/widgets/services_categories.dart';
 
-import 'fetch&display/rest_detail_view.dart';
+import 'fetch&display/rest/rest_detail_view.dart';
 
 class MainPage extends StatefulWidget {
   MainPage({Key key}) : super(key: key);
@@ -164,9 +164,12 @@ class _MainPageState extends State<MainPage> {
                               return cardRow(context);
                             } else {
                               List<Resturant> popularRests = [];
+                              List<String> docIds = [];
+
                               snapshot.data.documents.forEach((doc) {
                                 Resturant rest = Resturant.fromDocument(doc);
                                 popularRests.add(rest);
+                                docIds.add(doc.documentID);
                               });
 
                               return SizedBox(
@@ -178,6 +181,7 @@ class _MainPageState extends State<MainPage> {
                                     itemBuilder: (context, index) =>
                                         TrendingResturantsCards(
                                           rest: popularRests[index],
+                                          docId: docIds[index],
                                         )),
                               );
                             }
@@ -193,8 +197,10 @@ class _MainPageState extends State<MainPage> {
 
 class TrendingResturantsCards extends StatelessWidget {
   final Resturant rest;
+  final String docId;
 
-  const TrendingResturantsCards({this.rest, Key key}) : super(key: key);
+  const TrendingResturantsCards({this.rest, this.docId, Key key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -205,6 +211,7 @@ class TrendingResturantsCards extends StatelessWidget {
             MaterialPageRoute(
                 builder: (context) => ResturantDetailView(
                       rest: rest,
+                      docId: docId,
                     )));
       },
       child: Container(

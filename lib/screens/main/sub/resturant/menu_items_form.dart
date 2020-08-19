@@ -26,7 +26,6 @@ class _MenuItemFormState extends State<MenuItemForm> {
   TextEditingController _price = TextEditingController();
   TextEditingController _personCount = TextEditingController();
   List foodTakeTypes = ["Any"];
-  List foodTakeTimes = ["Any Time"];
   bool isForEdit = false;
   List gallery = [];
 
@@ -42,7 +41,6 @@ class _MenuItemFormState extends State<MenuItemForm> {
         _price.text = widget.obj["price"];
         _personCount.text = widget.obj["portion_count"];
         foodTakeTypes = widget.obj["foodTake"];
-        foodTakeTimes = widget.obj["foodTimes"];
         gallery = widget.obj["gallery"];
       });
     }
@@ -95,65 +93,22 @@ class _MenuItemFormState extends State<MenuItemForm> {
     );
   }
 
-  Widget foodTime(String type, bool isContain) {
-    return Container(
-      width: 140,
-      height: 70,
-      child: Card(
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        child: Container(
-          color: isContain ? Pallete.mainAppColor : Colors.white,
-          child: Padding(
-            padding: EdgeInsets.all(10),
-            child: Center(
-              child: Text(
-                type,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: foodTakeTimes.contains(type)
-                      ? Colors.white
-                      : Colors.black,
-                  fontSize: 19,
-                ),
-              ),
-            ),
-          ),
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        elevation: 5,
-        margin: EdgeInsets.all(10),
-      ),
-    );
-  }
-
   done() {
     if (intialImage != null) {
       if (_itemName.text.trim() != "") {
         if (_price.text.trim() != "") {
           if (_personCount.text.trim() != "") {
-            if (foodTakeTypes.isNotEmpty) {
-              if (foodTakeTimes.isNotEmpty) {
-                var obj = {
-                  "initialImage": intialImage,
-                  "item_type": widget.itemType,
-                  "item_name": _itemName.text.trim(),
-                  "price": _price.text.trim(),
-                  "portion_count": _personCount.text.trim(),
-                  "about": _aboutTheItem.text.trim(),
-                  "foodTake": foodTakeTypes,
-                  "foodTimes": foodTakeTimes,
-                  "gallery": gallery,
-                };
-                Navigator.pop(context, obj);
-              } else {
-                GradientSnackBar.showMessage(
-                    context, "Time that able to get food item is required");
-              }
-            } else {
-              GradientSnackBar.showMessage(context, "How to get this item is required");
-            }
+            var obj = {
+              "initialImage": intialImage,
+              "item_type": widget.itemType,
+              "item_name": _itemName.text.trim(),
+              "price": _price.text.trim(),
+              "portion_count": _personCount.text.trim(),
+              "about": _aboutTheItem.text.trim(),
+              "foodTake": foodTakeTypes,
+              "gallery": gallery,
+            };
+            Navigator.pop(context, obj);
           } else {
             GradientSnackBar.showMessage(context, "Person count is required");
           }
@@ -299,6 +254,7 @@ class _MenuItemFormState extends State<MenuItemForm> {
                                         builder: (context) => GalleryPick(
                                               isOnlyImage: true,
                                               isSingle: true,
+                                              isPano: false,
                                             )));
                                 if (obj != null) {
                                   if (obj["type"] == "gallery") {
@@ -353,6 +309,7 @@ class _MenuItemFormState extends State<MenuItemForm> {
                                       builder: (context) => GalleryPick(
                                             isOnlyImage: true,
                                             isSingle: true,
+                                            isPano: false,
                                           )));
                               if (obj != null) {
                                 if (obj["type"] == "gallery") {
@@ -585,104 +542,6 @@ class _MenuItemFormState extends State<MenuItemForm> {
                     },
                     child: foodTake("Delivery", 'assets/icons/delivery.png',
                         foodTakeTypes.contains("Delivery")),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "* What times able to get this item",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.black.withOpacity(0.5),
-                  fontSize: 19,
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        foodTakeTimes.clear();
-                        foodTakeTimes.add("Any Time");
-                      });
-                    },
-                    child: foodTime(
-                        "Any Time", foodTakeTimes.contains("Any Time")),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      if (foodTakeTimes.contains("Any Time")) {
-                        setState(() {
-                          foodTakeTimes.clear();
-                          foodTakeTimes.add("Breakfast");
-                        });
-                      } else {
-                        if (foodTakeTimes.contains("Breakfast")) {
-                          setState(() {
-                            foodTakeTimes.remove("Breakfast");
-                          });
-                        } else {
-                          setState(() {
-                            foodTakeTimes.add("Breakfast");
-                          });
-                        }
-                      }
-                    },
-                    child: foodTime(
-                        "Breakfast", foodTakeTimes.contains("Breakfast")),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      if (foodTakeTimes.contains("Any Time")) {
-                        setState(() {
-                          foodTakeTimes.clear();
-                          foodTakeTimes.add("Lunch");
-                        });
-                      } else {
-                        if (foodTakeTimes.contains("Lunch")) {
-                          setState(() {
-                            foodTakeTimes.remove("Lunch");
-                          });
-                        } else {
-                          setState(() {
-                            foodTakeTimes.add("Lunch");
-                          });
-                        }
-                      }
-                    },
-                    child: foodTime("Lunch", foodTakeTimes.contains("Lunch")),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      if (foodTakeTimes.contains("Any Time")) {
-                        setState(() {
-                          foodTakeTimes.clear();
-                          foodTakeTimes.add("Dinner");
-                        });
-                      } else {
-                        if (foodTakeTimes.contains("Dinner")) {
-                          setState(() {
-                            foodTakeTimes.remove("Dinner");
-                          });
-                        } else {
-                          setState(() {
-                            foodTakeTimes.add("Dinner");
-                          });
-                        }
-                      }
-                    },
-                    child: foodTime("Dinner", foodTakeTimes.contains("Dinner")),
                   ),
                 ],
               ),

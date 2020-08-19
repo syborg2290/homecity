@@ -199,6 +199,7 @@ class _GrocGalleryState extends State<GrocGallery> {
                               builder: (context) => GalleryPick(
                                     isOnlyImage: false,
                                     isSingle: false,
+                                    isPano: false,
                                   )));
                       if (obj != null) {
                         if (obj["type"] == "gallery") {
