@@ -337,7 +337,10 @@ class _SaloonsNProductsGalleryState extends State<SaloonsNProductsGallery> {
                                             await Navigator.push(context,
                                                 MaterialPageRoute(
                                                     builder: (context) {
-                                          return VideoTrimmer();
+                                          return VideoTrimmer(
+                                            trimmer: _trimmer,
+                                            media: gallery[index]["media"],
+                                          );
                                         }));
                                         if (trimmedVideo != null) {
                                           var mediaObj = {

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:nearby/models/resturant.dart';
 import 'package:nearby/services/auth_services.dart';
 import 'package:nearby/services/resturant_service.dart';
@@ -13,6 +14,7 @@ import 'package:nearby/utils/rate_algorithm.dart';
 import 'package:nearby/utils/videoplayers/network_player.dart';
 import 'package:nearby/utils/full_screen_network_file.dart';
 import 'package:intl/intl.dart' as dd;
+import 'package:readmore/readmore.dart';
 
 import 'menu_item_detail.dart';
 
@@ -642,13 +644,18 @@ class _ResturantDetailViewState extends State<ResturantDetailView> {
             widget.rest.aboutRest != ""
                 ? Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      widget.rest.aboutRest + ".",
+                    child: ReadMoreText(
+                      widget.rest.aboutRest,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.black.withOpacity(0.6),
                         fontSize: 20,
                       ),
+                      trimLines: 6,
+                      colorClickableText: Pallete.mainAppColor,
+                      trimMode: TrimMode.Line,
+                      trimCollapsedText: '...Show more',
+                      trimExpandedText: ' show less',
                     ),
                   )
                 : SizedBox.shrink(),
@@ -699,34 +706,46 @@ class _ResturantDetailViewState extends State<ResturantDetailView> {
                   )
                 : SizedBox.shrink(),
             widget.rest.menu.isNotEmpty
-                ? SizedBox(
-                    height: height * 0.3,
-                    child: ListView.builder(
-                        itemCount: widget.rest.menu.length,
-                        shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          int total = 0;
+                ? StreamBuilder(
+                    stream: _resturantService.streamSingleRest(widget.rest.id),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (!snapshot.hasData) {
+                        return Center(
+                            child: SpinKitCircle(color: Pallete.mainAppColor));
+                      } else {
+                        Resturant restSnap =
+                            Resturant.fromDocument(snapshot.data.documents[0]);
+                        return SizedBox(
+                          height: height * 0.3,
+                          child: ListView.builder(
+                              itemCount: restSnap.menu.length,
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                int total = 0;
 
-                          List ratings =
-                              json.decode(widget.rest.menu[index])["ratings"];
-                          if (ratings != null) {
-                            if (ratings.isNotEmpty) {
-                              ratings.forEach((element) {
-                                total = total + element["rate"];
-                              });
-                            }
-                          }
+                                List ratings = json
+                                    .decode(restSnap.menu[index])["ratings"];
+                                if (ratings != null) {
+                                  if (ratings.isNotEmpty) {
+                                    ratings.forEach((element) {
+                                      total = total + element["rate"];
+                                    });
+                                  }
+                                }
 
-                          return ResturantMenuItems(
-                            restMenu: json.decode(widget.rest.menu[index]),
-                            currentUserId: currentUserId,
-                            docId: widget.docId,
-                            index: index,
-                            id: widget.rest.id,
-                            rate: total == 0 ? 0.0 : rateAlgorithm(total),
-                          );
-                        }),
+                                return ResturantMenuItems(
+                                  restMenu: json.decode(restSnap.menu[index]),
+                                  currentUserId: currentUserId,
+                                  docId: widget.docId,
+                                  index: index,
+                                  id: restSnap.id,
+                                  rate: total == 0 ? 0.0 : rateAlgorithm(total),
+                                );
+                              }),
+                        );
+                      }
+                    },
                   )
                 : SizedBox.shrink(),
             SizedBox(
@@ -835,6 +854,7 @@ class ResturantMenuItems extends StatelessWidget {
                       docId: docId,
                       index: index,
                       id: id,
+                      ownerId: restMenu["ownerId"],
                     )));
       },
       child: Container(

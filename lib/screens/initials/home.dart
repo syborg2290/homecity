@@ -1,8 +1,13 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:nearby/config/settings.dart';
 import 'package:nearby/screens/main/bookmarks.dart';
 import 'package:nearby/screens/main/chat.dart';
 import 'package:nearby/screens/main/mainPage.dart';
@@ -10,7 +15,9 @@ import 'package:nearby/screens/main/notification.dart';
 import 'package:nearby/screens/main/profile.dart';
 import 'package:nearby/services/auth_services.dart';
 import 'package:nearby/utils/pallete.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:http/http.dart' as http;
 
 class Home extends StatefulWidget {
   Home({Key key}) : super(key: key);
@@ -22,7 +29,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   PageController pageController;
   AuthServcies _authSerivice = AuthServcies();
-
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
   int pageIndex = 0;
   String currentUserId;
 
@@ -36,6 +44,94 @@ class _HomeState extends State<Home> {
     });
     pageController = PageController();
     checkLocationPermission();
+
+    initializeLocalNotification();
+
+    if (Platform.isIOS) {
+      _firebaseMessaging.requestNotificationPermissions(
+          IosNotificationSettings(alert: true, badge: true, sound: true));
+      _firebaseMessaging.onIosSettingsRegistered.listen((settings) {
+        print('Settings Registered:$settings');
+      });
+    } else {
+      _firebaseMessaging.configure(onLaunch: (Map<String, dynamic> msg) {
+        _showNotificationWithSound(msg);
+      }, onResume: (Map<String, dynamic> msg) {
+        _showNotificationWithSound(msg);
+      }, onMessage: (Map<String, dynamic> msg) {
+        _showNotificationWithSound(msg);
+      });
+    }
+  }
+
+  initializeLocalNotification() {
+    // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
+    // If you have skipped STEP 3 then change app_icon to @mipmap/ic_launcher
+    var initializationSettingsAndroid =
+        new AndroidInitializationSettings('app_icon');
+    var initializationSettingsIOS = new IOSInitializationSettings();
+    var initializationSettings = new InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
+    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+    flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onSelectNotification: onSelectNotification,
+    );
+  }
+
+  Future onSelectNotification(String payload) async {
+    Map<String, dynamic> re = json.decode(payload);
+  }
+
+  Future<String> _downloadAndSaveFile(String url, String fileName) async {
+    var directory = await getApplicationDocumentsDirectory();
+    var filePath = '${directory.path}/$fileName';
+    var response = await http.get(url == null ? Null_user : url);
+    var file = File(filePath);
+    await file.writeAsBytes(response.bodyBytes);
+    return filePath;
+  }
+
+  Future _showNotificationWithSound(Map<String, dynamic> message) async {
+    String path =
+        await _downloadAndSaveFile(message["data"]["userImage"], "userImage");
+
+    var vibrationPattern = Int64List(4);
+    vibrationPattern[0] = 0;
+    vibrationPattern[1] = 1000;
+    vibrationPattern[2] = 5000;
+    vibrationPattern[3] = 2000;
+
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      currentUserId,
+      currentUserId,
+      'your channel description',
+      enableVibration: true,
+      vibrationPattern: vibrationPattern,
+      importance: Importance.Max,
+      priority: Priority.High,
+      playSound: true,
+      enableLights: true,
+      color: Pallete.mainAppColor,
+      ledColor: Pallete.mainAppColor,
+      ledOnMs: 1000,
+      ledOffMs: 500,
+      sound: RawResourceAndroidNotificationSound('swiftly'),
+      largeIcon: FilePathAndroidBitmap(path),
+      styleInformation: MediaStyleInformation(),
+
+      //ongoing: true,
+    );
+    var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
+    var platformChannelSpecifics = new NotificationDetails(
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      message["data"]["username"],
+      message["notification"]["body"],
+      platformChannelSpecifics,
+      payload: json.encode(message),
+    );
   }
 
   checkLocationPermission() async {

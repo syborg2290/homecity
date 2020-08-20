@@ -14,15 +14,15 @@ import 'package:video_player/video_player.dart';
 import 'package:video_trimmer/video_trimmer.dart';
 
 class MusicGallery extends StatefulWidget {
-   final List gallery;
-  MusicGallery({this.gallery,Key key}) : super(key: key);
+  final List gallery;
+  MusicGallery({this.gallery, Key key}) : super(key: key);
 
   @override
   _MusicGalleryState createState() => _MusicGalleryState();
 }
 
 class _MusicGalleryState extends State<MusicGallery> {
- List gallery = [];
+  List gallery = [];
   VideoPlayerController _videocontroller;
 
   @override
@@ -336,7 +336,10 @@ class _MusicGalleryState extends State<MusicGallery> {
                                             await Navigator.push(context,
                                                 MaterialPageRoute(
                                                     builder: (context) {
-                                          return VideoTrimmer();
+                                          return VideoTrimmer(
+                                            trimmer: _trimmer,
+                                            media: gallery[index]["media"],
+                                          );
                                         }));
                                         if (trimmedVideo != null) {
                                           var mediaObj = {

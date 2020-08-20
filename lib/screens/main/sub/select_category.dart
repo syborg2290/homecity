@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:nearby/screens/initials/home.dart';
 import 'package:nearby/screens/main/sub/apparel/main_services.dart';
 import 'package:nearby/screens/main/sub/bar&nightlife/main_types.dart';
 import 'package:nearby/screens/main/sub/education/education_main_types.dart';
@@ -37,223 +38,237 @@ class _SelectCategoryState extends State<SelectCategory> {
 
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(statusBarColor: Colors.transparent));
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        brightness: Brightness.light,
-        backgroundColor: Colors.transparent,
-        elevation: 0.0,
-        leading: Padding(
-          padding: const EdgeInsets.all(
-            12,
-          ),
-          child: GestureDetector(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Image.asset(
-              'assets/icons/left-arrow.png',
-              width: 30,
-              height: 30,
-              color: Colors.black.withOpacity(0.6),
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => Home()));
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          brightness: Brightness.light,
+          backgroundColor: Colors.transparent,
+          elevation: 0.0,
+          leading: Padding(
+            padding: const EdgeInsets.all(
+              12,
+            ),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => Home()));
+              },
+              child: Image.asset(
+                'assets/icons/left-arrow.png',
+                width: 30,
+                height: 30,
+                color: Colors.black.withOpacity(0.6),
+              ),
             ),
           ),
+          centerTitle: false,
+          title: Text(
+            'Select a category',
+            style: TextStyle(
+                color: Colors.grey[700],
+                fontFamily: "Roboto",
+                fontSize: 20,
+                fontWeight: FontWeight.w400),
+          ),
         ),
-        centerTitle: false,
-        title: Text(
-          'Select a category',
-          style: TextStyle(
-              color: Colors.grey[700],
-              fontFamily: "Roboto",
-              fontSize: 20,
-              fontWeight: FontWeight.w400),
-        ),
-      ),
-      body: FutureBuilder(
-          future: DefaultAssetBundle.of(context)
-              .loadString('assets/json/services.json'),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return Center(child: SpinKitCircle(color: Pallete.mainAppColor));
-            }
-            List myData = json.decode(snapshot.data);
+        body: FutureBuilder(
+            future: DefaultAssetBundle.of(context)
+                .loadString('assets/json/services.json'),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Center(
+                    child: SpinKitCircle(color: Pallete.mainAppColor));
+              }
+              List myData = json.decode(snapshot.data);
 
-            return Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: GridView.count(
-                  crossAxisCount: 2,
-                  shrinkWrap: true,
-                  mainAxisSpacing: 5,
-                  children: List.generate(myData.length, (index) {
-                    return GestureDetector(
-                      onTap: () {
-                        if (myData[index]['service'] == "Resturants & cafes") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AddResturant(
-                                        type: myData[index]['service'],
-                                      )));
-                        }
+              return Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: GridView.count(
+                    crossAxisCount: 2,
+                    shrinkWrap: true,
+                    mainAxisSpacing: 5,
+                    children: List.generate(myData.length, (index) {
+                      return GestureDetector(
+                        onTap: () {
+                          if (myData[index]['service'] ==
+                              "Resturants & cafes") {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AddResturant(
+                                          type: myData[index]['service'],
+                                        )));
+                          }
 
-                        if (myData[index]['service'] == "Places") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => PlaceType()));
-                        }
+                          if (myData[index]['service'] == "Places") {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => PlaceType()));
+                          }
 
-                        if (myData[index]['service'] == "Groceries & markets") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AddGrocery()));
-                        }
+                          if (myData[index]['service'] ==
+                              "Groceries & markets") {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AddGrocery()));
+                          }
 
-                        if (myData[index]['service'] == "Events") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => EventType()));
-                        }
-                        if (myData[index]['service'] == "Apparel & fashions") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => MainApparelServices()));
-                        }
-                        if (myData[index]['service'] == "Vehicle services") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => VehiServiceType()));
-                        }
-                        if (myData[index]['service'] == "Night-life") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => NightLifeType()));
-                        }
-                        if (myData[index]['service'] == "Stays") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Addstays()));
-                        }
+                          if (myData[index]['service'] == "Events") {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => EventType()));
+                          }
+                          if (myData[index]['service'] ==
+                              "Apparel & fashions") {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        MainApparelServices()));
+                          }
+                          if (myData[index]['service'] == "Vehicle services") {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => VehiServiceType()));
+                          }
+                          if (myData[index]['service'] == "Night-life") {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => NightLifeType()));
+                          }
+                          if (myData[index]['service'] == "Stays") {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Addstays()));
+                          }
 
-                        if (myData[index]['service'] == "Education") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => EducationTypes()));
-                        }
-                        if (myData[index]['service'] ==
-                            "Electronics & repairs") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SelectServices()));
-                        }
-                        if (myData[index]['service'] ==
-                            "Beauty salons & products") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SaloonsMain()));
-                        }
+                          if (myData[index]['service'] == "Education") {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => EducationTypes()));
+                          }
+                          if (myData[index]['service'] ==
+                              "Electronics & repairs") {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SelectServices()));
+                          }
+                          if (myData[index]['service'] ==
+                              "Beauty salons & products") {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SaloonsMain()));
+                          }
 
-                        if (myData[index]['service'] ==
-                            "Properties & renting") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => PropertyCategory()));
-                        }
+                          if (myData[index]['service'] ==
+                              "Properties & renting") {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => PropertyCategory()));
+                          }
 
-                        if (myData[index]['service'] == "Home & furnitures") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AddFurnitureNHome()));
-                        }
+                          if (myData[index]['service'] == "Home & furnitures") {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AddFurnitureNHome()));
+                          }
 
-                        if (myData[index]['service'] ==
-                            "Hardware,tools & materials") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      HardwareNToolsServices()));
-                        }
+                          if (myData[index]['service'] ==
+                              "Hardware,tools & materials") {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        HardwareNToolsServices()));
+                          }
 
-                        if (myData[index]['service'] ==
-                            "Music instruments & services") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => MusicMainServices()));
-                        }
+                          if (myData[index]['service'] ==
+                              "Music instruments & services") {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => MusicMainServices()));
+                          }
 
-                        if (myData[index]['service'] ==
-                            "Sports,wellness & outdoors") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AddSportsNwellness()));
-                        }
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.all(
-                          5,
-                        ),
-                        child: Container(
-                          width: width * 0.2,
-                          height: height * 0.1,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10.0),
-                              border: Border.all(
-                                color: Colors.black.withOpacity(0.6),
-                                width: 1,
-                              )),
-                          child: Card(
-                            clipBehavior: Clip.antiAliasWithSaveLayer,
-                            child: Column(
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    myData[index]['service'],
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.black.withOpacity(0.6),
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
+                          if (myData[index]['service'] ==
+                              "Sports,wellness & outdoors") {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        AddSportsNwellness()));
+                          }
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.all(
+                            5,
+                          ),
+                          child: Container(
+                            width: width * 0.2,
+                            height: height * 0.1,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0),
+                                border: Border.all(
+                                  color: Colors.black.withOpacity(0.6),
+                                  width: 1,
+                                )),
+                            child: Card(
+                              clipBehavior: Clip.antiAliasWithSaveLayer,
+                              child: Column(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      myData[index]['service'],
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Colors.black.withOpacity(0.6),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Center(
-                                  child: Image.asset(
-                                    myData[index]['image_path'],
-                                    width: 80,
-                                    height: 80,
-                                    color: Colors.black.withOpacity(0.6),
-                                    fit: BoxFit.contain,
+                                  Center(
+                                    child: Image.asset(
+                                      myData[index]['image_path'],
+                                      width: 80,
+                                      height: 80,
+                                      color: Colors.black.withOpacity(0.6),
+                                      fit: BoxFit.contain,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              elevation: 3,
+                              margin: EdgeInsets.all(0),
                             ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            elevation: 3,
-                            margin: EdgeInsets.all(0),
                           ),
                         ),
-                      ),
-                    );
-                  })),
-            );
-          }),
+                      );
+                    })),
+              );
+            }),
+      ),
     );
   }
 }

@@ -76,6 +76,12 @@ class AuthServcies {
         .document(currentUserId)
         .updateData({"androidNotificationToken": token});
   }
+  
+  
+   Future<List<DocumentSnapshot>> getAllUsers() async {
+    QuerySnapshot qsnap = await userRef.getDocuments();
+    return qsnap.documents;
+  }
 
   signout() async {
     await auth.signOut();

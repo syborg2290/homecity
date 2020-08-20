@@ -22,6 +22,8 @@ dependencies:
   progress_dialog: ^1.2.4
   flutter_spinkit: ^4.1.2+1
   firebase_messaging: ^6.0.16
+  flutter_local_notifications: ^1.4.4+4
+  http: ^0.12.2
   awesome_dialog: ^1.1.3
   animator: ^1.0.0+5
   content_placeholder: ^0.1.0
@@ -51,6 +53,8 @@ dependencies:
   flutter_icons: ^1.1.0
   pie_chart: ^3.1.1
   panorama: ^0.0.2
+  readmore: ^1.0.0
+  empty_widget: ^0.0.1
 
 dev_dependencies:
   
@@ -91,6 +95,7 @@ flutter:
     - assets/icons/camera.png
     - assets/icons/video-camera.png
     - assets/icons/dot.png
+    - assets/icons/delete.png
     - assets/icons/eye_open.png
     - assets/icons/eye_close.png
     - assets/icons/plus.png
@@ -102,7 +107,12 @@ flutter:
     - assets/icons/crop.png
     - assets/icons/album.png
     - assets/icons/pana.png
+    - assets/icons/review.png
     - assets/icons/arrows.png
+    - assets/icons/thumbup.png
+    - assets/icons/thumbdown.png
+    - assets/icons/reply.png
+    - assets/icons/open-menu.png
     - assets/icons/direction.png
     
     #bottombar

@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:nearby/models/resturant.dart';
-import 'package:nearby/screens/main/fetch&display/rest/write_review_menu_items.dart';
+import 'package:nearby/services/activity_feed_service.dart';
 import 'package:nearby/services/resturant_service.dart';
 import 'package:nearby/utils/full_screen_network_file.dart';
 import 'package:nearby/utils/pallete.dart';
@@ -14,6 +14,9 @@ import 'package:nearby/utils/rate_algorithm.dart';
 import 'package:nearby/utils/videoplayers/network_player.dart';
 import 'package:intl/intl.dart' as dd;
 import 'package:pie_chart/pie_chart.dart';
+import 'package:readmore/readmore.dart';
+
+import 'display_menu_items_reviews.dart';
 
 class MenuItemDetail extends StatefulWidget {
   final menuItem;
@@ -21,12 +24,14 @@ class MenuItemDetail extends StatefulWidget {
   final String id;
   final int index;
   final String currentUserId;
+  final String ownerId;
   MenuItemDetail(
       {this.menuItem,
       this.id,
       this.index,
       this.currentUserId,
       this.docId,
+      this.ownerId,
       Key key})
       : super(key: key);
 
@@ -39,6 +44,7 @@ class _MenuItemDetailState extends State<MenuItemDetail> {
   String currentMedia;
   int currentMediaIndex = 0;
   ResturantService _resturantService = ResturantService();
+  ActivityFeedService _activityFeedService = ActivityFeedService();
   final format = dd.DateFormat("HH:mm");
 
   @override
@@ -269,30 +275,34 @@ class _MenuItemDetailState extends State<MenuItemDetail> {
                 SizedBox(
                   height: 10,
                 ),
-                Text(
-                  widget.menuItem["price"] + " LKR",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Colors.grey[700],
-                      fontSize: 25,
-                      fontWeight: FontWeight.w700),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      widget.menuItem["price"] + " LKR ",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.grey[700],
+                          fontSize: 25,
+                          fontWeight: FontWeight.w700),
+                    ),
+                    widget.menuItem["portion_count"] == ""
+                        ? SizedBox.shrink()
+                        : Text(
+                            " ( * for " +
+                                widget.menuItem["portion_count"] +
+                                " person)",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Colors.grey[500],
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500),
+                          ),
+                  ],
                 ),
-                widget.menuItem["portion_count"] != ""
-                    ? Text(
-                        "* For a " +
-                            widget.menuItem["portion_count"] +
-                            " person",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: Colors.grey[700],
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700),
-                      )
-                    : SizedBox.shrink(),
                 SizedBox(
                   height: 10,
                 ),
-                Divider(),
                 SizedBox(
                   height: 10,
                 ),
@@ -310,13 +320,18 @@ class _MenuItemDetailState extends State<MenuItemDetail> {
                 widget.menuItem["about"] != ""
                     ? Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(
+                        child: ReadMoreText(
                           widget.menuItem["about"].toString().toLowerCase(),
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 20,
                             color: Colors.black.withOpacity(0.6),
                           ),
+                          trimLines: 6,
+                          colorClickableText: Pallete.mainAppColor,
+                          trimMode: TrimMode.Line,
+                          trimCollapsedText: '...Show more',
+                          trimExpandedText: ' show less',
                         ),
                       )
                     : SizedBox.shrink(),
@@ -404,9 +419,12 @@ class _MenuItemDetailState extends State<MenuItemDetail> {
               ),
             ),
             SizedBox(
-              height: 20,
+              height: 10,
             ),
             Divider(),
+            SizedBox(
+              height: 10,
+            ),
             Text(
               "Rates & reviews",
               textAlign: TextAlign.center,
@@ -538,14 +556,12 @@ class _MenuItemDetailState extends State<MenuItemDetail> {
               onRatingUpdate: (rating) async {
                 await _resturantService.setRatingsToFoodItem(
                     widget.index, widget.docId, rating, widget.currentUserId);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => WriteMenuItemReview(
-                              rate: rating,
-                              currentUserId: widget.currentUserId,
-                              restId: widget.id,
-                            )));
+                await _activityFeedService.createActivityFeed(
+                    widget.currentUserId,
+                    widget.ownerId,
+                    widget.docId,
+                    "rate_item",
+                    widget.index);
               },
             ),
             SizedBox(
@@ -565,7 +581,15 @@ class _MenuItemDetailState extends State<MenuItemDetail> {
                     borderRadius: BorderRadius.circular(3.0)),
                 child: InkWell(
                   onTap: () {
-                    Navigator.of(context).pop();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AllMenuItemsReviews(
+                                  currentUserId: widget.currentUserId,
+                                  docId: widget.docId,
+                                  id: widget.id,
+                                  index: widget.index,
+                                )));
                   },
                   child: Center(
                     child: Text(

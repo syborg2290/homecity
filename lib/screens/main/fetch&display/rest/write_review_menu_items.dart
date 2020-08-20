@@ -1,28 +1,34 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:animator/animator.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_icons/flutter_icons.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:nearby/services/resturant_service.dart';
+import 'package:nearby/utils/compress_media.dart';
+import 'package:nearby/utils/flush_bars.dart';
 import 'package:nearby/utils/full_screen_media_file.dart';
+import 'package:nearby/utils/image_cropper.dart';
 import 'package:nearby/utils/media_picker/gallery_pick.dart';
 import 'package:nearby/utils/pallete.dart';
 import 'package:nearby/utils/video_trimmer.dart';
 import 'package:nearby/utils/videoplayers/fileVideoPlayer.dart';
-import 'package:panorama/panorama.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_trimmer/video_trimmer.dart';
 
 class WriteMenuItemReview extends StatefulWidget {
-  final double rate;
   final String currentUserId;
   final String restId;
-  WriteMenuItemReview({this.rate, this.currentUserId, this.restId, Key key})
+  final String id;
+  final int index;
+  WriteMenuItemReview(
+      {this.index, this.id, this.currentUserId, this.restId, Key key})
       : super(key: key);
 
   @override
@@ -33,6 +39,47 @@ class _WriteMenuItemReviewState extends State<WriteMenuItemReview> {
   TextEditingController _review = TextEditingController();
   VideoPlayerController _videocontroller;
   List media = [];
+  ProgressDialog pr;
+  ResturantService _resturantService = ResturantService();
+
+  @override
+  void initState() {
+    super.initState();
+    pr = ProgressDialog(
+      context,
+      type: ProgressDialogType.Download,
+      textDirection: TextDirection.ltr,
+      isDismissible: false,
+      customBody: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(50),
+        ),
+        width: 100,
+        height: 100,
+        child: Center(
+          child: Padding(
+            padding: EdgeInsets.only(
+              top: 15,
+              bottom: 10,
+            ),
+            child: Column(
+              children: <Widget>[
+                SpinKitPouringHourglass(color: Pallete.mainAppColor),
+                Text("Posting review...",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Color.fromRGBO(129, 165, 168, 1),
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    )),
+              ],
+            ),
+          ),
+        ),
+      ),
+      showLogs: false,
+    );
+  }
 
   Widget textBoxContainer(TextEditingController _contro, String hint, int lines,
       double width, bool autoFocus, TextInputType typeText) {
@@ -169,6 +216,67 @@ class _WriteMenuItemReviewState extends State<WriteMenuItemReview> {
     )..show();
   }
 
+  done() async {
+    if (_review.text.trim() != "" || media.isNotEmpty) {
+      pr.show();
+
+      List uploadMedia = [];
+      if (media.isNotEmpty) {
+        for (var ele in media) {
+          if (ele["type"] == "image") {
+            String downUrl = await _resturantService
+                .uploadImageRest(await compressImageFile(ele["media"], 70));
+            String thumbUrl = await _resturantService.uploadImageRestThumbnail(
+                await compressImageFile(ele["media"], 40));
+            var obj = {
+              "url": downUrl,
+              "thumb": thumbUrl,
+              "type": "image",
+            };
+            uploadMedia.add(json.encode(obj));
+          } else if (ele["type"] == "video") {
+            String downUrl = await _resturantService
+                .uploadVideoToRest(await compressVideoFile(ele["media"]));
+            String thumbUrl = await _resturantService.uploadVideoToRestThumb(
+                await getThumbnailForVideo(ele["media"]));
+            var obj = {
+              "url": downUrl,
+              "thumb": thumbUrl,
+              "type": "video",
+            };
+            uploadMedia.add(json.encode(obj));
+          } else {
+            String downUrl = await _resturantService
+                .uploadImageRest(await compressImageFile(ele["media"], 70));
+            String thumbUrl = await _resturantService.uploadImageRestThumbnail(
+                await compressImageFile(ele["media"], 40));
+            var obj = {
+              "url": downUrl,
+              "thumb": thumbUrl,
+              "type": "pano",
+            };
+            uploadMedia.add(json.encode(obj));
+          }
+        }
+      }
+
+      await _resturantService.setReviewToFoodItem(
+        widget.index,
+        widget.restId,
+        _review.text.trim(),
+        uploadMedia,
+        widget.currentUserId,
+      );
+
+      pr.hide().whenComplete(() {
+        Navigator.pop(context);
+      });
+    } else {
+      GradientSnackBar.showMessage(
+          context, "Write a review or select media files");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -209,8 +317,8 @@ class _WriteMenuItemReviewState extends State<WriteMenuItemReview> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: FlatButton(
-              onPressed: () {
-                // done();
+              onPressed: () async {
+                await done();
               },
               child: Center(
                   child: Text("post",
@@ -234,28 +342,7 @@ class _WriteMenuItemReviewState extends State<WriteMenuItemReview> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             SizedBox(
-              height: height * 0.2,
-            ),
-            RatingBar(
-              initialRating: widget.rate,
-              minRating: 0,
-              itemSize: 50,
-              unratedColor: Colors.grey[300],
-              direction: Axis.horizontal,
-              allowHalfRating: true,
-              glow: true,
-              tapOnlyMode: true,
-              glowColor: Colors.white,
-              itemCount: 5,
-              itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-              itemBuilder: (context, _) => Icon(
-                MaterialIcons.star,
-                color: Pallete.mainAppColor,
-              ),
-              onRatingUpdate: (rating) {},
-            ),
-            SizedBox(
-              height: 20,
+              height: height * 0.15,
             ),
             textBoxContainer(
                 _review,
@@ -611,21 +698,172 @@ class _WriteMenuItemReviewState extends State<WriteMenuItemReview> {
                                                 type: "image",
                                               )));
                                 },
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: Image.file(
-                                    media[index]["media"],
-                                    fit: BoxFit.cover,
-                                  ),
+                                child: Stack(
+                                  children: <Widget>[
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Image.file(
+                                        media[index]["media"],
+                                        fit: BoxFit.cover,
+                                        width: width * 0.35,
+                                        height: height * 0.20,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(2.0),
+                                      child: Container(
+                                        width: 40,
+                                        height: 40,
+                                        child: FloatingActionButton(
+                                          onPressed: () async {
+                                            File croppedImage =
+                                                await Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            ImageCropper(
+                                                              image:
+                                                                  media[index]
+                                                                      ["media"],
+                                                            )));
+                                            if (croppedImage != null) {
+                                              var mediaObj = {
+                                                "type": "image",
+                                                "media": croppedImage,
+                                              };
+                                              setState(() {
+                                                media[index] = mediaObj;
+                                              });
+                                            }
+                                          },
+                                          heroTag: index,
+                                          backgroundColor: Pallete.mainAppColor,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Image.asset(
+                                              'assets/icons/crop.png',
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.topRight,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(6.0),
+                                        child: Container(
+                                          width: 40,
+                                          height: 40,
+                                          child: FloatingActionButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                media.removeAt(index);
+                                              });
+                                            },
+                                            heroTag: (index + 1).toString() +
+                                                "media",
+                                            backgroundColor: Colors.red,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Image.asset(
+                                                'assets/icons/close.png',
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
                                 ),
                               )
                             : media[index]["type"] == "video"
-                                ? ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: FileVideoplayer(
-                                      aspectRatio: 1 / 2,
-                                      video: media[index]["media"],
-                                    ),
+                                ? Stack(
+                                    children: <Widget>[
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: FileVideoplayer(
+                                          aspectRatio: 1 / 2,
+                                          video: media[index]["media"],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(2.0),
+                                        child: Container(
+                                          width: 40,
+                                          height: 40,
+                                          child: FloatingActionButton(
+                                            onPressed: () async {
+                                              final Trimmer _trimmer =
+                                                  Trimmer();
+                                              await _trimmer.loadVideo(
+                                                  videoFile: media[index]
+                                                      ["media"]);
+
+                                              File trimmedVideo =
+                                                  await Navigator.push(context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) {
+                                                return VideoTrimmer(
+                                                  trimmer: _trimmer,
+                                                  media: media[index]["media"],
+                                                );
+                                              }));
+                                              if (trimmedVideo != null) {
+                                                var mediaObj = {
+                                                  "type": "video",
+                                                  "media": trimmedVideo,
+                                                };
+                                                setState(() {
+                                                  media[index] = mediaObj;
+                                                });
+                                              }
+                                            },
+                                            heroTag: index,
+                                            backgroundColor:
+                                                Pallete.mainAppColor,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Image.asset(
+                                                'assets/icons/cut.png',
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.topRight,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(6.0),
+                                          child: Container(
+                                            width: 40,
+                                            height: 40,
+                                            child: FloatingActionButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  media.removeAt(index);
+                                                });
+                                              },
+                                              heroTag: (index + 1).toString() +
+                                                  "media",
+                                              backgroundColor: Colors.red,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Image.asset(
+                                                  'assets/icons/close.png',
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    ],
                                   )
                                 : GestureDetector(
                                     onTap: () {
@@ -638,40 +876,75 @@ class _WriteMenuItemReviewState extends State<WriteMenuItemReview> {
                                                     type: "pano",
                                                   )));
                                     },
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(10),
-                                      child: Stack(
-                                        children: <Widget>[
-                                          Image.file(
-                                            media[index]["media"],
-                                            fit: BoxFit.contain,
+                                    child: Stack(
+                                      children: <Widget>[
+                                        ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          child: Stack(
+                                            children: <Widget>[
+                                              Image.file(
+                                                media[index]["media"],
+                                                fit: BoxFit.contain,
+                                              ),
+                                              Container(
+                                                width: width * 0.3,
+                                                height: height * 0.20,
+                                                color: Colors.black
+                                                    .withOpacity(0.2),
+                                              ),
+                                              Animator(
+                                                duration: Duration(
+                                                    milliseconds: 2000),
+                                                tween:
+                                                    Tween(begin: 1.2, end: 1.3),
+                                                curve: Curves.bounceIn,
+                                                cycles: 0,
+                                                builder: (anim) => Center(
+                                                  child: Transform.scale(
+                                                    scale: anim.value,
+                                                    child: Image.asset(
+                                                      'assets/icons/arrows.png',
+                                                      width: 50,
+                                                      height: 50,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                          Container(
-                                            width: width * 0.3,
-                                            height: height * 0.20,
-                                            color:
-                                                Colors.black.withOpacity(0.2),
-                                          ),
-                                          Animator(
-                                            duration:
-                                                Duration(milliseconds: 2000),
-                                            tween: Tween(begin: 1.2, end: 1.3),
-                                            curve: Curves.bounceIn,
-                                            cycles: 0,
-                                            builder: (anim) => Center(
-                                              child: Transform.scale(
-                                                scale: anim.value,
-                                                child: Image.asset(
-                                                  'assets/icons/arrows.png',
-                                                  width: 50,
-                                                  height: 50,
-                                                  color: Colors.white,
+                                        ),
+                                        Align(
+                                          alignment: Alignment.topRight,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(6.0),
+                                            child: Container(
+                                              width: 40,
+                                              height: 40,
+                                              child: FloatingActionButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    media.removeAt(index);
+                                                  });
+                                                },
+                                                heroTag:
+                                                    (index + 1).toString() +
+                                                        "media",
+                                                backgroundColor: Colors.red,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Image.asset(
+                                                    'assets/icons/close.png',
+                                                    color: Colors.white,
+                                                  ),
                                                 ),
                                               ),
                                             ),
                                           ),
-                                        ],
-                                      ),
+                                        )
+                                      ],
                                     ),
                                   ),
                       ),
