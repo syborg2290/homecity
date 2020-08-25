@@ -20,6 +20,7 @@ class HardwareNTools {
   List gallery;
   List items;
   List rent;
+  double totalratings;
   Timestamp timestamp;
 
   HardwareNTools({
@@ -42,6 +43,7 @@ class HardwareNTools {
     this.gallery,
     this.items,
     this.rent,
+    this.totalratings,
     this.timestamp,
   });
 
@@ -66,6 +68,7 @@ class HardwareNTools {
       gallery: doc['gallery'],
       items: doc['items'],
       rent: doc['rent'],
+      totalratings: doc['total_ratings'],
       timestamp: doc['timestamp'],
     );
   }

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nearby/screens/main/sub/apparel/apparel_gallery.dart';
+import 'package:nearby/screens/main/sub/gallery.dart';
 import 'package:nearby/utils/flush_bars.dart';
 import 'package:nearby/utils/image_cropper.dart';
 import 'package:nearby/utils/media_picker/gallery_pick.dart';
@@ -321,7 +321,7 @@ class _AddTailorState extends State<AddTailor> {
                 List reGallery = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ApparelGallery(
+                        builder: (context) => Gallery(
                               gallery: gallery,
                             )));
                 if (reGallery != null) {

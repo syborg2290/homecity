@@ -86,7 +86,7 @@ class _HomeState extends State<Home> {
   Future<String> _downloadAndSaveFile(String url, String fileName) async {
     var directory = await getApplicationDocumentsDirectory();
     var filePath = '${directory.path}/$fileName';
-    var response = await http.get(url == null ? Null_user : url);
+    var response = await http.get(url == "null" ? Null_user : url);
     var file = File(filePath);
     await file.writeAsBytes(response.bodyBytes);
     return filePath;

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:nearby/models/resturant.dart';
 import 'package:nearby/services/activity_feed_service.dart';
 import 'package:nearby/services/resturant_service.dart';
@@ -25,6 +26,7 @@ class MenuItemDetail extends StatefulWidget {
   final int index;
   final String currentUserId;
   final String ownerId;
+
   MenuItemDetail(
       {this.menuItem,
       this.id,
@@ -440,17 +442,34 @@ class _MenuItemDetailState extends State<MenuItemDetail> {
             StreamBuilder(
               stream: _resturantService.streamSingleRest(widget.id),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
-                int total = 0;
-                int no1 = 0;
-                int no2 = 0;
-                int no3 = 0;
-                int no4 = 0;
-                int no5 = 0;
-                if (snapshot.hasData) {
+                if (!snapshot.hasData) {
+                  return Center(
+                      child: SpinKitCircle(color: Pallete.mainAppColor));
+                } else if (snapshot.data.documents == null) {
+                  return Center(
+                      child: SpinKitCircle(color: Pallete.mainAppColor));
+                } else if (snapshot.data.documents.length == 0) {
+                  return Center(
+                      child: SpinKitCircle(color: Pallete.mainAppColor));
+                } else {
+                  int total = 0;
+                  int no1 = 0;
+                  int no2 = 0;
+                  int no3 = 0;
+                  int no4 = 0;
+                  int no5 = 0;
                   Resturant restSnap =
                       Resturant.fromDocument(snapshot.data.documents[0]);
-                  List ratings =
-                      json.decode(restSnap.menu[widget.index])["ratings"];
+                  List menu = restSnap.menu;
+
+                  List ratings = [];
+
+                  for (var me in menu) {
+                    if (json.decode(me)["id"] == widget.menuItem["id"]) {
+                      ratings = json.decode(me)["ratings"];
+                    }
+                  }
+
                   if (ratings != null) {
                     if (ratings.isNotEmpty) {
                       ratings.forEach((element) {
@@ -473,53 +492,53 @@ class _MenuItemDetailState extends State<MenuItemDetail> {
                       });
                     }
                   }
-                }
 
-                return Column(
-                  children: <Widget>[
-                    RatingBar(
-                      initialRating: total == 0 ? 0.0 : rateAlgorithm(total),
-                      minRating: 0,
-                      itemSize: 40,
-                      unratedColor: Colors.grey[300],
-                      direction: Axis.horizontal,
-                      allowHalfRating: true,
-                      glow: true,
-                      tapOnlyMode: true,
-                      glowColor: Colors.white,
-                      itemCount: 5,
-                      itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                      itemBuilder: (context, _) => Icon(
-                        MaterialIcons.star,
-                        color: Pallete.mainAppColor,
+                  return Column(
+                    children: <Widget>[
+                      RatingBar(
+                        initialRating: total == 0 ? 0.0 : rateAlgorithm(total),
+                        minRating: 0,
+                        itemSize: 40,
+                        unratedColor: Colors.grey[300],
+                        direction: Axis.horizontal,
+                        allowHalfRating: true,
+                        glow: true,
+                        tapOnlyMode: true,
+                        glowColor: Colors.white,
+                        itemCount: 5,
+                        itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                        itemBuilder: (context, _) => Icon(
+                          MaterialIcons.star,
+                          color: Pallete.mainAppColor,
+                        ),
+                        onRatingUpdate: (rating) {},
                       ),
-                      onRatingUpdate: (rating) {},
-                    ),
-                    Text(
-                      total == 0
-                          ? 0.0.toString()
-                          : rateAlgorithm(total).toString(),
-                      style: TextStyle(
-                          color: Colors.grey[800],
-                          fontFamily: "Roboto",
-                          fontSize: 50,
-                          fontWeight: FontWeight.w600),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ReviewsChart(
-                        no1: no1,
-                        no2: no2,
-                        no3: no3,
-                        no4: no4,
-                        no5: no5,
+                      Text(
+                        total == 0
+                            ? 0.0.toString()
+                            : rateAlgorithm(total).toString(),
+                        style: TextStyle(
+                            color: Colors.grey[800],
+                            fontFamily: "Roboto",
+                            fontSize: 50,
+                            fontWeight: FontWeight.w600),
                       ),
-                    ),
-                  ],
-                );
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ReviewsChart(
+                          no1: no1,
+                          no2: no2,
+                          no3: no3,
+                          no4: no4,
+                          no5: no5,
+                        ),
+                      ),
+                    ],
+                  );
+                }
               },
             ),
             Divider(),
@@ -556,12 +575,17 @@ class _MenuItemDetailState extends State<MenuItemDetail> {
               onRatingUpdate: (rating) async {
                 await _resturantService.setRatingsToFoodItem(
                     widget.index, widget.docId, rating, widget.currentUserId);
-                await _activityFeedService.createActivityFeed(
+                if (widget.currentUserId != widget.ownerId) {
+                  await _activityFeedService.createActivityFeed(
                     widget.currentUserId,
                     widget.ownerId,
                     widget.docId,
                     "rate_item",
-                    widget.index);
+                    widget.index,
+                    null,
+                    null,
+                  );
+                }
               },
             ),
             SizedBox(
@@ -589,6 +613,7 @@ class _MenuItemDetailState extends State<MenuItemDetail> {
                                   docId: widget.docId,
                                   id: widget.id,
                                   index: widget.index,
+                                  restOwnerId: widget.ownerId,
                                 )));
                   },
                   child: Center(

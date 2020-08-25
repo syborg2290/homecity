@@ -17,6 +17,7 @@ class Events {
   Timestamp heldDate;
   Timestamp startTime;
   List gallery;
+  double totalratings;
   Timestamp timestamp;
 
   Events(
@@ -36,6 +37,7 @@ class Events {
       this.heldDate,
       this.startTime,
       this.gallery,
+      this.totalratings,
       this.timestamp});
 
   factory Events.fromDocument(DocumentSnapshot doc) {
@@ -56,6 +58,7 @@ class Events {
         heldDate: doc['heldDate'],
         startTime: doc['startTime'],
         gallery: doc['gallery'],
+        totalratings: doc['total_ratings'],
         timestamp: doc['timestamp']);
   }
 }

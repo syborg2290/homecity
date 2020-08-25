@@ -6,6 +6,8 @@ class ActivityFeed {
   final String type;
   final String typeId;
   final int anyIndex;
+  final int anyListIndex;
+  final int thirdIndex;
   final bool read;
   final Timestamp timestamp;
 
@@ -15,6 +17,8 @@ class ActivityFeed {
     this.type,
     this.typeId,
     this.anyIndex,
+    this.anyListIndex,
+    this.thirdIndex,
     this.read,
     this.timestamp,
   });
@@ -27,6 +31,8 @@ class ActivityFeed {
       typeId: doc['typeId'],
       read: doc['read'],
       anyIndex: doc['anyIndex'],
+      anyListIndex: doc['anyListIndex'],
+      thirdIndex: doc['thirdIndex'],
       timestamp: doc['timestamp'],
     );
   }

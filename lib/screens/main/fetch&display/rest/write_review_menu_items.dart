@@ -21,14 +21,23 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_trimmer/video_trimmer.dart';
+import 'package:nearby/services/activity_feed_service.dart';
 
 class WriteMenuItemReview extends StatefulWidget {
   final String currentUserId;
   final String restId;
   final String id;
   final int index;
+  final int listIndex;
+  final String restOwnerId;
   WriteMenuItemReview(
-      {this.index, this.id, this.currentUserId, this.restId, Key key})
+      {this.index,
+      this.id,
+      this.listIndex,
+      this.restOwnerId,
+      this.currentUserId,
+      this.restId,
+      Key key})
       : super(key: key);
 
   @override
@@ -41,6 +50,7 @@ class _WriteMenuItemReviewState extends State<WriteMenuItemReview> {
   List media = [];
   ProgressDialog pr;
   ResturantService _resturantService = ResturantService();
+  ActivityFeedService _activityFeedService = ActivityFeedService();
 
   @override
   void initState() {
@@ -170,6 +180,7 @@ class _WriteMenuItemReviewState extends State<WriteMenuItemReview> {
                         MaterialPageRoute(builder: (context) {
                       return VideoTrimmer(
                         trimmer: _trimmer,
+                        media: video,
                       );
                     }));
 
@@ -267,6 +278,18 @@ class _WriteMenuItemReviewState extends State<WriteMenuItemReview> {
         uploadMedia,
         widget.currentUserId,
       );
+
+      if (widget.currentUserId != widget.restOwnerId) {
+        await _activityFeedService.createActivityFeed(
+          widget.currentUserId,
+          widget.restOwnerId,
+          widget.restId,
+          "review_item",
+          widget.index,
+          widget.listIndex,
+          null,
+        );
+      }
 
       pr.hide().whenComplete(() {
         Navigator.pop(context);

@@ -19,6 +19,7 @@ class SportsNwellness {
   String specialHolidayshoursOfClosing;
   List gallery;
   List items;
+  double totalratings;
   Timestamp timestamp;
 
   SportsNwellness({
@@ -40,6 +41,7 @@ class SportsNwellness {
     this.specialHolidayshoursOfClosing,
     this.gallery,
     this.items,
+    this.totalratings,
     this.timestamp,
   });
 
@@ -63,6 +65,7 @@ class SportsNwellness {
       specialHolidayshoursOfClosing: doc['specialHolidayshoursOfClosing'],
       gallery: doc['gallery'],
       items: doc['items'],
+      totalratings: doc['total_ratings'],
       timestamp: doc['timestamp'],
     );
   }

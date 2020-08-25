@@ -13,15 +13,15 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_trimmer/video_trimmer.dart';
 
-class EducationGallery extends StatefulWidget {
+class Gallery extends StatefulWidget {
   final List gallery;
-  EducationGallery({this.gallery, Key key}) : super(key: key);
+  Gallery({this.gallery, Key key}) : super(key: key);
 
   @override
-  _EducationGalleryState createState() => _EducationGalleryState();
+  _GalleryState createState() => _GalleryState();
 }
 
-class _EducationGalleryState extends State<EducationGallery> {
+class _GalleryState extends State<Gallery> {
   List gallery = [];
   VideoPlayerController _videocontroller;
 

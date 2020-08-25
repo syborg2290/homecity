@@ -5,8 +5,8 @@ import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:nearby/screens/main/sub/gallery.dart';
 import 'package:nearby/screens/main/sub/resturant/add_menu.dart';
-import 'package:nearby/screens/main/sub/resturant/resturant_gallery.dart';
 import 'package:nearby/services/auth_services.dart';
 import 'package:nearby/services/resturant_service.dart';
 import 'package:nearby/services/services_service.dart';
@@ -19,6 +19,7 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:nearby/utils/image_cropper.dart';
 import 'package:intl/intl.dart' as dd;
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:uuid/uuid.dart';
 
 class AddResturant extends StatefulWidget {
   final String type;
@@ -277,6 +278,7 @@ class _AddResturantState extends State<AddResturant> {
                             "url": downUrl,
                             "thumb": thumbUrl,
                             "type": "image",
+                            "ownerId":currentUserId,
                           };
                           uploadGallery.add(json.encode(obj));
                         } else {
@@ -290,6 +292,7 @@ class _AddResturantState extends State<AddResturant> {
                             "url": downUrl,
                             "thumb": thumbUrl,
                             "type": "video",
+                            "ownerId":currentUserId,
                           };
                           uploadGallery.add(json.encode(obj));
                         }
@@ -317,6 +320,7 @@ class _AddResturantState extends State<AddResturant> {
                                 "url": downUrl,
                                 "thumb": thumbUrl,
                                 "type": "image",
+                                "ownerId":currentUserId,
                               };
                               uploadGalleryItems.add(json.encode(obj));
                             } else {
@@ -330,13 +334,16 @@ class _AddResturantState extends State<AddResturant> {
                                 "url": downUrl,
                                 "thumb": thumbUrl,
                                 "type": "video",
+                                "ownerId":currentUserId,
                               };
                               uploadGalleryItems.add(json.encode(obj));
                             }
                           }
                         }
-
+                        var uuid = Uuid();
                         var obj = {
+                          "id": uuid.v1().toString() +
+                              new DateTime.now().toString(),
                           "initialImage": downUrl,
                           "item_type": item["item_type"],
                           "item_name": item["item_name"],
@@ -347,6 +354,7 @@ class _AddResturantState extends State<AddResturant> {
                           "foodTake": item["foodTake"],
                           "foodTimes": item["foodTimes"],
                           "gallery": uploadGalleryItems,
+                          "total_ratings": 0.0,
                         };
                         menuUpload.add(json.encode(obj));
                       }
@@ -1138,7 +1146,7 @@ class _AddResturantState extends State<AddResturant> {
                 List reGallery = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => RestGallery(
+                        builder: (context) => Gallery(
                               gallery: gallery,
                             )));
                 if (reGallery != null) {

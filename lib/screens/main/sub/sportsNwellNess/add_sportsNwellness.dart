@@ -5,7 +5,7 @@ import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:nearby/screens/main/sub/sportsNwellNess/sport_gallery.dart';
+import 'package:nearby/screens/main/sub/gallery.dart';
 import 'package:nearby/services/auth_services.dart';
 import 'package:nearby/services/services_service.dart';
 import 'package:nearby/services/sportsNwellness_services.dart';
@@ -20,6 +20,7 @@ import 'package:progress_dialog/progress_dialog.dart';
 import 'package:intl/intl.dart' as dd;
 
 import 'main_category.dart';
+import 'package:uuid/uuid.dart';
 
 class AddSportsNwellness extends StatefulWidget {
   AddSportsNwellness({Key key}) : super(key: key);
@@ -166,6 +167,7 @@ class _AddSportsNwellnessState extends State<AddSportsNwellness> {
               if (_telephone1.text != "" || _telephone2.text != "") {
                 if (openController.text != "" && closeController.text != "") {
                   pr.show();
+                  var uuid = Uuid();
                   List uploadGallery = [];
                   if (gallery.isNotEmpty) {
                     for (var ele in gallery) {
@@ -180,6 +182,7 @@ class _AddSportsNwellnessState extends State<AddSportsNwellness> {
                           "url": downUrl,
                           "thumb": thumbUrl,
                           "type": "image",
+                          "ownerId":currentUserId,
                         };
                         uploadGallery.add(json.encode(obj));
                       } else {
@@ -192,6 +195,7 @@ class _AddSportsNwellnessState extends State<AddSportsNwellness> {
                           "url": downUrl,
                           "thumb": thumbUrl,
                           "type": "video",
+                          "ownerId":currentUserId,
                         };
                         uploadGallery.add(json.encode(obj));
                       }
@@ -219,6 +223,7 @@ class _AddSportsNwellnessState extends State<AddSportsNwellness> {
                             "url": downUrl,
                             "thumb": thumbUrl,
                             "type": "image",
+                            "ownerId":currentUserId,
                           };
                           sellItemsGallery.add(json.encode(obj));
                         } else {
@@ -232,6 +237,7 @@ class _AddSportsNwellnessState extends State<AddSportsNwellness> {
                             "url": downUrl,
                             "thumb": thumbUrl,
                             "type": "video",
+                            "ownerId":currentUserId,
                           };
                           sellItemsGallery.add(json.encode(obj));
                         }
@@ -239,12 +245,15 @@ class _AddSportsNwellnessState extends State<AddSportsNwellness> {
                     }
 
                     var obj = {
+                      "id":
+                          uuid.v1().toString() + new DateTime.now().toString(),
                       "initialImage": initialImageUploadSel,
                       "item_type": sel["item_type"],
                       "item_name": sel["item_name"],
                       "price": sel["price"],
                       "about": sel["about"],
                       "gallery": sellItemsGallery,
+                      "total_ratings": 0.0,
                     };
 
                     itemsUpload.add(json.encode(obj));
@@ -854,7 +863,7 @@ class _AddSportsNwellnessState extends State<AddSportsNwellness> {
                 List reGallery = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => SportsGallery(
+                        builder: (context) => Gallery(
                               gallery: gallery,
                             )));
                 if (reGallery != null) {

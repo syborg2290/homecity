@@ -43,6 +43,7 @@ class GroceryService {
       "specialHolidayshoursOfClosing": specialHolidayshoursOfClosing,
       "items": items,
       "gallery": gallery,
+      "total_ratings": 0.0,
       "timestamp": timestamp,
     });
     return docRe.documentID;

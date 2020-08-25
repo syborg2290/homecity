@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:nearby/screens/main/sub/stays/customizeStay.dart';
-import 'package:nearby/screens/main/sub/stays/stays_gallery.dart';
 import 'package:nearby/services/auth_services.dart';
 import 'package:nearby/services/services_service.dart';
 import 'package:nearby/services/stay_service.dart';
@@ -144,6 +143,7 @@ class _AddstaysState extends State<Addstays> {
                             "url": downUrl,
                             "thumb": thumbUrl,
                             "type": "image",
+                            "ownerId":currentUserId,
                           };
                           uploadGallery.add(json.encode(obj));
                         } else {
@@ -156,6 +156,7 @@ class _AddstaysState extends State<Addstays> {
                             "url": downUrl,
                             "thumb": thumbUrl,
                             "type": "video",
+                            "ownerId":currentUserId,
                           };
                           uploadGallery.add(json.encode(obj));
                         }
@@ -721,7 +722,7 @@ class _AddstaysState extends State<Addstays> {
                 List reGallery = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => StaysGallery(
+                        builder: (context) => Gallery(
                               gallery: gallery,
                             )));
                 if (reGallery != null) {
@@ -769,4 +770,6 @@ class _AddstaysState extends State<Addstays> {
       ),
     );
   }
+
+  Gallery({List gallery}) {}
 }

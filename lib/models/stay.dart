@@ -21,6 +21,7 @@ class Stay {
   int bathrooms;
   List features;
   String costPerNight;
+  double totalratings;
   Timestamp timestamp;
 
   Stay({
@@ -44,6 +45,7 @@ class Stay {
     this.costPerNight,
     this.features,
     this.maxguests,
+    this.totalratings,
     this.timestamp,
   });
 
@@ -69,6 +71,7 @@ class Stay {
       costPerNight: doc['costPerNight'],
       features: doc['features'],
       maxguests: doc['maxguests'],
+      totalratings: doc['total_ratings'],
       timestamp: doc['timestamp'],
     );
   }

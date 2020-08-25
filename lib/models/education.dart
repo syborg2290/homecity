@@ -23,6 +23,7 @@ class Education {
   List gallery;
   List schedule;
   List courses;
+  double totalratings;
   Timestamp timestamp;
 
   Education({
@@ -48,6 +49,7 @@ class Education {
     this.subject,
     this.subjectCategory,
     this.tutionType,
+    this.totalratings,
     this.timestamp,
   });
 
@@ -75,6 +77,7 @@ class Education {
       tutionType: doc['tutionType'],
       subjectCategory: doc['subjectCategory'],
       courses: doc['courses'],
+      totalratings: doc['total_ratings'],
       timestamp: doc['timestamp'],
     );
   }

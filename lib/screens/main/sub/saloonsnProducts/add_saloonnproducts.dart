@@ -5,9 +5,9 @@ import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:nearby/screens/main/sub/gallery.dart';
 import 'package:nearby/screens/main/sub/saloonsnProducts/products_category.dart';
 import 'package:nearby/screens/main/sub/saloonsnProducts/saloon_service_types.dart';
-import 'package:nearby/screens/main/sub/saloonsnProducts/saloonsnproducts_gallery.dart';
 import 'package:nearby/services/auth_services.dart';
 import 'package:nearby/services/saloonNPro_services.dart';
 import 'package:nearby/services/services_service.dart';
@@ -20,6 +20,7 @@ import 'package:nearby/utils/pallete.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:intl/intl.dart' as dd;
+import 'package:uuid/uuid.dart';
 
 class BeautySaloons extends StatefulWidget {
   final String type;
@@ -169,6 +170,7 @@ class _BeautySaloonsState extends State<BeautySaloons> {
               if (_telephone1.text != "" || _telephone2.text != "") {
                 if (openController.text != "" && closeController.text != "") {
                   pr.show();
+                   var uuid = Uuid();
                   List uploadGallery = [];
                   if (gallery.isNotEmpty) {
                     for (var ele in gallery) {
@@ -182,6 +184,7 @@ class _BeautySaloonsState extends State<BeautySaloons> {
                           "url": downUrl,
                           "thumb": thumbUrl,
                           "type": "image",
+                          "ownerId":currentUserId,
                         };
                         uploadGallery.add(json.encode(obj));
                       } else {
@@ -194,6 +197,7 @@ class _BeautySaloonsState extends State<BeautySaloons> {
                           "url": downUrl,
                           "thumb": thumbUrl,
                           "type": "video",
+                          "ownerId":currentUserId,
                         };
                         uploadGallery.add(json.encode(obj));
                       }
@@ -220,6 +224,7 @@ class _BeautySaloonsState extends State<BeautySaloons> {
                             "url": downUrl,
                             "thumb": thumbUrl,
                             "type": "image",
+                            "ownerId":currentUserId,
                           };
                           sellItemsGallery.add(json.encode(obj));
                         } else {
@@ -232,6 +237,7 @@ class _BeautySaloonsState extends State<BeautySaloons> {
                             "url": downUrl,
                             "thumb": thumbUrl,
                             "type": "video",
+                            "ownerId":currentUserId,
                           };
                           sellItemsGallery.add(json.encode(obj));
                         }
@@ -239,6 +245,7 @@ class _BeautySaloonsState extends State<BeautySaloons> {
                     }
 
                     var obj = {
+                      "id": uuid.v1().toString() + new DateTime.now().toString(),
                       "initialImage": initialImageUploadSel,
                       "item_type": sel["item_type"],
                       "item_name": sel["item_name"],
@@ -246,6 +253,7 @@ class _BeautySaloonsState extends State<BeautySaloons> {
                       "about": sel["about"],
                       "gallery": sellItemsGallery,
                       "brand": sel["brand"],
+                      "total_ratings": 0.0,
                     };
 
                     productsUpload.add(json.encode(obj));
@@ -932,7 +940,7 @@ class _BeautySaloonsState extends State<BeautySaloons> {
                 List reGallery = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => SaloonsNProductsGallery(
+                        builder: (context) => Gallery(
                               gallery: gallery,
                             )));
                 if (reGallery != null) {

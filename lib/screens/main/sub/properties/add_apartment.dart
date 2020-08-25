@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:nearby/screens/main/sub/properties/property_gallery.dart';
+import 'package:nearby/screens/main/sub/gallery.dart';
 import 'package:nearby/services/auth_services.dart';
 import 'package:nearby/services/property_service.dart';
 import 'package:nearby/services/services_service.dart';
@@ -140,6 +140,7 @@ class _AddApartmentState extends State<AddApartment> {
                             "url": downUrl,
                             "thumb": thumbUrl,
                             "type": "image",
+                            "ownerId": currentUserId,
                           };
                           uploadGallery.add(json.encode(obj));
                         } else {
@@ -152,6 +153,7 @@ class _AddApartmentState extends State<AddApartment> {
                             "url": downUrl,
                             "thumb": thumbUrl,
                             "type": "video",
+                            "ownerId": currentUserId,
                           };
                           uploadGallery.add(json.encode(obj));
                         }
@@ -197,7 +199,7 @@ class _AddApartmentState extends State<AddApartment> {
                 }
               } else {
                 GradientSnackBar.showMessage(
-                    context,"Only one telephone number is required");
+                    context, "Only one telephone number is required");
               }
             } else {
               GradientSnackBar.showMessage(context, "Please pin the location");
@@ -672,7 +674,7 @@ class _AddApartmentState extends State<AddApartment> {
                 List reGallery = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => PropertyGallery(
+                        builder: (context) => Gallery(
                               gallery: gallery,
                             )));
                 if (reGallery != null) {

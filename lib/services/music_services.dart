@@ -49,6 +49,7 @@ class MusicService {
       "repairs": repairs,
       "rent": rent,
       "sellingItems": sellingItems,
+      "total_ratings": 0.0,
       "timestamp": timestamp,
     });
     return docRe.documentID;
@@ -67,8 +68,7 @@ class MusicService {
   Future<String> uploadImageThumbnail(File imageFile) async {
     var uuid = Uuid();
     StorageUploadTask uploadTask = storageRef
-        .child(
-            "music/music_image_thumbnail/user_${uuid.v1().toString()}.jpg")
+        .child("music/music_image_thumbnail/user_${uuid.v1().toString()}.jpg")
         .putFile(imageFile);
     StorageTaskSnapshot storageSnapshot = await uploadTask.onComplete;
     String downloadURL = await storageSnapshot.ref.getDownloadURL();
@@ -79,8 +79,7 @@ class MusicService {
     var uuid = Uuid();
     String path = uuid.v1().toString() + new DateTime.now().toString();
     StorageUploadTask uploadTask = storageRef
-        .child(
-            "music/music_video/user_$path${uuid.v1().toString()}.mp4")
+        .child("music/music_video/user_$path${uuid.v1().toString()}.mp4")
         .putFile(video);
     StorageTaskSnapshot storageSnapshot = await uploadTask.onComplete;
     String downloadURL = await storageSnapshot.ref.getDownloadURL();
@@ -91,8 +90,7 @@ class MusicService {
     var uuid = Uuid();
     String path = uuid.v1().toString() + new DateTime.now().toString();
     StorageUploadTask uploadTask = storageRef
-        .child(
-            "music/music_videoThumb/user_$path${uuid.v1().toString()}.jpg")
+        .child("music/music_videoThumb/user_$path${uuid.v1().toString()}.jpg")
         .putFile(video);
     StorageTaskSnapshot storageSnapshot = await uploadTask.onComplete;
     String downloadURL = await storageSnapshot.ref.getDownloadURL();

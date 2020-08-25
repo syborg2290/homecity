@@ -1,8 +1,10 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:empty_widget/empty_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nearby/models/activity_feed.dart';
 import 'package:nearby/models/user.dart';
 import 'package:nearby/services/activity_feed_service.dart';
@@ -107,6 +109,8 @@ class _NotifyState extends State<Notify> {
                             return NotificationFeed(
                               feed: feedItems[index],
                               height: height,
+                              currentUserId: currentUserId,
+                              activityFeedService: _activityFeedService,
                               width: width,
                               owner: User.fromDocument(
                                 all.firstWhere(
@@ -128,10 +132,18 @@ class NotificationFeed extends StatelessWidget {
   final ActivityFeed feed;
   final double width;
   final double height;
+  final String currentUserId;
   final User owner;
+  final ActivityFeedService activityFeedService;
 
   const NotificationFeed(
-      {this.feed, this.owner, this.width, this.height, Key key})
+      {this.feed,
+      this.owner,
+      this.currentUserId,
+      this.width,
+      this.activityFeedService,
+      this.height,
+      Key key})
       : super(key: key);
 
   @override
@@ -152,6 +164,26 @@ class NotificationFeed extends StatelessWidget {
 
     if (feed.type == "review_item") {
       activityItemText = "put a review on your shop item";
+    }
+
+    if (feed.type == "review_like") {
+      activityItemText = "liked your review";
+    }
+
+    if (feed.type == "review_dislike") {
+      activityItemText = "disliked your review";
+    }
+
+    if (feed.type == "review_reply") {
+      activityItemText = "replied your review";
+    }
+
+    if (feed.type == "review_reply_like") {
+      activityItemText = "reacted your reply of a review";
+    }
+
+    if (feed.type == "review_reply_dislike") {
+      activityItemText = "reacted your reply of a review";
     }
 
     return Padding(
@@ -183,27 +215,49 @@ class NotificationFeed extends StatelessWidget {
               ? AssetImage('assets/profilephoto.png')
               : NetworkImage(owner.thumbnailUserPhotoUrl),
         ),
-        subtitle: Text(
-          timeago.format(feed.timestamp.toDate()),
+        subtitle: Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: Text(
+            timeago.format(feed.timestamp.toDate()),
+          ),
         ),
         trailing: Padding(
           padding: const EdgeInsets.only(bottom: 20),
           child: GestureDetector(
             onTap: () async {
-              // await deleteActivityFeed(
-              //   userId,
-              //   documentId,
-              // );
-              // Fluttertoast.showToast(
-              //     msg: "Feed item removed",
-              //     toastLength: Toast.LENGTH_SHORT,
-              //     gravity: ToastGravity.CENTER,
-              //     backgroundColor: Palette.appColor,
-              //     textColor: Colors.white,
-              //     fontSize: 16.0);
+              AwesomeDialog(
+                context: context,
+                animType: AnimType.SCALE,
+                dialogType: DialogType.NO_HEADER,
+                body: Center(
+                  child: Text(
+                    'Are you sure to continue?',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+                ),
+                btnOkColor: Pallete.mainAppColor,
+                btnCancelColor: Pallete.mainAppColor,
+                btnOkText: 'Yes',
+                btnCancelText: 'No',
+                btnOkOnPress: () async {
+                  await activityFeedService.removeFromActivityFeed(
+                      feed.userId, currentUserId, feed.type);
+                  Fluttertoast.showToast(
+                      msg: "Notification item removed",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.CENTER,
+                      backgroundColor: Pallete.mainAppColor,
+                      textColor: Colors.white,
+                      fontSize: 16.0);
+                },
+                btnCancelOnPress: () {},
+              )..show();
             },
             child: Image.asset(
-              'assets/Icons/close.png',
+              'assets/icons/close.png',
               width: 30,
               height: 30,
             ),

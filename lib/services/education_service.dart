@@ -53,6 +53,7 @@ class EducationService {
       "subjectCategory": subjectCategory,
       "tutionType": tutionType,
       "courses": courses,
+      "total_ratings": 0.0,
       "timestamp": timestamp,
     });
     return docRe.documentID;

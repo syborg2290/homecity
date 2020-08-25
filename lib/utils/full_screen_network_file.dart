@@ -1,9 +1,12 @@
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:nearby/utils/pallete.dart';
 import 'package:nearby/utils/videoplayers/landscape_videoplayer_controller.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:video_player/video_player.dart';
+import 'package:panorama/panorama.dart';
 
 class NetworkFileFullScreen extends StatefulWidget {
   final String url;
@@ -89,26 +92,34 @@ class _NetworkFileFullScreenState extends State<NetworkFileFullScreen> {
         ),
         extendBodyBehindAppBar: true,
         backgroundColor: Colors.black,
-        body: widget.type == "image"
+        body: widget.type == "pano"
             ? Center(
-                child: AspectRatio(
-                    aspectRatio: 11 / 16,
-                    child: PhotoView(
-                      imageProvider: NetworkImage(widget.url),
-                    )),
-              )
-            : Container(
-                child: FlickVideoPlayer(
-                  flickManager: flickManager,
-                  preferredDeviceOrientation: [
-                    DeviceOrientation.landscapeLeft,
-                    DeviceOrientation.landscapeRight,
-                  ],
-                  systemUIOverlay: [],
-                  flickVideoWithControls: FlickVideoWithControls(
-                    controls: LandscapePlayerControls(),
-                  ),
-                ),
-              ));
+                child: Panorama(
+                child: Image.network(widget.url),
+              ))
+            : widget.type == "image"
+                ? Center(
+                    child: AspectRatio(
+                        aspectRatio: 11 / 16,
+                        child: PhotoView(
+                          imageProvider: NetworkImage(widget.url),
+                          loadingChild: Center(
+                              child:
+                                  SpinKitCircle(color: Pallete.mainAppColor)),
+                        )),
+                  )
+                : Container(
+                    child: FlickVideoPlayer(
+                      flickManager: flickManager,
+                      preferredDeviceOrientation: [
+                        DeviceOrientation.landscapeLeft,
+                        DeviceOrientation.landscapeRight,
+                      ],
+                      systemUIOverlay: [],
+                      flickVideoWithControls: FlickVideoWithControls(
+                        controls: LandscapePlayerControls(),
+                      ),
+                    ),
+                  ));
   }
 }

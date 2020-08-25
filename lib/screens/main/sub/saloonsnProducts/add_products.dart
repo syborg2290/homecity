@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nearby/screens/main/sub/saloonsnProducts/saloonsnproducts_gallery.dart';
+import 'package:nearby/screens/main/sub/gallery.dart';
 import 'package:nearby/utils/flush_bars.dart';
 import 'package:nearby/utils/image_cropper.dart';
 import 'package:nearby/utils/media_picker/gallery_pick.dart';
@@ -373,7 +373,7 @@ class _AddProductsState extends State<AddProducts> {
                 List reGallery = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => SaloonsNProductsGallery(
+                        builder: (context) => Gallery(
                               gallery: gallery,
                             )));
                 if (reGallery != null) {

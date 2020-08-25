@@ -5,7 +5,7 @@ import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:nearby/screens/main/sub/grocery/groc_gallery.dart';
+import 'package:nearby/screens/main/sub/gallery.dart';
 import 'package:nearby/screens/main/sub/grocery/grocery_item_types.dart';
 import 'package:nearby/services/auth_services.dart';
 import 'package:nearby/services/grocery_service.dart';
@@ -19,6 +19,7 @@ import 'package:nearby/utils/pallete.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:intl/intl.dart' as dd;
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:uuid/uuid.dart';
 
 class AddGrocery extends StatefulWidget {
   AddGrocery({Key key}) : super(key: key);
@@ -135,6 +136,7 @@ class _AddGroceryState extends State<AddGrocery> {
               if (_telephone1.text != "" || _telephone2.text != "") {
                 if (openController.text != "" && closeController.text != "") {
                   pr.show();
+                  var uuid = Uuid();
                   List uploadGallery = [];
                   if (gallery.isNotEmpty) {
                     for (var ele in gallery) {
@@ -148,6 +150,7 @@ class _AddGroceryState extends State<AddGrocery> {
                           "url": downUrl,
                           "thumb": thumbUrl,
                           "type": "image",
+                          "ownerId": currentUserId,
                         };
                         uploadGallery.add(json.encode(obj));
                       } else {
@@ -161,6 +164,7 @@ class _AddGroceryState extends State<AddGrocery> {
                           "url": downUrl,
                           "thumb": thumbUrl,
                           "type": "video",
+                          "ownerId": currentUserId,
                         };
                         uploadGallery.add(json.encode(obj));
                       }
@@ -186,6 +190,7 @@ class _AddGroceryState extends State<AddGrocery> {
                               "url": downUrl,
                               "thumb": thumbUrl,
                               "type": "image",
+                              "ownerId": currentUserId,
                             };
                             uploadGalleryItems.add(json.encode(obj));
                           } else {
@@ -199,6 +204,7 @@ class _AddGroceryState extends State<AddGrocery> {
                               "url": downUrl,
                               "thumb": thumbUrl,
                               "type": "video",
+                              "ownerId": currentUserId,
                             };
                             uploadGalleryItems.add(json.encode(obj));
                           }
@@ -206,6 +212,8 @@ class _AddGroceryState extends State<AddGrocery> {
                       }
 
                       var obj = {
+                        "id": uuid.v1().toString() +
+                            new DateTime.now().toString(),
                         "initialImage": downUrl,
                         "item_type": item["item_type"],
                         "item_name": item["item_name"],
@@ -214,6 +222,7 @@ class _AddGroceryState extends State<AddGrocery> {
                         "about": item["about"],
                         "brand": item["brand"],
                         "gallery": uploadGalleryItems,
+                        "total_ratings": 0.0,
                       };
                       itemsUpload.add(json.encode(obj));
                     }
@@ -809,7 +818,7 @@ class _AddGroceryState extends State<AddGrocery> {
                 List reGallery = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => GrocGallery(
+                        builder: (context) => Gallery(
                               gallery: gallery,
                             )));
                 if (reGallery != null) {

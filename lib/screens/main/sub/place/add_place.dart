@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:nearby/screens/main/sub/place/place_gallery.dart';
+import 'package:nearby/screens/main/sub/gallery.dart';
 import 'package:nearby/services/auth_services.dart';
 import 'package:nearby/services/place_service.dart';
 import 'package:nearby/services/services_service.dart';
@@ -146,6 +146,7 @@ class _AddPlaceState extends State<AddPlace> {
                       "url": downUrl,
                       "thumb": thumbUrl,
                       "type": "image",
+                      "ownerId": currentUserId,
                     };
                     uploadGallery.add(json.encode(obj));
                   } else {
@@ -158,6 +159,7 @@ class _AddPlaceState extends State<AddPlace> {
                       "url": downUrl,
                       "thumb": thumbUrl,
                       "type": "video",
+                      "ownerId": currentUserId,
                     };
                     uploadGallery.add(json.encode(obj));
                   }
@@ -771,7 +773,7 @@ class _AddPlaceState extends State<AddPlace> {
                 List reGallery = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => PlaceGallery(
+                        builder: (context) => Gallery(
                               gallery: gallery,
                             )));
                 if (reGallery != null) {

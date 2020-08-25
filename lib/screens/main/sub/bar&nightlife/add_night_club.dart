@@ -5,7 +5,7 @@ import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:nearby/screens/main/sub/bar&nightlife/gallery_night_life.dart';
+import 'package:nearby/screens/main/sub/gallery.dart';
 import 'package:nearby/services/auth_services.dart';
 import 'package:nearby/services/nightlife_services.dart';
 import 'package:nearby/services/services_service.dart';
@@ -249,6 +249,7 @@ class _NightClubFormState extends State<NightClubForm> {
                           "url": downUrl,
                           "thumb": thumbUrl,
                           "type": "image",
+                          "ownerId": currentUserId,
                         };
                         uploadGallery.add(json.encode(obj));
                       } else {
@@ -262,6 +263,7 @@ class _NightClubFormState extends State<NightClubForm> {
                           "url": downUrl,
                           "thumb": thumbUrl,
                           "type": "video",
+                          "ownerId": currentUserId,
                         };
                         uploadGallery.add(json.encode(obj));
                       }
@@ -760,7 +762,7 @@ class _NightClubFormState extends State<NightClubForm> {
                 List reGallery = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => GalleryNight(
+                        builder: (context) => Gallery(
                               gallery: gallery,
                             )));
                 if (reGallery != null) {

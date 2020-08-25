@@ -47,6 +47,7 @@ class SaloonProService {
       "gallery": gallery,
       "customiseSaloon": customiseSaloon,
       "products": products,
+      "total_ratings": 0.0,
       "timestamp": timestamp,
     });
     return docRe.documentID;
@@ -65,8 +66,7 @@ class SaloonProService {
   Future<String> uploadImageThumbnail(File imageFile) async {
     var uuid = Uuid();
     StorageUploadTask uploadTask = storageRef
-        .child(
-            "saloon/saloon_thumb/user_${uuid.v1().toString()}.jpg")
+        .child("saloon/saloon_thumb/user_${uuid.v1().toString()}.jpg")
         .putFile(imageFile);
     StorageTaskSnapshot storageSnapshot = await uploadTask.onComplete;
     String downloadURL = await storageSnapshot.ref.getDownloadURL();
@@ -77,8 +77,7 @@ class SaloonProService {
     var uuid = Uuid();
     String path = uuid.v1().toString() + new DateTime.now().toString();
     StorageUploadTask uploadTask = storageRef
-        .child(
-            "saloon/saloon_video/user_$path${uuid.v1().toString()}.mp4")
+        .child("saloon/saloon_video/user_$path${uuid.v1().toString()}.mp4")
         .putFile(video);
     StorageTaskSnapshot storageSnapshot = await uploadTask.onComplete;
     String downloadURL = await storageSnapshot.ref.getDownloadURL();
@@ -89,8 +88,7 @@ class SaloonProService {
     var uuid = Uuid();
     String path = uuid.v1().toString() + new DateTime.now().toString();
     StorageUploadTask uploadTask = storageRef
-        .child(
-            "saloon/saloon_videoThumb/user_$path${uuid.v1().toString()}.jpg")
+        .child("saloon/saloon_videoThumb/user_$path${uuid.v1().toString()}.jpg")
         .putFile(video);
     StorageTaskSnapshot storageSnapshot = await uploadTask.onComplete;
     String downloadURL = await storageSnapshot.ref.getDownloadURL();

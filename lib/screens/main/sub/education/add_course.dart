@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nearby/utils/flush_bars.dart';
 import 'package:nearby/utils/pallete.dart';
+import 'package:uuid/uuid.dart';
 
 class AddCourse extends StatefulWidget {
   final String category;
@@ -36,12 +37,15 @@ class _AddCourseState extends State<AddCourse> {
   done() async {
     if (_courseName.text.trim() != "") {
       if (_overview.text.trim() != "") {
+        var uuid = Uuid();
         var obj = {
+          "id": uuid.v1().toString() + new DateTime.now().toString(),
           "category": widget.category,
           "Course_name": _courseName.text.trim(),
           "overview": _overview.text.trim(),
           "suitableFor": _suitableFor.text.trim(),
           "aboutTheDurationAndFee": _aboutDurationandFee.text.trim(),
+          "total_ratings": 0.0,
         };
         Navigator.pop(context, obj);
       } else {

@@ -45,6 +45,7 @@ class SportsNwellnessService {
       "specialHolidayshoursOfClosing": specialHolidayshoursOfClosing,
       "gallery": gallery,
       "items": items,
+      "total_ratings": 0.0,
       "timestamp": timestamp,
     });
     return docRe.documentID;

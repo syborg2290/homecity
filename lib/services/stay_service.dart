@@ -46,6 +46,7 @@ class StayService {
       "costPerNight": costPerNight,
       "features": features,
       "maxguests": maxGuests,
+      "total_ratings": 0.0,
       "timestamp": timestamp,
     });
     return docRe.documentID;

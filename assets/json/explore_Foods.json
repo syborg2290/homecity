@@ -1,0 +1,29 @@
+[
+    {
+        "category_name": "All"
+    },
+    {
+        "category_name": "Hot dishes"
+    },
+    {
+        "category_name": "Fast foods"
+    },
+    {
+        "category_name": "Meats"
+    },
+    {
+        "category_name": "Seafoods"
+    },
+    {
+        "category_name": "Vegetarian"
+    },
+    {
+        "category_name": "Drinks"
+    },
+    {
+        "category_name": "Desserts"
+    },
+    {
+        "category_name": "Other"
+    }
+]

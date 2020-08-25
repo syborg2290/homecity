@@ -21,6 +21,7 @@ class Electronics {
   List repairs;
   List rent;
   List sellingItems;
+  double totalratings;
   Timestamp timestamp;
 
   Electronics({
@@ -44,6 +45,7 @@ class Electronics {
     this.repairs,
     this.rent,
     this.sellingItems,
+    this.totalratings,
     this.timestamp,
   });
 
@@ -69,6 +71,7 @@ class Electronics {
       rent: doc['rent'],
       repairs: doc['repairs'],
       sellingItems: doc['sellingItems'],
+      totalratings: doc['total_ratings'],
       timestamp: doc['timestamp'],
     );
   }

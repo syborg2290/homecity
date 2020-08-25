@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:nearby/screens/main/sub/vehicles/rent/renting_types.dart';
-import 'package:nearby/screens/main/sub/vehicles/vehi_gallery.dart';
+import 'package:nearby/screens/main/sub/gallery.dart';
 import 'package:nearby/services/auth_services.dart';
 import 'package:nearby/services/services_service.dart';
 import 'package:nearby/services/vehi_service.dart';
@@ -19,6 +19,7 @@ import 'package:nearby/utils/pallete.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:intl/intl.dart' as dd;
+import 'package:uuid/uuid.dart';
 
 class RentVehicles extends StatefulWidget {
   final String type;
@@ -159,6 +160,7 @@ class _RentVehiclesState extends State<RentVehicles> {
                               "url": downUrl,
                               "thumb": thumbUrl,
                               "type": "image",
+                              "ownerId":currentUserId,
                             };
                             uploadGalleryRent.add(json.encode(obj));
                           } else {
@@ -172,13 +174,16 @@ class _RentVehiclesState extends State<RentVehicles> {
                               "url": downUrl,
                               "thumb": thumbUrl,
                               "type": "video",
+                              "ownerId":currentUserId,
                             };
                             uploadGalleryRent.add(json.encode(obj));
                           }
                         }
                       }
-
+                      var uuid = Uuid();
                       var obj = {
+                        "id": uuid.v1().toString() +
+                            new DateTime.now().toString(),
                         "initialImage": downUrl,
                         "item_type": item["item_type"],
                         "vehi_name": item["vehi_name"],
@@ -191,6 +196,7 @@ class _RentVehiclesState extends State<RentVehicles> {
                         "fuel": item["fuel"],
                         "transmission": item["transmission"],
                         "gallery": uploadGalleryRent,
+                        "total_ratings": 0.0,
                       };
                       vehiclesForRent.add(json.encode(obj));
                     }
@@ -209,6 +215,7 @@ class _RentVehiclesState extends State<RentVehicles> {
                           "url": downUrl,
                           "thumb": thumbUrl,
                           "type": "image",
+                          "ownerId":currentUserId,
                         };
                         uploadGallery.add(json.encode(obj));
                       } else {
@@ -221,6 +228,7 @@ class _RentVehiclesState extends State<RentVehicles> {
                           "url": downUrl,
                           "thumb": thumbUrl,
                           "type": "video",
+                          "ownerId":currentUserId,
                         };
                         uploadGallery.add(json.encode(obj));
                       }
@@ -880,7 +888,7 @@ class _RentVehiclesState extends State<RentVehicles> {
                 List reGallery = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => VehiGallery(
+                        builder: (context) => Gallery(
                               gallery: gallery,
                             )));
                 if (reGallery != null) {

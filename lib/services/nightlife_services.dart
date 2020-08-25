@@ -43,6 +43,7 @@ class NightLifeService {
       "telephone2": telephone2,
       "specialHolidayshoursOfClosing": specialHolidayshoursOfClosing,
       "gallery": gallery,
+      "total_ratings": 0.0,
       "timestamp": timestamp,
     });
     return docRe.documentID;

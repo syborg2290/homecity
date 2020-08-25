@@ -4,9 +4,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:nearby/screens/main/sub/education/education_gallery.dart';
 import 'package:nearby/screens/main/sub/education/higher/higher_education_types.dart';
 import 'package:nearby/screens/main/sub/education/view_Experiences.dart';
+import 'package:nearby/screens/main/sub/gallery.dart';
 import 'package:nearby/services/auth_services.dart';
 import 'package:nearby/services/education_service.dart';
 import 'package:nearby/services/services_service.dart';
@@ -172,6 +172,7 @@ class _AddHighrEducationState extends State<AddHigherEducation> {
                         "url": downUrl,
                         "thumb": thumbUrl,
                         "type": "image",
+                        "ownerId": currentUserId,
                       };
                       uploadGallery.add(json.encode(obj));
                     } else {
@@ -185,6 +186,7 @@ class _AddHighrEducationState extends State<AddHigherEducation> {
                         "url": downUrl,
                         "thumb": thumbUrl,
                         "type": "video",
+                        "ownerId": currentUserId,
                       };
                       uploadGallery.add(json.encode(obj));
                     }
@@ -771,7 +773,7 @@ class _AddHighrEducationState extends State<AddHigherEducation> {
                 List reGallery = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => EducationGallery(
+                        builder: (context) => Gallery(
                               gallery: gallery,
                             )));
                 if (reGallery != null) {

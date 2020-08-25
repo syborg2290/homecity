@@ -35,24 +35,47 @@ exports.onCreateActivityFeedItem = functions.firestore
             let userIdOfActivityFeed;
             let typeId;
             let index;
+            let anyListIndex;
 
             //switch body value based off notification type
             switch (activityFeedItem.type) {
                 case "rate_shop":
-                    body = `${activityFeedItem.username} rated on your shop`;
+                    body = `${doc.data().username} rated on your shop`;
                     type = "rate_shop";
                     break;
                 case "review_shop":
-                    body = `${activityFeedItem.username} put a review on your shop`;
+                    body = `${doc.data().username} put a review on your shop`;
                     type = "review_shop";
                     break;
                 case "rate_item":
-                    body = `${activityFeedItem.username} rated on your shop item`;
+                    body = `${doc.data().username} rated on your shop item`;
                     type = "rate_item";
                     break;
                 case "review_item":
-                    body = `${activityFeedItem.username} put a review on your shop item`;
+                    body = `${doc.data().username} put a review on your shop item`;
                     type = "review_item";
+                    break;
+                case "review_like":
+                    body = `${doc.data().username} liked your review`;
+                    type = "review_like";
+                    break;
+                case "review_dislike":
+                    body = `${doc.data().username} disliked your review`;
+                    type = "review_dislike";
+                    break;
+                case "review_reply":
+                    body = `${doc.data().username} replied your review`;
+                    type = "review_reply";
+                    break;
+
+                case "review_reply_like":
+                    body = `${doc.data().username} reacted your reply of a review`;
+                    type = "review_reply_like";
+                    break;
+
+                case "review_reply_dislike":
+                    body = `${doc.data().username} reacted your reply of a review`;
+                    type = "review_reply_dislike";
                     break;
 
                 default:
@@ -68,6 +91,14 @@ exports.onCreateActivityFeedItem = functions.firestore
                 index = activityFeedItem.anyIndex;
             }
 
+
+            if (activityFeedItem.anyListIndex == null) {
+                anyListIndex = 0;
+            } else {
+                anyListIndex = activityFeedItem.anyListIndex;
+            }
+
+
             //create message for push notification
             const message = {
                 notification: {
@@ -78,9 +109,10 @@ exports.onCreateActivityFeedItem = functions.firestore
                     recipient: userId,
                     typeId: typeId,
                     index: index.toString(),
+                    anyListIndex: anyListIndex.toString(),
                     type: type,
                     username: doc.data().username,
-                    userImage: doc.data().userPhotoUrl,
+                    userImage: doc.data().userPhotoUrl == null ? "null" : doc.data().userPhotoUrl,
                     fromUserId: userIdOfActivityFeed,
                 },
             };

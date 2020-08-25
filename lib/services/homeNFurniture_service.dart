@@ -45,6 +45,7 @@ class HomeNFurnitureService {
       "specialHolidayshoursOfClosing": specialHolidayshoursOfClosing,
       "gallery": gallery,
       "items": items,
+      "total_ratings": 0.0,
       "timestamp": timestamp,
     });
     return docRe.documentID;
@@ -53,7 +54,8 @@ class HomeNFurnitureService {
   Future<String> uploadImage(File imageFile) async {
     var uuid = Uuid();
     StorageUploadTask uploadTask = storageRef
-        .child("homeNFurniture/homeNFurniture_image/user_${uuid.v1().toString()}.jpg")
+        .child(
+            "homeNFurniture/homeNFurniture_image/user_${uuid.v1().toString()}.jpg")
         .putFile(imageFile);
     StorageTaskSnapshot storageSnapshot = await uploadTask.onComplete;
     String downloadURL = await storageSnapshot.ref.getDownloadURL();

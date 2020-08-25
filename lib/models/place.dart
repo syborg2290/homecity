@@ -13,6 +13,7 @@ class Place {
   List daysOfUnavailable;
   String specialUnavailable;
   List gallery;
+  double totalratings;
   Timestamp timestamp;
 
   Place(
@@ -28,6 +29,7 @@ class Place {
       this.daysOfUnavailable,
       this.specialUnavailable,
       this.gallery,
+      this.totalratings,
       this.timestamp});
 
   factory Place.fromDocument(DocumentSnapshot doc) {
@@ -44,6 +46,7 @@ class Place {
         daysOfUnavailable: doc['daysOfUnavailable'],
         specialUnavailable: doc['specialUnavailable'],
         gallery: doc['gallery'],
+        totalratings: doc['total_ratings'],
         timestamp: doc['timestamp']);
   }
 }

@@ -16,6 +16,7 @@ class Property {
   String telephone2;
   String email;
   List gallery;
+  double totalratings;
   Timestamp timestamp;
 
   Property({
@@ -34,6 +35,7 @@ class Property {
     this.telephone2,
     this.email,
     this.gallery,
+    this.totalratings,
     this.timestamp,
   });
 
@@ -54,6 +56,7 @@ class Property {
       size: doc['size'],
       price: doc['price'],
       gallery: doc['gallery'],
+      totalratings: doc['total_ratings'],
       timestamp: doc['timestamp'],
     );
   }

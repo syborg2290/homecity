@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:nearby/screens/main/sub/vehicles/repair/custom_repair.dart';
-import 'package:nearby/screens/main/sub/vehicles/vehi_gallery.dart';
+import 'package:nearby/screens/main/sub/gallery.dart';
 import 'package:nearby/services/auth_services.dart';
 import 'package:nearby/services/services_service.dart';
 import 'package:nearby/services/vehi_service.dart';
@@ -155,6 +155,7 @@ class _VehiRepairState extends State<VehiRepair> {
                           "url": downUrl,
                           "thumb": thumbUrl,
                           "type": "image",
+                          "ownerId":currentUserId,
                         };
                         uploadGallery.add(json.encode(obj));
                       } else {
@@ -167,6 +168,7 @@ class _VehiRepairState extends State<VehiRepair> {
                           "url": downUrl,
                           "thumb": thumbUrl,
                           "type": "video",
+                          "ownerId":currentUserId,
                         };
                         uploadGallery.add(json.encode(obj));
                       }
@@ -785,7 +787,7 @@ class _VehiRepairState extends State<VehiRepair> {
                 List reGallery = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => VehiGallery(
+                        builder: (context) => Gallery(
                               gallery: gallery,
                             )));
                 if (reGallery != null) {

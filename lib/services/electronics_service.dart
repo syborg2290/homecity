@@ -49,6 +49,7 @@ class ElectronicsService {
       "repairs": repairs,
       "rent": rent,
       "sellingItems": sellingItems,
+      "total_ratings": 0.0,
       "timestamp": timestamp,
     });
     return docRe.documentID;

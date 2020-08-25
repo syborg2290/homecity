@@ -2,25 +2,24 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:nearby/screens/main/sub/gallery.dart';
 import 'package:nearby/utils/flush_bars.dart';
 import 'package:nearby/utils/image_cropper.dart';
 import 'package:nearby/utils/media_picker/gallery_pick.dart';
 import 'package:nearby/utils/pallete.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-import 'electronics_gallery.dart';
-
 class AddRent extends StatefulWidget {
   final String type;
   final obj;
-  AddRent({this.type,this.obj,Key key}) : super(key: key);
+  AddRent({this.type, this.obj, Key key}) : super(key: key);
 
   @override
   _AddRentState createState() => _AddRentState();
 }
 
 class _AddRentState extends State<AddRent> {
-   File intialImage;
+  File intialImage;
   TextEditingController _itemName = TextEditingController();
   TextEditingController _brandName = TextEditingController();
   TextEditingController _aboutTheItem = TextEditingController();
@@ -374,7 +373,7 @@ class _AddRentState extends State<AddRent> {
                 List reGallery = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ElectronicsGallery(
+                        builder: (context) => Gallery(
                               gallery: gallery,
                             )));
                 if (reGallery != null) {

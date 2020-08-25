@@ -160,7 +160,9 @@ class _MainPageState extends State<MainPage> {
                                         color: Pallete.mainAppColor)),
                               );
                             }
-                            if (snapshot.data.documents.length == 0) {
+                            if (snapshot.data.documents == null) {
+                              return cardRow(context);
+                            } else if (snapshot.data.documents.length == 0) {
                               return cardRow(context);
                             } else {
                               List<Resturant> popularRests = [];
@@ -182,6 +184,7 @@ class _MainPageState extends State<MainPage> {
                                         TrendingResturantsCards(
                                           rest: popularRests[index],
                                           docId: docIds[index],
+                                          index: index,
                                         )),
                               );
                             }
@@ -198,8 +201,9 @@ class _MainPageState extends State<MainPage> {
 class TrendingResturantsCards extends StatelessWidget {
   final Resturant rest;
   final String docId;
+  final int index;
 
-  const TrendingResturantsCards({this.rest, this.docId, Key key})
+  const TrendingResturantsCards({this.rest, this.index, this.docId, Key key})
       : super(key: key);
 
   @override
@@ -227,6 +231,30 @@ class TrendingResturantsCards extends StatelessWidget {
                 shimmerBackColor: Color(0xffe0e0e0),
                 shimmerBaseColor: Color(0xffe0e0e0),
                 shimmerHighlightColor: Colors.grey[200],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: Container(
+                    width: 45,
+                    height: 45,
+                    child: FloatingActionButton(
+                      onPressed: () {},
+                      heroTag: index,
+                      backgroundColor: Pallete.mainAppColor,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image.asset(
+                          'assets/icons/bookmark.png',
+                          color: Colors.white,
+                          height: 30,
+                          width: 30,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),

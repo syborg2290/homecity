@@ -8,6 +8,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:nearby/screens/main/sub/electronics/renting_types.dart';
 import 'package:nearby/screens/main/sub/electronics/repair_types.dart';
 import 'package:nearby/screens/main/sub/electronics/sell_electronics_types.dart';
+import 'package:nearby/screens/main/sub/gallery.dart';
 import 'package:nearby/services/auth_services.dart';
 import 'package:nearby/services/electronics_service.dart';
 import 'package:nearby/services/services_service.dart';
@@ -20,8 +21,7 @@ import 'package:nearby/utils/pallete.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:intl/intl.dart' as dd;
-
-import 'electronics_gallery.dart';
+import 'package:uuid/uuid.dart';
 
 class AddElectronics extends StatefulWidget {
   final String type;
@@ -172,6 +172,7 @@ class _AddElectronicsState extends State<AddElectronics> {
               if (_telephone1.text != "" || _telephone2.text != "") {
                 if (openController.text != "" && closeController.text != "") {
                   pr.show();
+                  var uuid = Uuid();
                   List uploadGallery = [];
                   if (gallery.isNotEmpty) {
                     for (var ele in gallery) {
@@ -186,6 +187,7 @@ class _AddElectronicsState extends State<AddElectronics> {
                           "url": downUrl,
                           "thumb": thumbUrl,
                           "type": "image",
+                          "ownerId": currentUserId,
                         };
                         uploadGallery.add(json.encode(obj));
                       } else {
@@ -199,6 +201,7 @@ class _AddElectronicsState extends State<AddElectronics> {
                           "url": downUrl,
                           "thumb": thumbUrl,
                           "type": "video",
+                          "ownerId": currentUserId,
                         };
                         uploadGallery.add(json.encode(obj));
                       }
@@ -214,11 +217,14 @@ class _AddElectronicsState extends State<AddElectronics> {
                         await _electronicsService.uploadImageElectronics(
                             await compressImageFile(re["initialImage"], 80));
                     var obj = {
+                      "id":
+                          uuid.v1().toString() + new DateTime.now().toString(),
                       "initialImage": initialImageUploadRe,
                       "repair_type": re["repair_type"],
                       "allDevices": re["allDevices"],
                       "allBrands": re["allBrands"],
                       "aboutTheReapir": re["aboutTheReapir"],
+                      "total_ratings": 0.0,
                     };
                     repairsUpload.add(json.encode(obj));
                   }
@@ -242,6 +248,7 @@ class _AddElectronicsState extends State<AddElectronics> {
                             "url": downUrl,
                             "thumb": thumbUrl,
                             "type": "image",
+                            "ownerId": currentUserId,
                           };
                           sellItemsGallery.add(json.encode(obj));
                         } else {
@@ -255,6 +262,7 @@ class _AddElectronicsState extends State<AddElectronics> {
                             "url": downUrl,
                             "thumb": thumbUrl,
                             "type": "video",
+                            "ownerId": currentUserId,
                           };
                           sellItemsGallery.add(json.encode(obj));
                         }
@@ -262,6 +270,8 @@ class _AddElectronicsState extends State<AddElectronics> {
                     }
 
                     var obj = {
+                      "id":
+                          uuid.v1().toString() + new DateTime.now().toString(),
                       "initialImage": initialImageUploadSel,
                       "item_type": sel["item_type"],
                       "item_name": sel["item_name"],
@@ -269,6 +279,7 @@ class _AddElectronicsState extends State<AddElectronics> {
                       "about": sel["about"],
                       "gallery": sellItemsGallery,
                       "brand": sel["brand"],
+                      "total_ratings": 0.0,
                     };
 
                     sellingItemsUpload.add(json.encode(obj));
@@ -293,6 +304,7 @@ class _AddElectronicsState extends State<AddElectronics> {
                             "url": downUrl,
                             "thumb": thumbUrl,
                             "type": "image",
+                            "ownerId": currentUserId,
                           };
                           sellItemsGallery.add(json.encode(obj));
                         } else {
@@ -306,6 +318,7 @@ class _AddElectronicsState extends State<AddElectronics> {
                             "url": downUrl,
                             "thumb": thumbUrl,
                             "type": "video",
+                            "ownerId": currentUserId,
                           };
                           sellItemsGallery.add(json.encode(obj));
                         }
@@ -313,6 +326,8 @@ class _AddElectronicsState extends State<AddElectronics> {
                     }
 
                     var obj = {
+                      "id":
+                          uuid.v1().toString() + new DateTime.now().toString(),
                       "initialImage": initialImageUploadSel,
                       "item_type": rent["item_type"],
                       "item_name": rent["item_name"],
@@ -320,6 +335,7 @@ class _AddElectronicsState extends State<AddElectronics> {
                       "about": rent["about"],
                       "gallery": sellItemsGallery,
                       "brand": rent["brand"],
+                      "total_ratings": 0.0,
                     };
 
                     rentUpload.add(json.encode(obj));
@@ -1065,7 +1081,7 @@ class _AddElectronicsState extends State<AddElectronics> {
                 List reGallery = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ElectronicsGallery(
+                        builder: (context) => Gallery(
                               gallery: gallery,
                             )));
                 if (reGallery != null) {

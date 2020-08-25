@@ -33,6 +33,7 @@ class PlaceService {
       "daysOfUnavailable": daysOfUn,
       "specialUnavailable": specialUn,
       "gallery": gallery,
+      "total_ratings": 0.0,
       "timestamp": timestamp
     });
     return docRe.documentID;

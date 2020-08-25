@@ -18,6 +18,7 @@ class NightLife {
   Timestamp openingTime;
   String specialHolidayshoursOfClosing;
   List gallery;
+  double totalratings;
   Timestamp timestamp;
 
   NightLife({
@@ -38,6 +39,7 @@ class NightLife {
     this.openingTime,
     this.specialHolidayshoursOfClosing,
     this.gallery,
+    this.totalratings,
     this.timestamp,
   });
 
@@ -60,6 +62,7 @@ class NightLife {
       telephone2: doc['telephone2'],
       specialHolidayshoursOfClosing: doc['specialHolidayshoursOfClosing'],
       gallery: doc['gallery'],
+      totalratings: doc['total_ratings'],
       timestamp: doc['timestamp'],
     );
   }

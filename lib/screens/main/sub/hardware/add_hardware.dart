@@ -5,6 +5,7 @@ import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:nearby/screens/main/sub/gallery.dart';
 import 'package:nearby/screens/main/sub/hardware/rent_tools_types.dart';
 import 'package:nearby/services/auth_services.dart';
 import 'package:nearby/services/hardwareNTools_service.dart';
@@ -17,10 +18,9 @@ import 'package:nearby/utils/media_picker/gallery_pick.dart';
 import 'package:nearby/utils/pallete.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:progress_dialog/progress_dialog.dart';
-
-import 'hardware_gallery.dart';
 import 'main_category.dart';
 import 'package:intl/intl.dart' as dd;
+import 'package:uuid/uuid.dart';
 
 class AddHardware extends StatefulWidget {
   final String category;
@@ -168,6 +168,7 @@ class _AddHardwareState extends State<AddHardware> {
               if (_telephone1.text != "" || _telephone2.text != "") {
                 if (openController.text != "" && closeController.text != "") {
                   pr.show();
+                  var uuid = Uuid();
                   List uploadGallery = [];
                   if (gallery.isNotEmpty) {
                     for (var ele in gallery) {
@@ -182,6 +183,7 @@ class _AddHardwareState extends State<AddHardware> {
                           "url": downUrl,
                           "thumb": thumbUrl,
                           "type": "image",
+                          "ownerId": currentUserId,
                         };
                         uploadGallery.add(json.encode(obj));
                       } else {
@@ -194,6 +196,7 @@ class _AddHardwareState extends State<AddHardware> {
                           "url": downUrl,
                           "thumb": thumbUrl,
                           "type": "video",
+                          "ownerId": currentUserId,
                         };
                         uploadGallery.add(json.encode(obj));
                       }
@@ -222,6 +225,7 @@ class _AddHardwareState extends State<AddHardware> {
                             "url": downUrl,
                             "thumb": thumbUrl,
                             "type": "image",
+                            "ownerId": currentUserId,
                           };
                           sellItemsGallery.add(json.encode(obj));
                         } else {
@@ -235,6 +239,7 @@ class _AddHardwareState extends State<AddHardware> {
                             "url": downUrl,
                             "thumb": thumbUrl,
                             "type": "video",
+                            "ownerId": currentUserId,
                           };
                           sellItemsGallery.add(json.encode(obj));
                         }
@@ -242,12 +247,15 @@ class _AddHardwareState extends State<AddHardware> {
                     }
 
                     var obj = {
+                      "id":
+                          uuid.v1().toString() + new DateTime.now().toString(),
                       "initialImage": initialImageUploadSel,
                       "item_type": sel["item_type"],
                       "item_name": sel["item_name"],
                       "price": sel["price"],
                       "about": sel["about"],
                       "gallery": sellItemsGallery,
+                      "total_ratings": 0.0,
                     };
 
                     itemsUpload.add(json.encode(obj));
@@ -272,6 +280,7 @@ class _AddHardwareState extends State<AddHardware> {
                             "url": downUrl,
                             "thumb": thumbUrl,
                             "type": "image",
+                            "ownerId": currentUserId,
                           };
                           sellItemsGallery.add(json.encode(obj));
                         } else {
@@ -285,6 +294,7 @@ class _AddHardwareState extends State<AddHardware> {
                             "url": downUrl,
                             "thumb": thumbUrl,
                             "type": "video",
+                            "ownerId": currentUserId,
                           };
                           sellItemsGallery.add(json.encode(obj));
                         }
@@ -292,12 +302,15 @@ class _AddHardwareState extends State<AddHardware> {
                     }
 
                     var obj = {
+                      "id":
+                          uuid.v1().toString() + new DateTime.now().toString(),
                       "initialImage": initialImageUploadSel,
                       "item_type": rent["item_type"],
                       "item_name": rent["item_name"],
                       "price": rent["price"],
                       "about": rent["about"],
                       "gallery": sellItemsGallery,
+                      "total_ratings": 0.0,
                     };
 
                     rentUpload.add(json.encode(obj));
@@ -968,7 +981,7 @@ class _AddHardwareState extends State<AddHardware> {
                 List reGallery = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => HardwareGallery(
+                        builder: (context) => Gallery(
                               gallery: gallery,
                             )));
                 if (reGallery != null) {

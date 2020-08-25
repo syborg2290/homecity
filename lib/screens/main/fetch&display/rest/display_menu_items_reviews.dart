@@ -1,16 +1,21 @@
 import 'dart:convert';
 
 import 'package:animator/animator.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nearby/models/resturant.dart';
 import 'package:nearby/models/user.dart';
+import 'package:nearby/screens/main/fetch&display/rest/restItem_review_replys.dart';
 import 'package:nearby/screens/main/fetch&display/rest/write_review_menu_items.dart';
+import 'package:nearby/services/activity_feed_service.dart';
 import 'package:nearby/services/auth_services.dart';
 import 'package:nearby/services/resturant_service.dart';
+import 'package:nearby/utils/full_screen_network_file.dart';
 import 'package:nearby/utils/pallete.dart';
 import 'package:readmore/readmore.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -20,8 +25,14 @@ class AllMenuItemsReviews extends StatefulWidget {
   final String docId;
   final String id;
   final int index;
+  final String restOwnerId;
   AllMenuItemsReviews(
-      {this.currentUserId, this.index, this.docId, this.id, Key key})
+      {this.currentUserId,
+      this.index,
+      this.restOwnerId,
+      this.docId,
+      this.id,
+      Key key})
       : super(key: key);
 
   @override
@@ -30,14 +41,26 @@ class AllMenuItemsReviews extends StatefulWidget {
 
 class _AllMenuItemsReviewsState extends State<AllMenuItemsReviews> {
   ResturantService _resturantService = ResturantService();
+  ActivityFeedService _activityFeedService = ActivityFeedService();
   AuthServcies _auth = AuthServcies();
   List<DocumentSnapshot> all = [];
+  List allReviews = [];
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
 
+    _resturantService.fetchSingleRest(widget.id).then((value) {
+      DocumentSnapshot doc = value.documents[0];
+      Resturant resturant = Resturant.fromDocument(doc);
+
+      setState(() {
+        if (json.decode(resturant.menu[widget.index])["review"] != null) {
+          allReviews = json.decode(resturant.menu[widget.index])["review"];
+        }
+      });
+    });
     _auth.getAllUsers().then((allUser) {
       setState(() {
         all = allUser;
@@ -86,17 +109,21 @@ class _AllMenuItemsReviewsState extends State<AllMenuItemsReviews> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: FlatButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => WriteMenuItemReview(
-                              currentUserId: widget.currentUserId,
-                              id: widget.id,
-                              index: widget.index,
-                              restId: widget.docId,
-                            )));
-              },
+              onPressed: isLoading
+                  ? null
+                  : () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => WriteMenuItemReview(
+                                    currentUserId: widget.currentUserId,
+                                    id: widget.id,
+                                    index: widget.index,
+                                    restId: widget.docId,
+                                    restOwnerId: widget.restOwnerId,
+                                    listIndex: allReviews.length,
+                                  )));
+                    },
               child: Center(
                   child: Text("Write a review",
                       style: TextStyle(
@@ -128,7 +155,32 @@ class _AllMenuItemsReviewsState extends State<AllMenuItemsReviews> {
                         child: SpinKitCircle(color: Pallete.mainAppColor)),
                   );
                 }
-                if (snapshot.data.documents.length == 0) {
+                if (snapshot.data.documents == null) {
+                  return Padding(
+                    padding: EdgeInsets.only(top: height * 0.2),
+                    child: Column(
+                      children: <Widget>[
+                        Center(
+                            child: Image.asset(
+                          'assets/icons/review.png',
+                          width: width * 0.7,
+                          color: Colors.grey,
+                        )),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          "Empty reviews",
+                          style: TextStyle(
+                              color: Colors.grey,
+                              fontFamily: "Roboto",
+                              fontSize: 40,
+                              fontWeight: FontWeight.w400),
+                        ),
+                      ],
+                    ),
+                  );
+                } else if (snapshot.data.documents.length == 0) {
                   return Padding(
                     padding: EdgeInsets.only(top: height * 0.2),
                     child: Column(
@@ -180,6 +232,10 @@ class _AllMenuItemsReviewsState extends State<AllMenuItemsReviews> {
                               rest: _resturantService,
                               reviewIndex: index,
                               docId: widget.docId,
+                              feedService: _activityFeedService,
+                              id: widget.id,
+                              length: itemReviews.length,
+                              restOwnerId: widget.restOwnerId,
                             ));
                   } else {
                     return Padding(
@@ -216,6 +272,8 @@ class _AllMenuItemsReviewsState extends State<AllMenuItemsReviews> {
 
 class ReviewDisplay extends StatelessWidget {
   final obj;
+  final String restOwnerId;
+  final String id;
   final String docId;
   final User owner;
   final double width;
@@ -224,9 +282,13 @@ class ReviewDisplay extends StatelessWidget {
   final String currentUserId;
   final int reviewIndex;
   final ResturantService rest;
+  final int length;
+  final ActivityFeedService feedService;
 
   const ReviewDisplay(
       {this.obj,
+      this.restOwnerId,
+      this.id,
       this.docId,
       this.indexItem,
       this.currentUserId,
@@ -235,15 +297,35 @@ class ReviewDisplay extends StatelessWidget {
       this.owner,
       this.reviewIndex,
       this.rest,
+      this.length,
+      this.feedService,
       Key key})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     List reviewMedia = [];
+    List likes = [];
+    List dislikes = [];
+    List replys = [];
 
     if (obj["media"] != null) {
       reviewMedia = json.decode(obj["media"]);
+    }
+    if (obj["reactions"] != null) {
+      obj["reactions"].forEach((ele) {
+        if (ele["reaction"] == "like") {
+          likes.add(ele);
+        }
+
+        if (ele["reaction"] == "dislike") {
+          dislikes.add(ele);
+        }
+      });
+    }
+
+    if (obj["replys"] != null) {
+      replys = obj["replys"];
     }
 
     return Container(
@@ -306,8 +388,43 @@ class ReviewDisplay extends StatelessWidget {
                           ),
                           child: GestureDetector(
                             onTap: () async {
-                              await rest.deleteResturantReview(
-                                  indexItem, docId, reviewIndex);
+                              AwesomeDialog(
+                                context: context,
+                                animType: AnimType.SCALE,
+                                dialogType: DialogType.NO_HEADER,
+                                body: Center(
+                                  child: Text(
+                                    'Are you sure to continue?',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                    ),
+                                  ),
+                                ),
+                                btnOkColor: Pallete.mainAppColor,
+                                btnCancelColor: Pallete.mainAppColor,
+                                btnOkText: 'Yes',
+                                btnCancelText: 'No',
+                                btnOkOnPress: () async {
+                                  await rest.deleteResturantReview(
+                                      indexItem, docId, reviewIndex);
+                                  await feedService.removeReviewFeeds(
+                                    owner.id,
+                                    restOwnerId,
+                                    docId,
+                                    indexItem,
+                                    reviewIndex,
+                                  );
+                                  Fluttertoast.showToast(
+                                      msg: "Review removed",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.CENTER,
+                                      backgroundColor: Pallete.mainAppColor,
+                                      textColor: Colors.white,
+                                      fontSize: 16.0);
+                                },
+                                btnCancelOnPress: () {},
+                              )..show();
                             },
                             child: Image.asset(
                               'assets/icons/delete.png',
@@ -344,14 +461,16 @@ class ReviewDisplay extends StatelessWidget {
                                     "image"
                                 ? GestureDetector(
                                     onTap: () {
-                                      // Navigator.push(
-                                      //     context,
-                                      //     MaterialPageRoute(
-                                      //         builder: (context) =>
-                                      //             FullScreenMediaFile(
-                                      //               file: media[index]["media"],
-                                      //               type: "image",
-                                      //             )));
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  NetworkFileFullScreen(
+                                                    url: json.decode(
+                                                            reviewMedia[index])[
+                                                        "url"],
+                                                    type: "image",
+                                                  )));
                                     },
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(10),
@@ -387,11 +506,25 @@ class ReviewDisplay extends StatelessWidget {
                                                 top: height * 0.03,
                                                 left: width * 0.07,
                                               ),
-                                              child: Image.asset(
-                                                'assets/icons/play.png',
-                                                color: Colors.white,
-                                                width: 60,
-                                                height: 60,
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              NetworkFileFullScreen(
+                                                                url: json.decode(
+                                                                    reviewMedia[
+                                                                        index])["url"],
+                                                                type: "video",
+                                                              )));
+                                                },
+                                                child: Image.asset(
+                                                  'assets/icons/play.png',
+                                                  color: Colors.white,
+                                                  width: 60,
+                                                  height: 60,
+                                                ),
                                               ),
                                             ),
                                             Container(
@@ -409,15 +542,16 @@ class ReviewDisplay extends StatelessWidget {
                                       )
                                     : GestureDetector(
                                         onTap: () {
-                                          // Navigator.push(
-                                          //     context,
-                                          //     MaterialPageRoute(
-                                          //         builder: (context) =>
-                                          //             FullScreenMediaFile(
-                                          //               file: media[index]
-                                          //                   ["media"],
-                                          //               type: "pano",
-                                          //             )));
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      NetworkFileFullScreen(
+                                                        url: json.decode(
+                                                            reviewMedia[
+                                                                index])["url"],
+                                                        type: "pano",
+                                                      )));
                                         },
                                         child: ClipRRect(
                                           borderRadius:
@@ -507,62 +641,238 @@ class ReviewDisplay extends StatelessWidget {
                   ),
                 ),
           SizedBox(
-            height: 20,
+            height: 10,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: Colors.black,
-                    )),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Image.asset(
-                    'assets/icons/thumbup.png',
-                    width: 30,
-                    height: 30,
+              Column(
+                children: <Widget>[
+                  GestureDetector(
+                    onTap: () async {
+                      await rest.setReactionsToResturantItemReview(
+                          indexItem, docId, currentUserId, reviewIndex, "like");
+                      if (currentUserId != owner.id) {
+                        await feedService.createActivityFeed(
+                          currentUserId,
+                          owner.id,
+                          docId,
+                          "review_like",
+                          indexItem,
+                          reviewIndex,
+                          null,
+                        );
+                      }
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: obj["reactions"] == null
+                              ? null
+                              : obj["reactions"].firstWhere(
+                                              (element) =>
+                                                  element["userId"] ==
+                                                  currentUserId,
+                                              orElse: () => null) !=
+                                          null &&
+                                      obj["reactions"][obj["reactions"]
+                                              .indexWhere((element) =>
+                                                  element["userId"] ==
+                                                  currentUserId)]["reaction"] ==
+                                          "like"
+                                  ? Pallete.mainAppColor
+                                  : null,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: obj["reactions"] == null
+                                ? Colors.black
+                                : obj["reactions"].firstWhere(
+                                                (element) =>
+                                                    element["userId"] ==
+                                                    currentUserId,
+                                                orElse: () => null) !=
+                                            null &&
+                                        obj["reactions"][obj["reactions"]
+                                                    .indexWhere((element) =>
+                                                        element["userId"] ==
+                                                        currentUserId)]
+                                                ["reaction"] ==
+                                            "like"
+                                    ? Pallete.mainAppColor
+                                    : Colors.black,
+                          )),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image.asset(
+                          'assets/icons/thumbup.png',
+                          width: 20,
+                          height: 20,
+                          color: obj["reactions"] == null
+                              ? null
+                              : obj["reactions"].firstWhere(
+                                              (element) =>
+                                                  element["userId"] ==
+                                                  currentUserId,
+                                              orElse: () => null) !=
+                                          null &&
+                                      obj["reactions"][obj["reactions"]
+                                              .indexWhere((element) =>
+                                                  element["userId"] ==
+                                                  currentUserId)]["reaction"] ==
+                                          "like"
+                                  ? Colors.white
+                                  : null,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(obj["reactions"] == null
+                      ? 0.toString() + " likes"
+                      : likes.length.toString() + " likes"),
+                ],
               ),
-              Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: Colors.black,
-                    )),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Image.asset(
-                    'assets/icons/thumbdown.png',
-                    width: 30,
-                    height: 30,
+              Column(
+                children: <Widget>[
+                  GestureDetector(
+                    onTap: () async {
+                      await rest.setReactionsToResturantItemReview(indexItem,
+                          docId, currentUserId, reviewIndex, "dislike");
+                      if (currentUserId != owner.id) {
+                        await feedService.createActivityFeed(
+                          currentUserId,
+                          owner.id,
+                          docId,
+                          "review_dislike",
+                          indexItem,
+                          reviewIndex,
+                          null,
+                        );
+                      }
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: obj["reactions"] == null
+                              ? null
+                              : obj["reactions"].firstWhere(
+                                              (element) =>
+                                                  element["userId"] ==
+                                                  currentUserId,
+                                              orElse: () => null) !=
+                                          null &&
+                                      obj["reactions"][obj["reactions"]
+                                              .indexWhere((element) =>
+                                                  element["userId"] ==
+                                                  currentUserId)]["reaction"] ==
+                                          "dislike"
+                                  ? Colors.red
+                                  : null,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: obj["reactions"] == null
+                                ? Colors.black
+                                : obj["reactions"].firstWhere(
+                                                (element) =>
+                                                    element["userId"] ==
+                                                    currentUserId,
+                                                orElse: () => null) !=
+                                            null &&
+                                        obj["reactions"][obj["reactions"]
+                                                    .indexWhere((element) =>
+                                                        element["userId"] ==
+                                                        currentUserId)]
+                                                ["reaction"] ==
+                                            "dislike"
+                                    ? Colors.red
+                                    : Colors.black,
+                          )),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image.asset(
+                          'assets/icons/thumbdown.png',
+                          width: 20,
+                          height: 20,
+                          color: obj["reactions"] == null
+                              ? null
+                              : obj["reactions"].firstWhere(
+                                              (element) =>
+                                                  element["userId"] ==
+                                                  currentUserId,
+                                              orElse: () => null) !=
+                                          null &&
+                                      obj["reactions"][obj["reactions"]
+                                              .indexWhere((element) =>
+                                                  element["userId"] ==
+                                                  currentUserId)]["reaction"] ==
+                                          "dislike"
+                                  ? Colors.white
+                                  : null,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(obj["reactions"] == null
+                      ? 0.toString() + " dislikes"
+                      : dislikes.length.toString() + " dislikes"),
+                ],
               ),
-              Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: Colors.black,
-                    )),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Image.asset(
-                    'assets/icons/reply.png',
-                    width: 30,
-                    height: 30,
+              Column(
+                children: <Widget>[
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => RestItemReviewReply(
+                                    reviewOwner: owner.username,
+                                    reviewOwnerId: owner.id,
+                                    currentUserId: currentUserId,
+                                    docId: docId,
+                                    id: id,
+                                    index: indexItem,
+                                    ownerId: owner.id,
+                                    reviewIndex: reviewIndex,
+                                  )));
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: Colors.black,
+                          )),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image.asset(
+                          'assets/icons/reply.png',
+                          width: 20,
+                          height: 20,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(obj["replys"] == null
+                      ? 0.toString() + " replys"
+                      : replys.length.toString() + " replys"),
+                ],
               ),
             ],
           ),
           SizedBox(
             height: 10,
           ),
-          Divider(),
+          reviewIndex != length - 1
+              ? Divider(
+                  color: Colors.black.withOpacity(0.1),
+                  thickness: 2.0,
+                )
+              : SizedBox.shrink(),
           SizedBox(
             height: 10,
           ),

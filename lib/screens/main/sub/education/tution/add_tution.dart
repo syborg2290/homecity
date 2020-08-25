@@ -4,9 +4,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:nearby/screens/main/sub/education/education_gallery.dart';
 import 'package:nearby/screens/main/sub/education/tution/tution_schedule.dart';
 import 'package:nearby/screens/main/sub/education/view_Experiences.dart';
+import 'package:nearby/screens/main/sub/gallery.dart';
 import 'package:nearby/services/auth_services.dart';
 import 'package:nearby/services/education_service.dart';
 import 'package:nearby/services/services_service.dart';
@@ -110,6 +110,7 @@ class _AddTutionState extends State<AddTution> {
                     "url": downUrl,
                     "thumb": thumbUrl,
                     "type": "image",
+                    "ownerId": currentUserId,
                   };
                   uploadGallery.add(json.encode(obj));
                 } else {
@@ -123,6 +124,7 @@ class _AddTutionState extends State<AddTution> {
                     "url": downUrl,
                     "thumb": thumbUrl,
                     "type": "video",
+                    "ownerId": currentUserId,
                   };
                   uploadGallery.add(json.encode(obj));
                 }
@@ -697,7 +699,7 @@ class _AddTutionState extends State<AddTution> {
                 List reGallery = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => EducationGallery(
+                        builder: (context) => Gallery(
                               gallery: gallery,
                             )));
                 if (reGallery != null) {

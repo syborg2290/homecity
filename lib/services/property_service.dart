@@ -39,6 +39,7 @@ class PropertyService {
       "size": size,
       "price": price,
       "gallery": gallery,
+      "total_ratings": 0.0,
       "timestamp": timestamp,
     });
     return docRe.documentID;

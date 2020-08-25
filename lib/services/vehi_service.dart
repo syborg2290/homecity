@@ -73,6 +73,7 @@ class VehiService {
       "transmission": transmission,
       "enginecapacity": enginecapacity,
       "status": status,
+      "total_ratings": 0.0,
       "timestamp": timestamp,
     });
     return docRe.documentID;

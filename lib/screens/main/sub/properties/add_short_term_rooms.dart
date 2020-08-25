@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:nearby/screens/main/sub/properties/property_gallery.dart';
+import 'package:nearby/screens/main/sub/gallery.dart';
 import 'package:nearby/services/auth_services.dart';
 import 'package:nearby/services/property_service.dart';
 import 'package:nearby/services/services_service.dart';
@@ -138,6 +138,7 @@ class _AddShortTermRoomState extends State<AddShortTermRoom> {
                           "url": downUrl,
                           "thumb": thumbUrl,
                           "type": "image",
+                          "ownerId":currentUserId,
                         };
                         uploadGallery.add(json.encode(obj));
                       } else {
@@ -150,6 +151,7 @@ class _AddShortTermRoomState extends State<AddShortTermRoom> {
                           "url": downUrl,
                           "thumb": thumbUrl,
                           "type": "video",
+                          "ownerId":currentUserId,
                         };
                         uploadGallery.add(json.encode(obj));
                       }
@@ -630,7 +632,7 @@ class _AddShortTermRoomState extends State<AddShortTermRoom> {
                 List reGallery = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => PropertyGallery(
+                        builder: (context) => Gallery(
                               gallery: gallery,
                             )));
                 if (reGallery != null) {

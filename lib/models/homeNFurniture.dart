@@ -19,6 +19,7 @@ class HomeNFurniture {
   String specialHolidayshoursOfClosing;
   List gallery;
   List items;
+  double totalratings;
   Timestamp timestamp;
 
   HomeNFurniture({
@@ -40,6 +41,7 @@ class HomeNFurniture {
     this.specialHolidayshoursOfClosing,
     this.gallery,
     this.items,
+    this.totalratings,
     this.timestamp,
   });
 
@@ -63,6 +65,7 @@ class HomeNFurniture {
       specialHolidayshoursOfClosing: doc['specialHolidayshoursOfClosing'],
       gallery: doc['gallery'],
       items: doc['items'],
+      totalratings: doc['total_ratings'],
       timestamp: doc['timestamp'],
     );
   }

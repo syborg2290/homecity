@@ -15,7 +15,9 @@ import 'package:nearby/utils/videoplayers/network_player.dart';
 import 'package:nearby/utils/full_screen_network_file.dart';
 import 'package:intl/intl.dart' as dd;
 import 'package:readmore/readmore.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import 'explore_menu_types.dart';
 import 'menu_item_detail.dart';
 
 class ResturantDetailView extends StatefulWidget {
@@ -263,7 +265,7 @@ class _ResturantDetailViewState extends State<ResturantDetailView> {
                   style: TextStyle(
                       color: Colors.grey[800],
                       fontFamily: "Roboto",
-                      fontSize: 40,
+                      fontSize: 30,
                       fontWeight: FontWeight.w700),
                 ),
                 Text(
@@ -291,13 +293,25 @@ class _ResturantDetailViewState extends State<ResturantDetailView> {
                           SizedBox(
                             width: 10,
                           ),
-                          Text(
-                            widget.rest.email,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Colors.grey[700],
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700),
+                          GestureDetector(
+                            onTap: () {
+                              final Uri _emailLaunchUri = Uri(
+                                  scheme: 'mailto',
+                                  path: widget.rest.email,
+                                  queryParameters: {
+                                    'subject': 'email subject'
+                                  });
+
+                              launch(_emailLaunchUri.toString());
+                            },
+                            child: Text(
+                              widget.rest.email,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700),
+                            ),
                           ),
                         ],
                       )
@@ -311,21 +325,32 @@ class _ResturantDetailViewState extends State<ResturantDetailView> {
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Icon(
-                            Icons.info,
+                          Image.asset(
+                            'assets/icons/internet.png',
+                            width: 20,
+                            height: 20,
                             color: Colors.black,
-                            size: 20,
                           ),
                           SizedBox(
                             width: 10,
                           ),
-                          Text(
-                            widget.rest.website,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Colors.grey[700],
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700),
+                          GestureDetector(
+                            onTap: () async {
+                              var url = "https://" + widget.rest.website;
+                              if (await canLaunch(url)) {
+                                await launch(url);
+                              } else {
+                                throw 'Could not launch $url';
+                              }
+                            },
+                            child: Text(
+                              widget.rest.website,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700),
+                            ),
                           ),
                         ],
                       )
@@ -349,14 +374,24 @@ class _ResturantDetailViewState extends State<ResturantDetailView> {
                       SizedBox(
                         width: 10,
                       ),
-                      Text(
-                        widget.rest.telephone1,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
+                      GestureDetector(
+                        onTap: () async {
+                          var url = "tel:" + widget.rest.telephone1;
+                          if (await canLaunch(url)) {
+                            await launch(url);
+                          } else {
+                            throw 'Could not launch $url';
+                          }
+                        },
+                        child: Text(
+                          widget.rest.telephone1,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                          ),
                         ),
-                      ),
+                      )
                     ],
                   )
                 : SizedBox.shrink(),
@@ -377,12 +412,22 @@ class _ResturantDetailViewState extends State<ResturantDetailView> {
                       SizedBox(
                         width: 10,
                       ),
-                      Text(
-                        widget.rest.telephone2,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
+                      GestureDetector(
+                        onTap: () async {
+                          var url = "tel:" + widget.rest.telephone2;
+                          if (await canLaunch(url)) {
+                            await launch(url);
+                          } else {
+                            throw 'Could not launch $url';
+                          }
+                        },
+                        child: Text(
+                          widget.rest.telephone2,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                          ),
                         ),
                       ),
                     ],
@@ -695,14 +740,44 @@ class _ResturantDetailViewState extends State<ResturantDetailView> {
             ),
             Divider(),
             widget.rest.menu.isNotEmpty
-                ? Text(
-                    "Menu items",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Colors.grey[700],
-                        fontFamily: "Roboto",
-                        fontSize: 28,
-                        fontWeight: FontWeight.w700),
+                ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        Text(
+                          "Menu items",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: Colors.grey[700],
+                              fontFamily: "Roboto",
+                              fontSize: 28,
+                              fontWeight: FontWeight.w700),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ExploreMoreMenuTypes(
+                                          currentUserId: currentUserId,
+                                          id: widget.rest.id,
+                                          restDocId: widget.docId,
+                                          restOwnerId: widget.rest.ownerId,
+                                        )));
+                          },
+                          child: Text(
+                            "Explore more",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Colors.grey[700],
+                                fontFamily: "Roboto",
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                      ],
+                    ),
                   )
                 : SizedBox.shrink(),
             widget.rest.menu.isNotEmpty
@@ -712,20 +787,35 @@ class _ResturantDetailViewState extends State<ResturantDetailView> {
                       if (!snapshot.hasData) {
                         return Center(
                             child: SpinKitCircle(color: Pallete.mainAppColor));
+                      } else if (snapshot.data.documents == null) {
+                        return Center(
+                            child: SpinKitCircle(color: Pallete.mainAppColor));
+                      } else if (snapshot.data.documents.length == 0) {
+                        return Center(
+                            child: SpinKitCircle(color: Pallete.mainAppColor));
                       } else {
                         Resturant restSnap =
                             Resturant.fromDocument(snapshot.data.documents[0]);
+                        List<dynamic> menu = [];
+
+                        restSnap.menu.forEach((item) {
+                          menu.add(json.decode(item));
+                        });
+                        if (menu.length > 1) {
+                          menu.sort((b, a) =>
+                              a["total_ratings"].compareTo(b["total_ratings"]));
+                        }
+
                         return SizedBox(
                           height: height * 0.3,
                           child: ListView.builder(
-                              itemCount: restSnap.menu.length,
+                              itemCount: menu.length,
                               shrinkWrap: true,
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (context, index) {
                                 int total = 0;
 
-                                List ratings = json
-                                    .decode(restSnap.menu[index])["ratings"];
+                                List ratings = menu[index]["ratings"];
                                 if (ratings != null) {
                                   if (ratings.isNotEmpty) {
                                     ratings.forEach((element) {
@@ -735,11 +825,12 @@ class _ResturantDetailViewState extends State<ResturantDetailView> {
                                 }
 
                                 return ResturantMenuItems(
-                                  restMenu: json.decode(restSnap.menu[index]),
+                                  restMenu: menu[index],
                                   currentUserId: currentUserId,
                                   docId: widget.docId,
                                   index: index,
-                                  id: restSnap.id,
+                                  id: widget.rest.id,
+                                  ownerId: widget.rest.ownerId,
                                   rate: total == 0 ? 0.0 : rateAlgorithm(total),
                                 );
                               }),
@@ -752,14 +843,20 @@ class _ResturantDetailViewState extends State<ResturantDetailView> {
               height: 20,
             ),
             Divider(),
+            SizedBox(
+              height: 20,
+            ),
             Text(
-              "Post a review & see all reviews",
+              "Rate your experience",
               textAlign: TextAlign.center,
               style: TextStyle(
                   color: Colors.grey[600],
                   fontFamily: "Roboto",
-                  fontSize: 25,
+                  fontSize: 20,
                   fontWeight: FontWeight.w400),
+            ),
+            SizedBox(
+              height: 10,
             ),
             RatingBar(
               initialRating: 0,
@@ -828,6 +925,7 @@ class ResturantMenuItems extends StatelessWidget {
   final String currentUserId;
   final String docId;
   final String id;
+  final String ownerId;
   final int index;
   final double rate;
 
@@ -835,6 +933,7 @@ class ResturantMenuItems extends StatelessWidget {
       {this.restMenu,
       this.id,
       this.index,
+      this.ownerId,
       this.currentUserId,
       this.docId,
       this.rate,
@@ -854,7 +953,7 @@ class ResturantMenuItems extends StatelessWidget {
                       docId: docId,
                       index: index,
                       id: id,
-                      ownerId: restMenu["ownerId"],
+                      ownerId: ownerId,
                     )));
       },
       child: Container(
@@ -870,6 +969,27 @@ class ResturantMenuItems extends StatelessWidget {
                 shimmerBackColor: Color(0xffe0e0e0),
                 shimmerBaseColor: Color(0xffe0e0e0),
                 shimmerHighlightColor: Colors.grey[200],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  width: 45,
+                  height: 45,
+                  child: FloatingActionButton(
+                    onPressed: () {},
+                    heroTag: index,
+                    backgroundColor: Pallete.mainAppColor,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Image.asset(
+                        'assets/icons/bookmark.png',
+                        color: Colors.white,
+                        height: 30,
+                        width: 30,
+                      ),
+                    ),
+                  ),
+                ),
               ),
               Padding(
                 padding: EdgeInsets.only(

@@ -46,7 +46,8 @@ class HardwareNToolsService {
       "specialHolidayshoursOfClosing": specialHolidayshoursOfClosing,
       "gallery": gallery,
       "items": items,
-      "rent":rent,
+      "rent": rent,
+      "total_ratings": 0.0,
       "timestamp": timestamp,
     });
     return docRe.documentID;

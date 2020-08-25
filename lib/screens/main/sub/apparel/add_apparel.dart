@@ -5,10 +5,10 @@ import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:nearby/screens/main/sub/apparel/apparel_gallery.dart';
 import 'package:nearby/screens/main/sub/apparel/apparel_main_type.dart';
 import 'package:nearby/screens/main/sub/apparel/rent_apparel_types.dart';
 import 'package:nearby/screens/main/sub/apparel/tailor_types.dart';
+import 'package:nearby/screens/main/sub/gallery.dart';
 import 'package:nearby/services/apparel_service.dart';
 import 'package:nearby/services/auth_services.dart';
 import 'package:nearby/services/services_service.dart';
@@ -21,6 +21,7 @@ import 'package:nearby/utils/pallete.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:intl/intl.dart' as dd;
+import 'package:uuid/uuid.dart';
 
 class AddApparel extends StatefulWidget {
   final String category;
@@ -141,6 +142,7 @@ class _AddApparelState extends State<AddApparel> {
               if (_telephone1.text != "" || _telephone2.text != "") {
                 if (openController.text != "" && closeController.text != "") {
                   pr.show();
+                  var uuid = Uuid();
                   List uploadGallery = [];
                   if (gallery.isNotEmpty) {
                     for (var ele in gallery) {
@@ -155,6 +157,7 @@ class _AddApparelState extends State<AddApparel> {
                           "url": downUrl,
                           "thumb": thumbUrl,
                           "type": "image",
+                          "ownerId": currentUserId,
                         };
                         uploadGallery.add(json.encode(obj));
                       } else {
@@ -168,6 +171,7 @@ class _AddApparelState extends State<AddApparel> {
                           "url": downUrl,
                           "thumb": thumbUrl,
                           "type": "video",
+                          "ownerId": currentUserId,
                         };
                         uploadGallery.add(json.encode(obj));
                       }
@@ -194,6 +198,7 @@ class _AddApparelState extends State<AddApparel> {
                               "url": downUrl,
                               "thumb": thumbUrl,
                               "type": "image",
+                              "ownerId": currentUserId,
                             };
                             uploadGalleryItems.add(json.encode(obj));
                           } else {
@@ -206,7 +211,7 @@ class _AddApparelState extends State<AddApparel> {
                             var obj = {
                               "url": downUrl,
                               "thumb": thumbUrl,
-                              "type": "video",
+                              "ownerId": currentUserId,
                             };
                             uploadGalleryItems.add(json.encode(obj));
                           }
@@ -214,6 +219,8 @@ class _AddApparelState extends State<AddApparel> {
                       }
 
                       var obj = {
+                        "id": uuid.v1().toString() +
+                            new DateTime.now().toString(),
                         "initialImage": downUrl,
                         "item_maintype": item["item_maintype"],
                         "item_subtype": item["item_subtype"],
@@ -223,6 +230,7 @@ class _AddApparelState extends State<AddApparel> {
                         "about": item["about"],
                         "brand": item["brand"],
                         "gallery": uploadGalleryItems,
+                        "total_ratings": 0.0,
                       };
                       itemsUpload.add(json.encode(obj));
                     }
@@ -246,6 +254,7 @@ class _AddApparelState extends State<AddApparel> {
                               "url": downUrl,
                               "thumb": thumbUrl,
                               "type": "image",
+                              "ownerId": currentUserId,
                             };
                             uploadGalleryItems.add(json.encode(obj));
                           } else {
@@ -259,6 +268,7 @@ class _AddApparelState extends State<AddApparel> {
                               "url": downUrl,
                               "thumb": thumbUrl,
                               "type": "video",
+                              "ownerId": currentUserId,
                             };
                             uploadGalleryItems.add(json.encode(obj));
                           }
@@ -266,9 +276,12 @@ class _AddApparelState extends State<AddApparel> {
                       }
 
                       var obj = {
+                        "id": uuid.v1().toString() +
+                            new DateTime.now().toString(),
                         "initialImage": downUrl,
                         "item_type": item["item_type"],
                         "about": item["about"],
+                        "total_ratings": 0.0,
                         "gallery": uploadGalleryItems,
                       };
                       tailorUpload.add(json.encode(obj));
@@ -293,6 +306,7 @@ class _AddApparelState extends State<AddApparel> {
                               "url": downUrl,
                               "thumb": thumbUrl,
                               "type": "image",
+                              "ownerId": currentUserId,
                             };
                             uploadGalleryItems.add(json.encode(obj));
                           } else {
@@ -306,6 +320,7 @@ class _AddApparelState extends State<AddApparel> {
                               "url": downUrl,
                               "thumb": thumbUrl,
                               "type": "video",
+                              "ownerId": currentUserId,
                             };
                             uploadGalleryItems.add(json.encode(obj));
                           }
@@ -313,9 +328,12 @@ class _AddApparelState extends State<AddApparel> {
                       }
 
                       var obj = {
+                        "id": uuid.v1().toString() +
+                            new DateTime.now().toString(),
                         "initialImage": downUrl,
                         "item_type": item["item_type"],
                         "about": item["about"],
+                        "total_ratings": 0.0,
                         "gallery": uploadGalleryItems,
                       };
                       rentUpload.add(json.encode(obj));
@@ -1066,7 +1084,7 @@ class _AddApparelState extends State<AddApparel> {
                 List reGallery = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ApparelGallery(
+                        builder: (context) => Gallery(
                               gallery: gallery,
                             )));
                 if (reGallery != null) {

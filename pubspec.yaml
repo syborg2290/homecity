@@ -55,6 +55,8 @@ dependencies:
   panorama: ^0.0.2
   readmore: ^1.0.0
   empty_widget: ^0.0.1
+  fluttertoast: ^7.0.2
+  url_launcher: ^5.5.0
 
 dev_dependencies:
   
@@ -95,6 +97,7 @@ flutter:
     - assets/icons/camera.png
     - assets/icons/video-camera.png
     - assets/icons/dot.png
+    - assets/icons/internet.png
     - assets/icons/delete.png
     - assets/icons/eye_open.png
     - assets/icons/eye_close.png
@@ -112,6 +115,8 @@ flutter:
     - assets/icons/thumbup.png
     - assets/icons/thumbdown.png
     - assets/icons/reply.png
+    - assets/icons/up.png
+    - assets/icons/menu.png
     - assets/icons/open-menu.png
     - assets/icons/direction.png
     
@@ -375,6 +380,7 @@ flutter:
     
     #all jsons
     - assets/json/services.json
+    - assets/json/explore_Foods.json
     - assets/json/apparel/rent_apparel.json
     - assets/json/apparel/tailor.json
     - assets/json/services.json
