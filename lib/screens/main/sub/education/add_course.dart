@@ -38,8 +38,9 @@ class _AddCourseState extends State<AddCourse> {
     if (_courseName.text.trim() != "") {
       if (_overview.text.trim() != "") {
         var uuid = Uuid();
+        String id = uuid.v1().toString() + new DateTime.now().toString();
         var obj = {
-          "id": uuid.v1().toString() + new DateTime.now().toString(),
+          "id": id,
           "category": widget.category,
           "Course_name": _courseName.text.trim(),
           "overview": _overview.text.trim(),

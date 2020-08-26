@@ -243,9 +243,9 @@ class _BeautySaloonsState extends State<BeautySaloons> {
                         }
                       }
                     }
-
+                      String id=uuid.v1().toString() + new DateTime.now().toString();
                     var obj = {
-                      "id": uuid.v1().toString() + new DateTime.now().toString(),
+                      "id":id ,
                       "initialImage": initialImageUploadSel,
                       "item_type": sel["item_type"],
                       "item_name": sel["item_name"],

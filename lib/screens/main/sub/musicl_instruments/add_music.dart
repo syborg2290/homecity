@@ -213,9 +213,10 @@ class _AddMusicState extends State<AddMusic> {
                     String initialImageUploadRe =
                         await _musicService.uploadImage(
                             await compressImageFile(re["initialImage"], 80));
+                    String id =
+                        uuid.v1().toString() + new DateTime.now().toString();
                     var obj = {
-                      "id":
-                          uuid.v1().toString() + new DateTime.now().toString(),
+                      "id": id,
                       "initialImage": initialImageUploadRe,
                       "repair_type": re["repair_type"],
                       "allDevices": re["allDevices"],
@@ -263,10 +264,10 @@ class _AddMusicState extends State<AddMusic> {
                         }
                       }
                     }
-
+                    String id =
+                        uuid.v1().toString() + new DateTime.now().toString();
                     var obj = {
-                      "id":
-                          uuid.v1().toString() + new DateTime.now().toString(),
+                      "id": id,
                       "initialImage": initialImageUploadSel,
                       "item_type": sel["item_type"],
                       "item_name": sel["item_name"],
@@ -317,10 +318,10 @@ class _AddMusicState extends State<AddMusic> {
                         }
                       }
                     }
-
+                    String id =
+                        uuid.v1().toString() + new DateTime.now().toString();
                     var obj = {
-                      "id":
-                          uuid.v1().toString() + new DateTime.now().toString(),
+                      "id": id,
                       "initialImage": initialImageUploadSel,
                       "item_type": rent["item_type"],
                       "item_name": rent["item_name"],

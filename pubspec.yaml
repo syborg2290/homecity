@@ -57,6 +57,7 @@ dependencies:
   empty_widget: ^0.0.1
   fluttertoast: ^7.0.2
   url_launcher: ^5.5.0
+  flutter_polyline_points: ^0.2.3
 
 dev_dependencies:
   
@@ -97,6 +98,8 @@ flutter:
     - assets/icons/camera.png
     - assets/icons/video-camera.png
     - assets/icons/dot.png
+    - assets/icons/shop_dot.png
+    - assets/icons/user_location.png
     - assets/icons/internet.png
     - assets/icons/delete.png
     - assets/icons/eye_open.png
@@ -116,6 +119,7 @@ flutter:
     - assets/icons/thumbdown.png
     - assets/icons/reply.png
     - assets/icons/up.png
+    - assets/icons/compass.png
     - assets/icons/menu.png
     - assets/icons/open-menu.png
     - assets/icons/direction.png

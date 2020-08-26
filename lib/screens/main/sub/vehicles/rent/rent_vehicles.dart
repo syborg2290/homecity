@@ -160,7 +160,7 @@ class _RentVehiclesState extends State<RentVehicles> {
                               "url": downUrl,
                               "thumb": thumbUrl,
                               "type": "image",
-                              "ownerId":currentUserId,
+                              "ownerId": currentUserId,
                             };
                             uploadGalleryRent.add(json.encode(obj));
                           } else {
@@ -174,16 +174,17 @@ class _RentVehiclesState extends State<RentVehicles> {
                               "url": downUrl,
                               "thumb": thumbUrl,
                               "type": "video",
-                              "ownerId":currentUserId,
+                              "ownerId": currentUserId,
                             };
                             uploadGalleryRent.add(json.encode(obj));
                           }
                         }
                       }
                       var uuid = Uuid();
+                      String id =
+                          uuid.v1().toString() + new DateTime.now().toString();
                       var obj = {
-                        "id": uuid.v1().toString() +
-                            new DateTime.now().toString(),
+                        "id": id,
                         "initialImage": downUrl,
                         "item_type": item["item_type"],
                         "vehi_name": item["vehi_name"],
@@ -215,7 +216,7 @@ class _RentVehiclesState extends State<RentVehicles> {
                           "url": downUrl,
                           "thumb": thumbUrl,
                           "type": "image",
-                          "ownerId":currentUserId,
+                          "ownerId": currentUserId,
                         };
                         uploadGallery.add(json.encode(obj));
                       } else {
@@ -228,7 +229,7 @@ class _RentVehiclesState extends State<RentVehicles> {
                           "url": downUrl,
                           "thumb": thumbUrl,
                           "type": "video",
-                          "ownerId":currentUserId,
+                          "ownerId": currentUserId,
                         };
                         uploadGallery.add(json.encode(obj));
                       }

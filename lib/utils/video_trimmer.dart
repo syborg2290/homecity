@@ -77,7 +77,7 @@ class _VideoTrimmerState extends State<VideoTrimmer> {
                 borderRadius: BorderRadius.all(Radius.circular(height * 0.09))),
             child: IconButton(
                 icon: Image.asset(
-                  'assets/icons/left-arrow.png',
+                  'assets/icons/close.png',
                   width: width * 0.07,
                   height: height * 0.07,
                   color: Colors.white,
@@ -180,9 +180,7 @@ class _VideoTrimmerState extends State<VideoTrimmer> {
                 String outputPath = await _saveVideo();
 
                 if (File(outputPath).existsSync()) {
-                  if (!mounted) {
-                    return;
-                  }
+                  Navigator.pop(context, File(outputPath));
                 }
               },
         backgroundColor: Pallete.mainAppColor,

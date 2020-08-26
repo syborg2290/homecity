@@ -32,19 +32,19 @@ class _ImageCropperState extends State<ImageCropper> {
         backgroundColor: Colors.transparent,
         elevation: 0.0,
         leading: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.only(left: 8, top: 5),
           child: Container(
             decoration: BoxDecoration(
                 color: Colors.black.withOpacity(0.8),
                 border: Border.all(
                   color: Colors.black,
                 ),
-                borderRadius: BorderRadius.all(Radius.circular(height * 0.09))),
+                borderRadius: BorderRadius.all(Radius.circular(height * 0.1))),
             child: IconButton(
                 icon: Image.asset(
-                  'assets/icons/left-arrow.png',
-                  width: width * 0.07,
-                  height: height * 0.07,
+                  'assets/icons/close.png',
+                  width: width * 0.08,
+                  height: height * 0.08,
                   color: Colors.white,
                 ),
                 onPressed: () {

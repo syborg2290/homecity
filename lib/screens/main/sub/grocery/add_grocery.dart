@@ -210,10 +210,10 @@ class _AddGroceryState extends State<AddGrocery> {
                           }
                         }
                       }
-
+                      String id =
+                          uuid.v1().toString() + new DateTime.now().toString();
                       var obj = {
-                        "id": uuid.v1().toString() +
-                            new DateTime.now().toString(),
+                        "id": id,
                         "initialImage": downUrl,
                         "item_type": item["item_type"],
                         "item_name": item["item_name"],

@@ -20,7 +20,10 @@ class Resturant {
   String specialHolidayshoursOfClosing;
   List menu;
   List gallery;
+  List ratings;
   double totalratings;
+  List reviews;
+  String deliveryrRange;
   Timestamp timestamp;
 
   Resturant({
@@ -43,7 +46,10 @@ class Resturant {
     this.specialHolidayshoursOfClosing,
     this.menu,
     this.gallery,
+    this.ratings,
     this.totalratings,
+    this.reviews,
+    this.deliveryrRange,
     this.timestamp,
   });
 
@@ -68,7 +74,10 @@ class Resturant {
       specialHolidayshoursOfClosing: doc['specialHolidayshoursOfClosing'],
       menu: doc['menu'],
       gallery: doc['gallery'],
+      ratings: doc['ratings'],
       totalratings: doc['total_ratings'],
+      reviews: doc['reviews'],
+      deliveryrRange: doc['delivery_range'],
       timestamp: doc['timestamp'],
     );
   }

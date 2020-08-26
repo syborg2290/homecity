@@ -94,7 +94,7 @@ class _SelectCategoryState extends State<SelectCategory> {
                   child: GridView.count(
                       crossAxisCount: 2,
                       shrinkWrap: true,
-                      mainAxisSpacing: 5,
+                      mainAxisSpacing: 0,
                       children: List.generate(myData.length, (index) {
                         return GestureDetector(
                           onTap: () {
@@ -229,7 +229,7 @@ class _SelectCategoryState extends State<SelectCategory> {
                             ),
                             child: Container(
                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderRadius: BorderRadius.circular(20.0),
                                   border: Border.all(
                                     color: Colors.black.withOpacity(0.6),
                                     width: 1,
@@ -244,7 +244,7 @@ class _SelectCategoryState extends State<SelectCategory> {
                                         myData[index]['service'],
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                          color: Colors.black.withOpacity(0.4),
+                                          color: Colors.black.withOpacity(0.7),
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -255,14 +255,14 @@ class _SelectCategoryState extends State<SelectCategory> {
                                         myData[index]['image_path'],
                                         width: 80,
                                         height: 80,
-                                        color: Colors.black.withOpacity(0.4),
+                                        color: Colors.black.withOpacity(0.7),
                                         fit: BoxFit.contain,
                                       ),
                                     ),
                                   ],
                                 ),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderRadius: BorderRadius.circular(20.0),
                                 ),
                                 elevation: 3,
                                 margin: EdgeInsets.all(0),

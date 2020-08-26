@@ -83,7 +83,7 @@ class _NotifyState extends State<Notify> {
                       return Center(
                         child: EmptyListWidget(
                             title: 'No Notification',
-                            subTitle: 'No  notification available yet',
+                            subTitle: 'No notification available yet',
                             image: 'assets/icons/bell.png',
                             titleTextStyle: Theme.of(context)
                                 .typography

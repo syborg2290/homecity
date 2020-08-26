@@ -278,7 +278,7 @@ class _AddResturantState extends State<AddResturant> {
                             "url": downUrl,
                             "thumb": thumbUrl,
                             "type": "image",
-                            "ownerId":currentUserId,
+                            "ownerId": currentUserId,
                           };
                           uploadGallery.add(json.encode(obj));
                         } else {
@@ -292,7 +292,7 @@ class _AddResturantState extends State<AddResturant> {
                             "url": downUrl,
                             "thumb": thumbUrl,
                             "type": "video",
-                            "ownerId":currentUserId,
+                            "ownerId": currentUserId,
                           };
                           uploadGallery.add(json.encode(obj));
                         }
@@ -320,7 +320,7 @@ class _AddResturantState extends State<AddResturant> {
                                 "url": downUrl,
                                 "thumb": thumbUrl,
                                 "type": "image",
-                                "ownerId":currentUserId,
+                                "ownerId": currentUserId,
                               };
                               uploadGalleryItems.add(json.encode(obj));
                             } else {
@@ -334,16 +334,17 @@ class _AddResturantState extends State<AddResturant> {
                                 "url": downUrl,
                                 "thumb": thumbUrl,
                                 "type": "video",
-                                "ownerId":currentUserId,
+                                "ownerId": currentUserId,
                               };
                               uploadGalleryItems.add(json.encode(obj));
                             }
                           }
                         }
                         var uuid = Uuid();
+                        String id = uuid.v1().toString() +
+                            new DateTime.now().toString();
                         var obj = {
-                          "id": uuid.v1().toString() +
-                              new DateTime.now().toString(),
+                          "id": id,
                           "initialImage": downUrl,
                           "item_type": item["item_type"],
                           "item_name": item["item_name"],
@@ -383,6 +384,7 @@ class _AddResturantState extends State<AddResturant> {
                       menuUpload,
                       selectedDistrict,
                       uploadGallery,
+                      _rangeOfDelivery.text.trim(),
                     );
                     await _services.addService(_restName.text.trim(), restId,
                         latitude, longitude, widget.type, widget.type);

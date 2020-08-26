@@ -7,6 +7,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:nearby/models/resturant.dart';
+import 'package:nearby/screens/main/fetch&display/rest/rest_item_gallery.dart';
 import 'package:nearby/services/activity_feed_service.dart';
 import 'package:nearby/services/resturant_service.dart';
 import 'package:nearby/utils/full_screen_network_file.dart';
@@ -107,15 +108,26 @@ class _MenuItemDetailState extends State<MenuItemDetail> {
         child: Column(
           children: <Widget>[
             restGallery.isEmpty
-                ? Container(
-                    width: width,
-                    height: height * 0.4,
-                    child: FancyShimmerImage(
-                      imageUrl: widget.menuItem["initialImage"],
-                      boxFit: BoxFit.cover,
-                      shimmerBackColor: Color(0xffe0e0e0),
-                      shimmerBaseColor: Color(0xffe0e0e0),
-                      shimmerHighlightColor: Colors.grey[200],
+                ? GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => NetworkFileFullScreen(
+                                    type: "image",
+                                    url: widget.menuItem["initialImage"],
+                                  )));
+                    },
+                    child: Container(
+                      width: width,
+                      height: height * 0.4,
+                      child: FancyShimmerImage(
+                        imageUrl: widget.menuItem["initialImage"],
+                        boxFit: BoxFit.cover,
+                        shimmerBackColor: Color(0xffe0e0e0),
+                        shimmerBaseColor: Color(0xffe0e0e0),
+                        shimmerHighlightColor: Colors.grey[200],
+                      ),
                     ),
                   )
                 : GestureDetector(
@@ -462,13 +474,7 @@ class _MenuItemDetailState extends State<MenuItemDetail> {
                       Resturant.fromDocument(snapshot.data.documents[0]);
                   List menu = restSnap.menu;
 
-                  List ratings = [];
-
-                  for (var me in menu) {
-                    if (json.decode(me)["id"] == widget.menuItem["id"]) {
-                      ratings = json.decode(me)["ratings"];
-                    }
-                  }
+                  List ratings = json.decode(menu[widget.index])["ratings"];
 
                   if (ratings != null) {
                     if (ratings.isNotEmpty) {
@@ -619,6 +625,45 @@ class _MenuItemDetailState extends State<MenuItemDetail> {
                   child: Center(
                     child: Text(
                       'Post a review & see all reviews',
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              height: 50.0,
+              width: width * 0.7,
+              color: Colors.transparent,
+              child: Container(
+                decoration: BoxDecoration(
+                    border: Border.all(
+                        color: Colors.black,
+                        style: BorderStyle.solid,
+                        width: 1.0),
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(3.0)),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ResturantItemGallery(
+                                  currentUserId: widget.currentUserId,
+                                  docid: widget.docId,
+                                  id: widget.id,
+                                  index: widget.index,
+                                  restOwnerId: widget.ownerId,
+                                )));
+                  },
+                  child: Center(
+                    child: Text(
+                      'Add to gallery',
                       style: TextStyle(
                         fontSize: 18,
                       ),

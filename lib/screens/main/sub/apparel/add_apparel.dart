@@ -217,10 +217,10 @@ class _AddApparelState extends State<AddApparel> {
                           }
                         }
                       }
-
+                      String id =
+                          uuid.v1().toString() + new DateTime.now().toString();
                       var obj = {
-                        "id": uuid.v1().toString() +
-                            new DateTime.now().toString(),
+                        "id": id,
                         "initialImage": downUrl,
                         "item_maintype": item["item_maintype"],
                         "item_subtype": item["item_subtype"],
@@ -274,10 +274,10 @@ class _AddApparelState extends State<AddApparel> {
                           }
                         }
                       }
-
+                      String id =
+                          uuid.v1().toString() + new DateTime.now().toString();
                       var obj = {
-                        "id": uuid.v1().toString() +
-                            new DateTime.now().toString(),
+                        "id": id,
                         "initialImage": downUrl,
                         "item_type": item["item_type"],
                         "about": item["about"],
@@ -326,10 +326,10 @@ class _AddApparelState extends State<AddApparel> {
                           }
                         }
                       }
-
+                      String id =
+                          uuid.v1().toString() + new DateTime.now().toString();
                       var obj = {
-                        "id": uuid.v1().toString() +
-                            new DateTime.now().toString(),
+                        "id": id,
                         "initialImage": downUrl,
                         "item_type": item["item_type"],
                         "about": item["about"],

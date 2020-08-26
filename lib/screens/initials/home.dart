@@ -208,7 +208,7 @@ class _HomeState extends State<Home> {
               MainPage(),
               Notify(),
               Chat(),
-              Bookmarks(),
+              BookmarksMain(),
               Profile(
                 profileId: currentUserId,
               ),

@@ -5,9 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:nearby/screens/main/fetch&display/rest/resturant_gallery.dart';
+import 'package:nearby/services/activity_feed_service.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:nearby/models/resturant.dart';
 import 'package:nearby/services/auth_services.dart';
+import 'package:nearby/services/bookmark_service.dart';
 import 'package:nearby/services/resturant_service.dart';
 import 'package:nearby/utils/pallete.dart';
 import 'package:nearby/utils/rate_algorithm.dart';
@@ -17,6 +21,7 @@ import 'package:intl/intl.dart' as dd;
 import 'package:readmore/readmore.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'display_rest_reviews.dart';
 import 'explore_menu_types.dart';
 import 'menu_item_detail.dart';
 
@@ -35,6 +40,8 @@ class _ResturantDetailViewState extends State<ResturantDetailView> {
   int currentMediaIndex = 0;
   AuthServcies _authServcies = AuthServcies();
   ResturantService _resturantService = ResturantService();
+  ActivityFeedService _activityFeedService = ActivityFeedService();
+  BookmarkService _bookmarkService = BookmarkService();
   String currentUserId;
   final format = dd.DateFormat("HH:mm");
 
@@ -101,15 +108,26 @@ class _ResturantDetailViewState extends State<ResturantDetailView> {
         child: Column(
           children: <Widget>[
             restGallery.isEmpty
-                ? Container(
-                    width: width,
-                    height: height * 0.4,
-                    child: FancyShimmerImage(
-                      imageUrl: widget.rest.initialImage,
-                      boxFit: BoxFit.cover,
-                      shimmerBackColor: Color(0xffe0e0e0),
-                      shimmerBaseColor: Color(0xffe0e0e0),
-                      shimmerHighlightColor: Colors.grey[200],
+                ? GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => NetworkFileFullScreen(
+                                    type: "image",
+                                    url: widget.rest.initialImage,
+                                  )));
+                    },
+                    child: Container(
+                      width: width,
+                      height: height * 0.4,
+                      child: FancyShimmerImage(
+                        imageUrl: widget.rest.initialImage,
+                        boxFit: BoxFit.cover,
+                        shimmerBackColor: Color(0xffe0e0e0),
+                        shimmerBaseColor: Color(0xffe0e0e0),
+                        shimmerHighlightColor: Colors.grey[200],
+                      ),
                     ),
                   )
                 : GestureDetector(
@@ -668,6 +686,35 @@ class _ResturantDetailViewState extends State<ResturantDetailView> {
                 ],
               ),
             ),
+            SizedBox(
+              height: 10,
+            ),
+            widget.rest.deliveryrRange == null
+                ? SizedBox.shrink()
+                : widget.rest.deliveryrRange == ""
+                    ? SizedBox.shrink()
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            "Delivery range - ",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 15,
+                            ),
+                          ),
+                          Text(
+                            "Around " + widget.rest.deliveryrRange + " KM",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
             widget.rest.aboutRest != ""
                 ? SizedBox(
                     height: 20,
@@ -767,13 +814,13 @@ class _ResturantDetailViewState extends State<ResturantDetailView> {
                                         )));
                           },
                           child: Text(
-                            "Explore more",
+                            "explore more",
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                                color: Colors.grey[700],
+                                color: Colors.grey[600],
                                 fontFamily: "Roboto",
                                 fontSize: 18,
-                                fontWeight: FontWeight.w500),
+                                fontWeight: FontWeight.w900),
                           ),
                         ),
                       ],
@@ -801,10 +848,6 @@ class _ResturantDetailViewState extends State<ResturantDetailView> {
                         restSnap.menu.forEach((item) {
                           menu.add(json.decode(item));
                         });
-                        if (menu.length > 1) {
-                          menu.sort((b, a) =>
-                              a["total_ratings"].compareTo(b["total_ratings"]));
-                        }
 
                         return SizedBox(
                           height: height * 0.3,
@@ -832,6 +875,7 @@ class _ResturantDetailViewState extends State<ResturantDetailView> {
                                   id: widget.rest.id,
                                   ownerId: widget.rest.ownerId,
                                   rate: total == 0 ? 0.0 : rateAlgorithm(total),
+                                  bookmarkService: _bookmarkService,
                                 );
                               }),
                         );
@@ -841,6 +885,118 @@ class _ResturantDetailViewState extends State<ResturantDetailView> {
                 : SizedBox.shrink(),
             SizedBox(
               height: 20,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Divider(),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              "Rates & reviews",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Colors.grey[800],
+                  fontFamily: "Roboto",
+                  fontSize: 25,
+                  fontWeight: FontWeight.w800),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            StreamBuilder(
+              stream: _resturantService.streamSingleRest(widget.rest.id),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (!snapshot.hasData) {
+                  return Center(
+                      child: SpinKitCircle(color: Pallete.mainAppColor));
+                } else if (snapshot.data.documents == null) {
+                  return Center(
+                      child: SpinKitCircle(color: Pallete.mainAppColor));
+                } else if (snapshot.data.documents.length == 0) {
+                  return Center(
+                      child: SpinKitCircle(color: Pallete.mainAppColor));
+                } else {
+                  int total = 0;
+                  int no1 = 0;
+                  int no2 = 0;
+                  int no3 = 0;
+                  int no4 = 0;
+                  int no5 = 0;
+                  Resturant restSnap =
+                      Resturant.fromDocument(snapshot.data.documents[0]);
+
+                  if (restSnap.ratings != null) {
+                    if (restSnap.ratings.isNotEmpty) {
+                      restSnap.ratings.forEach((element) {
+                        total = total + element["rate"];
+                        if (element["rate"] == 1) {
+                          no1 = no1 + 1;
+                        }
+                        if (element["rate"] == 2) {
+                          no2 = no2 + 1;
+                        }
+                        if (element["rate"] == 3) {
+                          no3 = no3 + 1;
+                        }
+                        if (element["rate"] == 4) {
+                          no4 = no4 + 1;
+                        }
+                        if (element["rate"] == 5) {
+                          no5 = no5 + 1;
+                        }
+                      });
+                    }
+                  }
+
+                  return Column(
+                    children: <Widget>[
+                      RatingBar(
+                        initialRating: total == 0 ? 0.0 : rateAlgorithm(total),
+                        minRating: 0,
+                        itemSize: 40,
+                        unratedColor: Colors.grey[300],
+                        direction: Axis.horizontal,
+                        allowHalfRating: true,
+                        glow: true,
+                        tapOnlyMode: true,
+                        glowColor: Colors.white,
+                        itemCount: 5,
+                        itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                        itemBuilder: (context, _) => Icon(
+                          MaterialIcons.star,
+                          color: Pallete.mainAppColor,
+                        ),
+                        onRatingUpdate: (rating) {},
+                      ),
+                      Text(
+                        total == 0
+                            ? 0.0.toString()
+                            : rateAlgorithm(total).toString(),
+                        style: TextStyle(
+                            color: Colors.grey[800],
+                            fontFamily: "Roboto",
+                            fontSize: 50,
+                            fontWeight: FontWeight.w600),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ReviewsChart(
+                          no1: no1,
+                          no2: no2,
+                          no3: no3,
+                          no4: no4,
+                          no5: no5,
+                        ),
+                      ),
+                    ],
+                  );
+                }
+              },
             ),
             Divider(),
             SizedBox(
@@ -873,8 +1029,20 @@ class _ResturantDetailViewState extends State<ResturantDetailView> {
                 MaterialIcons.star,
                 color: Pallete.mainAppColor,
               ),
-              onRatingUpdate: (rating) {
-                print(rating);
+              onRatingUpdate: (rating) async {
+                await _resturantService.setRatingsToResturant(
+                    widget.docId, rating, currentUserId);
+                if (currentUserId != widget.rest.ownerId) {
+                  await _activityFeedService.createActivityFeed(
+                    currentUserId,
+                    widget.rest.ownerId,
+                    widget.docId,
+                    "rate_shop",
+                    null,
+                    null,
+                    null,
+                  );
+                }
               },
             ),
             SizedBox(
@@ -894,11 +1062,57 @@ class _ResturantDetailViewState extends State<ResturantDetailView> {
                     borderRadius: BorderRadius.circular(3.0)),
                 child: InkWell(
                   onTap: () {
-                    Navigator.of(context).pop();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => RestReviewDisplay(
+                                  currentUserId: currentUserId,
+                                  docId: widget.docId,
+                                  id: widget.rest.id,
+                                  restOwnerId: widget.rest.ownerId,
+                                )));
                   },
                   child: Center(
                     child: Text(
                       'Write & see all reviews',
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              height: 50.0,
+              width: width * 0.7,
+              color: Colors.transparent,
+              child: Container(
+                decoration: BoxDecoration(
+                    border: Border.all(
+                        color: Colors.black,
+                        style: BorderStyle.solid,
+                        width: 1.0),
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(3.0)),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ResturantGallery(
+                                  currentUserId: currentUserId,
+                                  docid: widget.docId,
+                                  id: widget.rest.id,
+                                  restOwnerId: widget.rest.ownerId,
+                                )));
+                  },
+                  child: Center(
+                    child: Text(
+                      'Add to gallery',
                       style: TextStyle(
                         fontSize: 18,
                       ),
@@ -928,10 +1142,12 @@ class ResturantMenuItems extends StatelessWidget {
   final String ownerId;
   final int index;
   final double rate;
+  final BookmarkService bookmarkService;
 
   const ResturantMenuItems(
       {this.restMenu,
       this.id,
+      this.bookmarkService,
       this.index,
       this.ownerId,
       this.currentUserId,
@@ -960,6 +1176,7 @@ class ResturantMenuItems extends StatelessWidget {
         width: MediaQuery.of(context).size.width * 0.6,
         child: Card(
           semanticContainer: true,
+          color: Colors.black.withOpacity(0.8),
           clipBehavior: Clip.antiAliasWithSaveLayer,
           child: Stack(
             children: <Widget>[
@@ -969,6 +1186,7 @@ class ResturantMenuItems extends StatelessWidget {
                 shimmerBackColor: Color(0xffe0e0e0),
                 shimmerBaseColor: Color(0xffe0e0e0),
                 shimmerHighlightColor: Colors.grey[200],
+                height: MediaQuery.of(context).size.height * 0.17,
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -976,7 +1194,29 @@ class ResturantMenuItems extends StatelessWidget {
                   width: 45,
                   height: 45,
                   child: FloatingActionButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      bool statusBook = await bookmarkService
+                          .checkBookmarkAlreadyIn(currentUserId, docId, index);
+                      if (statusBook) {
+                        Fluttertoast.showToast(
+                            msg: "Already in the bookmark list",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                            backgroundColor: Pallete.mainAppColor,
+                            textColor: Colors.white,
+                            fontSize: 16.0);
+                      } else {
+                        await bookmarkService.addToBookmark(
+                            currentUserId, "rest_item", docId, index);
+                        Fluttertoast.showToast(
+                            msg: "Added to the bookmark list",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                            backgroundColor: Pallete.mainAppColor,
+                            textColor: Colors.white,
+                            fontSize: 16.0);
+                      }
+                    },
                     heroTag: index,
                     backgroundColor: Pallete.mainAppColor,
                     child: Padding(
@@ -993,11 +1233,11 @@ class ResturantMenuItems extends StatelessWidget {
               ),
               Padding(
                 padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height * 0.15,
+                  top: MediaQuery.of(context).size.height * 0.17,
                 ),
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.6,
-                  height: 100,
+                  height: 80,
                   decoration: new BoxDecoration(
                       color: Colors.black.withOpacity(0.8),
                       borderRadius: new BorderRadius.all(Radius.circular(0.0))),
@@ -1011,7 +1251,7 @@ class ResturantMenuItems extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 20,
+                          fontSize: 16,
                         ),
                       ),
                       SizedBox(
@@ -1022,7 +1262,7 @@ class ResturantMenuItems extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.grey,
-                          fontSize: 18,
+                          fontSize: 14,
                         ),
                       ),
                       SizedBox(
@@ -1031,7 +1271,7 @@ class ResturantMenuItems extends StatelessWidget {
                       RatingBar(
                         initialRating: rate == 0.0 ? 0.0 : rate,
                         minRating: 0,
-                        itemSize: 20,
+                        itemSize: 16,
                         unratedColor: Colors.grey,
                         direction: Axis.horizontal,
                         allowHalfRating: true,

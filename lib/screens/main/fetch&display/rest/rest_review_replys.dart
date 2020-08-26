@@ -12,11 +12,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nearby/models/resturant.dart';
 import 'package:nearby/models/user.dart';
+import 'package:nearby/utils/custom_tile.dart';
+import 'package:timeago/timeago.dart' as timeago;
 import 'package:nearby/services/activity_feed_service.dart';
 import 'package:nearby/services/auth_services.dart';
 import 'package:nearby/services/resturant_service.dart';
 import 'package:nearby/utils/compress_media.dart';
-import 'package:nearby/utils/custom_tile.dart';
 import 'package:nearby/utils/full_screen_network_file.dart';
 import 'package:nearby/utils/image_cropper.dart';
 import 'package:nearby/utils/media_picker/gallery_pick.dart';
@@ -29,34 +30,31 @@ import 'package:progress_dialog/progress_dialog.dart';
 import 'package:readmore/readmore.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_trimmer/video_trimmer.dart';
-import 'package:timeago/timeago.dart' as timeago;
 
-class RestItemReviewReply extends StatefulWidget {
+class RestReviewReplys extends StatefulWidget {
   final String reviewOwner;
   final String reviewOwnerId;
-  final int index;
   final int reviewIndex;
   final String docId;
   final String currentUserId;
   final String ownerId;
   final String id;
-  RestItemReviewReply(
+  RestReviewReplys(
       {this.reviewOwner,
       this.reviewOwnerId,
       this.docId,
       this.currentUserId,
       this.ownerId,
-      this.index,
       this.reviewIndex,
       this.id,
       Key key})
       : super(key: key);
 
   @override
-  _RestItemReviewReplyState createState() => _RestItemReviewReplyState();
+  _RestReviewReplysState createState() => _RestReviewReplysState();
 }
 
-class _RestItemReviewReplyState extends State<RestItemReviewReply> {
+class _RestReviewReplysState extends State<RestReviewReplys> {
   TextEditingController replyController = TextEditingController();
   bool onTapTextfield = false;
   ResturantService _resturantService = ResturantService();
@@ -108,8 +106,7 @@ class _RestItemReviewReplyState extends State<RestItemReviewReply> {
       showLogs: false,
     );
     _resturantService
-        .getAllRestItemsReviewReplys(
-            widget.index, widget.docId, widget.reviewIndex)
+        .getAllRestReviewReplys(widget.docId, widget.reviewIndex)
         .then((value) {
       setState(() {
         allReplays = value;
@@ -249,7 +246,7 @@ class _RestItemReviewReplyState extends State<RestItemReviewReply> {
       var obj = {
         "url": downUrl,
         "thumb": thumbUrl,
-        "type": type,
+        "type": "image",
       };
       uploadMedia.add(json.encode(obj));
     } else if (type == "video") {
@@ -276,20 +273,15 @@ class _RestItemReviewReplyState extends State<RestItemReviewReply> {
       uploadMedia.add(json.encode(obj));
     }
 
-    await _resturantService.addReplyToResturantItemReview(
-        widget.index,
-        widget.docId,
-        uploadMedia,
-        widget.currentUserId,
-        widget.reviewIndex,
-        null);
+    await _resturantService.addReplyToResturantReview(widget.docId, uploadMedia,
+        widget.currentUserId, widget.reviewIndex, null);
     if (widget.currentUserId != widget.ownerId) {
       await _activityFeedService.createActivityFeed(
         widget.currentUserId,
         widget.ownerId,
         widget.docId,
         "review_reply",
-        widget.index,
+        null,
         widget.reviewIndex,
         allReplays.length,
       );
@@ -792,14 +784,10 @@ class _RestItemReviewReplyState extends State<RestItemReviewReply> {
                         Resturant rest =
                             Resturant.fromDocument(snapshot.data.documents[0]);
 
-                        if (json.decode(rest.menu[widget.index])["review"] !=
-                            null) {
-                          if (json.decode(rest.menu[widget.index])["review"]
-                                  [widget.reviewIndex]["replys"] !=
+                        if (rest.reviews != null) {
+                          if (rest.reviews[widget.reviewIndex]["replys"] !=
                               null) {
-                            replys =
-                                json.decode(rest.menu[widget.index])["review"]
-                                    [widget.reviewIndex]["replys"];
+                            replys = rest.reviews[widget.reviewIndex]["replys"];
                           }
                         }
 
@@ -814,7 +802,6 @@ class _RestItemReviewReplyState extends State<RestItemReviewReply> {
                                     feedService: _activityFeedService,
                                     height: height,
                                     id: widget.id,
-                                    indexItem: widget.index,
                                     listIndex: index,
                                     obj: replys[index],
                                     owner: User.fromDocument(
@@ -1140,8 +1127,7 @@ class _RestItemReviewReplyState extends State<RestItemReviewReply> {
                       onTap: () async {
                         if (replyController.text.trim() != "") {
                           pr.show();
-                          await _resturantService.addReplyToResturantItemReview(
-                              widget.index,
+                          await _resturantService.addReplyToResturantReview(
                               widget.docId,
                               null,
                               widget.currentUserId,
@@ -1153,7 +1139,7 @@ class _RestItemReviewReplyState extends State<RestItemReviewReply> {
                               widget.ownerId,
                               widget.docId,
                               "review_reply",
-                              widget.index,
+                              null,
                               widget.reviewIndex,
                               allReplays.length,
                             );
@@ -1390,8 +1376,8 @@ class ReviewDisplay extends StatelessWidget {
                                 btnOkText: 'Yes',
                                 btnCancelText: 'No',
                                 btnOkOnPress: () async {
-                                  await rest.deleteResturantItemReviewReply(
-                                      indexItem, docId, reviewIndex, listIndex);
+                                  await rest.deleteResturantReviewReply(
+                                      docId, reviewIndex, listIndex);
                                   await feedService.removeReviewReplyFromFeed(
                                       reviewOwnerId,
                                       owner.id,
@@ -1613,7 +1599,7 @@ class ReviewDisplay extends StatelessWidget {
                 children: <Widget>[
                   GestureDetector(
                     onTap: () async {
-                      await rest.setReactionRestItemToReviewReply(indexItem,
+                      await rest.setReactionToResturantReviewReply(
                           docId, currentUserId, reviewIndex, listIndex, "like");
                       if (currentUserId != owner.id) {
                         await feedService.createActivityFeed(
@@ -1700,13 +1686,8 @@ class ReviewDisplay extends StatelessWidget {
                 children: <Widget>[
                   GestureDetector(
                     onTap: () async {
-                      await rest.setReactionRestItemToReviewReply(
-                          indexItem,
-                          docId,
-                          currentUserId,
-                          reviewIndex,
-                          listIndex,
-                          "dislike");
+                      await rest.setReactionToResturantReviewReply(docId,
+                          currentUserId, reviewIndex, listIndex, "dislike");
                       if (currentUserId != owner.id) {
                         await feedService.createActivityFeed(
                           currentUserId,

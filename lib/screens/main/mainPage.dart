@@ -3,11 +3,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nearby/models/resturant.dart';
 import 'package:nearby/screens/main/sub/select_category.dart';
+import 'package:nearby/services/auth_services.dart';
+import 'package:nearby/services/bookmark_service.dart';
 import 'package:nearby/services/resturant_service.dart';
+import 'package:nearby/utils/maps/route_map.dart';
 import 'package:nearby/utils/pallete.dart';
+import 'package:nearby/utils/rate_algorithm.dart';
 import 'package:nearby/utils/shimmers/card_row_shimmer.dart';
 import 'package:nearby/utils/shimmers/main_window.dart';
 import 'package:nearby/widgets/services_categories.dart';
@@ -23,13 +30,20 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   ResturantService _resturantService = ResturantService();
-
+  BookmarkService _bookmarkService = BookmarkService();
+  AuthServcies _authServcies = AuthServcies();
+  String currentUserId;
   int restCount = 0;
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
+    _authServcies.getCurrentUser().then((fUser) {
+      setState(() {
+        currentUserId = fUser.uid;
+      });
+    });
     getResturantCount();
   }
 
@@ -147,34 +161,48 @@ class _MainPageState extends State<MainPage> {
                       ),
                     ),
                   ),
-                  restCount > 0
-                      ? StreamBuilder(
-                          stream: _resturantService.streamResturant(),
-                          builder:
-                              (BuildContext context, AsyncSnapshot snapshot) {
-                            if (!snapshot.hasData) {
-                              return Container(
-                                color: Colors.white,
-                                child: Center(
-                                    child: SpinKitCircle(
-                                        color: Pallete.mainAppColor)),
-                              );
-                            }
-                            if (snapshot.data.documents == null) {
-                              return cardRow(context);
-                            } else if (snapshot.data.documents.length == 0) {
-                              return cardRow(context);
-                            } else {
-                              List<Resturant> popularRests = [];
-                              List<String> docIds = [];
+                  StreamBuilder(
+                    stream: _resturantService.streamResturant(),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (!snapshot.hasData) {
+                        return Container(
+                          color: Colors.white,
+                          child: Center(
+                              child:
+                                  SpinKitCircle(color: Pallete.mainAppColor)),
+                        );
+                      }
+                      if (snapshot.data.documents == null) {
+                        return cardRow(context);
+                      } else if (snapshot.data.documents.length == 0) {
+                        return cardRow(context);
+                      } else {
+                        List<Resturant> popularRests = [];
+                        List<String> docIds = [];
+                        List<int> totalList = [];
 
-                              snapshot.data.documents.forEach((doc) {
-                                Resturant rest = Resturant.fromDocument(doc);
-                                popularRests.add(rest);
-                                docIds.add(doc.documentID);
+                        snapshot.data.documents.forEach((doc) {
+                          Resturant rest = Resturant.fromDocument(doc);
+                          if (rest.ratings != null) {
+                            if (rest.ratings.isNotEmpty) {
+                              int total = 0;
+                              rest.ratings.forEach((element) {
+                                total = total + element["rate"];
                               });
+                              totalList.add(total);
+                            }
+                          }
+                          popularRests.add(rest);
+                          docIds.add(doc.documentID);
+                          if (popularRests.length > 1) {
+                            popularRests.sort((b, a) =>
+                                a.totalratings.compareTo(b.totalratings));
+                          }
+                        });
 
-                              return SizedBox(
+                        return popularRests.isEmpty
+                            ? cardRow(context)
+                            : SizedBox(
                                 height: height * 0.4,
                                 child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
@@ -184,13 +212,17 @@ class _MainPageState extends State<MainPage> {
                                         TrendingResturantsCards(
                                           rest: popularRests[index],
                                           docId: docIds[index],
+                                          currentUserId: currentUserId,
                                           index: index,
+                                          rate: totalList[index] == 0
+                                              ? 0.0
+                                              : rateAlgorithm(totalList[index]),
+                                          bookmarkService: _bookmarkService,
                                         )),
                               );
-                            }
-                          },
-                        )
-                      : SizedBox.shrink(),
+                      }
+                    },
+                  ),
                 ],
               ),
       ),
@@ -202,8 +234,18 @@ class TrendingResturantsCards extends StatelessWidget {
   final Resturant rest;
   final String docId;
   final int index;
+  final double rate;
+  final String currentUserId;
+  final BookmarkService bookmarkService;
 
-  const TrendingResturantsCards({this.rest, this.index, this.docId, Key key})
+  const TrendingResturantsCards(
+      {this.rate,
+      this.rest,
+      this.index,
+      this.currentUserId,
+      this.bookmarkService,
+      this.docId,
+      Key key})
       : super(key: key);
 
   @override
@@ -223,6 +265,7 @@ class TrendingResturantsCards extends StatelessWidget {
         child: Card(
           semanticContainer: true,
           clipBehavior: Clip.antiAliasWithSaveLayer,
+          color: Colors.black.withOpacity(0.8),
           child: Stack(
             children: <Widget>[
               FancyShimmerImage(
@@ -231,6 +274,8 @@ class TrendingResturantsCards extends StatelessWidget {
                 shimmerBackColor: Color(0xffe0e0e0),
                 shimmerBaseColor: Color(0xffe0e0e0),
                 shimmerHighlightColor: Colors.grey[200],
+                width: MediaQuery.of(context).size.width * 0.75,
+                height: MediaQuery.of(context).size.height * 0.27,
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -240,8 +285,30 @@ class TrendingResturantsCards extends StatelessWidget {
                     width: 45,
                     height: 45,
                     child: FloatingActionButton(
-                      onPressed: () {},
-                      heroTag: index,
+                      onPressed: () async {
+                        bool statusBook = await bookmarkService
+                            .checkBookmarkAlreadyIn(currentUserId, docId, null);
+                        if (statusBook) {
+                          Fluttertoast.showToast(
+                              msg: "Already in the bookmark list",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.CENTER,
+                              backgroundColor: Pallete.mainAppColor,
+                              textColor: Colors.white,
+                              fontSize: 16.0);
+                        } else {
+                          await bookmarkService.addToBookmark(
+                              currentUserId, "rest_main", docId, null);
+                          Fluttertoast.showToast(
+                              msg: "Added to the bookmark list",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.CENTER,
+                              backgroundColor: Pallete.mainAppColor,
+                              textColor: Colors.white,
+                              fontSize: 16.0);
+                        }
+                      },
+                      heroTag: index.toString() + "rest&cafes",
                       backgroundColor: Pallete.mainAppColor,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -259,7 +326,15 @@ class TrendingResturantsCards extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => RouteMap(
+                                  latitude: rest.latitude,
+                                  longitude: rest.longitude,
+                                )));
+                  },
                   child: Container(
                     width: 45,
                     height: 45,
@@ -286,11 +361,11 @@ class TrendingResturantsCards extends StatelessWidget {
               ),
               Padding(
                 padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height * 0.235,
+                  top: MediaQuery.of(context).size.height * 0.27,
                 ),
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.75,
-                  height: 140,
+                  height: 100,
                   decoration: new BoxDecoration(
                       color: Colors.black.withOpacity(0.8),
                       borderRadius: new BorderRadius.all(Radius.circular(0.0))),
@@ -304,7 +379,7 @@ class TrendingResturantsCards extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 20,
+                          fontSize: 16,
                         ),
                       ),
                       SizedBox(
@@ -315,32 +390,29 @@ class TrendingResturantsCards extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.grey,
-                          fontSize: 18,
+                          fontSize: 14,
                         ),
                       ),
                       SizedBox(
                         height: 5,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Icon(
-                            Icons.call,
-                            color: Colors.grey,
-                            size: 25,
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            rest.telephone1,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 20,
-                            ),
-                          ),
-                        ],
+                      RatingBar(
+                        initialRating: rate == 0.0 ? 0.0 : rate,
+                        minRating: 0,
+                        itemSize: 16,
+                        unratedColor: Colors.grey,
+                        direction: Axis.horizontal,
+                        allowHalfRating: true,
+                        glow: true,
+                        tapOnlyMode: true,
+                        glowColor: Colors.white,
+                        itemCount: 5,
+                        itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                        itemBuilder: (context, _) => Icon(
+                          MaterialIcons.star,
+                          color: Pallete.mainAppColor,
+                        ),
+                        onRatingUpdate: (rating) {},
                       ),
                     ],
                   ),

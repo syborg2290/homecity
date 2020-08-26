@@ -8,6 +8,7 @@ final FirebaseAuth auth = FirebaseAuth.instance;
 final DateTime timestamp = DateTime.now();
 final userRef = Firestore.instance.collection('user');
 final activityFeedRef = Firestore.instance.collection("feedNotification");
+final bookmarksRef = Firestore.instance.collection('bookmarks');
 final servicesRef = Firestore.instance.collection('services');
 final resturantsRef = Firestore.instance.collection('resturants');
 final placesRef = Firestore.instance.collection('places');

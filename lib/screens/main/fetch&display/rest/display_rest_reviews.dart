@@ -10,8 +10,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nearby/models/resturant.dart';
 import 'package:nearby/models/user.dart';
-import 'package:nearby/screens/main/fetch&display/rest/restItem_review_replys.dart';
-import 'package:nearby/screens/main/fetch&display/rest/write_review_menu_items.dart';
+import 'package:nearby/screens/main/fetch&display/rest/rest_review_replys.dart';
+import 'package:nearby/screens/main/fetch&display/rest/write_review_rest.dart';
 import 'package:nearby/services/activity_feed_service.dart';
 import 'package:nearby/services/auth_services.dart';
 import 'package:nearby/services/resturant_service.dart';
@@ -20,26 +20,20 @@ import 'package:nearby/utils/pallete.dart';
 import 'package:readmore/readmore.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-class AllMenuItemsReviews extends StatefulWidget {
+class RestReviewDisplay extends StatefulWidget {
   final String currentUserId;
   final String docId;
   final String id;
-  final int index;
   final String restOwnerId;
-  AllMenuItemsReviews(
-      {this.currentUserId,
-      this.index,
-      this.restOwnerId,
-      this.docId,
-      this.id,
-      Key key})
+  RestReviewDisplay(
+      {this.currentUserId, this.restOwnerId, this.docId, this.id, Key key})
       : super(key: key);
 
   @override
-  _AllMenuItemsReviewsState createState() => _AllMenuItemsReviewsState();
+  _RestReviewDisplayState createState() => _RestReviewDisplayState();
 }
 
-class _AllMenuItemsReviewsState extends State<AllMenuItemsReviews> {
+class _RestReviewDisplayState extends State<RestReviewDisplay> {
   ResturantService _resturantService = ResturantService();
   ActivityFeedService _activityFeedService = ActivityFeedService();
   AuthServcies _auth = AuthServcies();
@@ -56,8 +50,8 @@ class _AllMenuItemsReviewsState extends State<AllMenuItemsReviews> {
       Resturant resturant = Resturant.fromDocument(doc);
 
       setState(() {
-        if (json.decode(resturant.menu[widget.index])["review"] != null) {
-          allReviews = json.decode(resturant.menu[widget.index])["review"];
+        if (resturant.reviews != null) {
+          allReviews = resturant.reviews;
         }
       });
     });
@@ -115,10 +109,9 @@ class _AllMenuItemsReviewsState extends State<AllMenuItemsReviews> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => WriteMenuItemReview(
+                              builder: (context) => WriteReviewRest(
                                     currentUserId: widget.currentUserId,
                                     id: widget.id,
-                                    index: widget.index,
                                     restId: widget.docId,
                                     restOwnerId: widget.restOwnerId,
                                     listIndex: allReviews.length,
@@ -210,9 +203,9 @@ class _AllMenuItemsReviewsState extends State<AllMenuItemsReviews> {
 
                   Resturant rest =
                       Resturant.fromDocument(snapshot.data.documents[0]);
-                  var obj = json.decode(rest.menu[widget.index]);
-                  if (obj["review"] != null) {
-                    itemReviews = obj["review"];
+
+                  if (rest.reviews != null) {
+                    itemReviews = rest.reviews;
                     return ListView.builder(
                         scrollDirection: Axis.vertical,
                         shrinkWrap: true,
@@ -227,7 +220,6 @@ class _AllMenuItemsReviewsState extends State<AllMenuItemsReviews> {
                               ),
                               height: height,
                               width: width,
-                              indexItem: widget.index,
                               currentUserId: widget.currentUserId,
                               rest: _resturantService,
                               reviewIndex: index,
@@ -277,7 +269,6 @@ class ReviewDisplay extends StatelessWidget {
   final String docId;
   final User owner;
   final double width;
-  final int indexItem;
   final double height;
   final String currentUserId;
   final int reviewIndex;
@@ -290,7 +281,6 @@ class ReviewDisplay extends StatelessWidget {
       this.restOwnerId,
       this.id,
       this.docId,
-      this.indexItem,
       this.currentUserId,
       this.width,
       this.height,
@@ -406,13 +396,13 @@ class ReviewDisplay extends StatelessWidget {
                                 btnOkText: 'Yes',
                                 btnCancelText: 'No',
                                 btnOkOnPress: () async {
-                                  await rest.deleteResturantItemReview(
-                                      indexItem, docId, reviewIndex);
+                                  await rest.deleteResturantReview(
+                                      docId, reviewIndex);
                                   await feedService.removeReviewFeeds(
                                     owner.id,
                                     restOwnerId,
                                     docId,
-                                    indexItem,
+                                    null,
                                     reviewIndex,
                                   );
                                   Fluttertoast.showToast(
@@ -650,15 +640,15 @@ class ReviewDisplay extends StatelessWidget {
                 children: <Widget>[
                   GestureDetector(
                     onTap: () async {
-                      await rest.setReactionsToResturantItemReview(
-                          indexItem, docId, currentUserId, reviewIndex, "like");
+                      await rest.setReactionToResturantReview(
+                          docId, currentUserId, reviewIndex, "like");
                       if (currentUserId != owner.id) {
                         await feedService.createActivityFeed(
                           currentUserId,
                           owner.id,
                           docId,
                           "review_like",
-                          indexItem,
+                          null,
                           reviewIndex,
                           null,
                         );
@@ -737,7 +727,7 @@ class ReviewDisplay extends StatelessWidget {
                 children: <Widget>[
                   GestureDetector(
                     onTap: () async {
-                      await rest.setReactionsToResturantItemReview(indexItem,
+                      await rest.setReactionToResturantReview(
                           docId, currentUserId, reviewIndex, "dislike");
                       if (currentUserId != owner.id) {
                         await feedService.createActivityFeed(
@@ -745,7 +735,7 @@ class ReviewDisplay extends StatelessWidget {
                           owner.id,
                           docId,
                           "review_dislike",
-                          indexItem,
+                          null,
                           reviewIndex,
                           null,
                         );
@@ -827,13 +817,12 @@ class ReviewDisplay extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => RestItemReviewReply(
+                              builder: (context) => RestReviewReplys(
                                     reviewOwner: owner.username,
                                     reviewOwnerId: owner.id,
                                     currentUserId: currentUserId,
                                     docId: docId,
                                     id: id,
-                                    index: indexItem,
                                     ownerId: owner.id,
                                     reviewIndex: reviewIndex,
                                   )));
