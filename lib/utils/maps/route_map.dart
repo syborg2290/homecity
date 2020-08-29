@@ -12,6 +12,7 @@ import 'package:nearby/config/settings.dart';
 import 'dart:ui' as ui;
 
 import 'package:nearby/utils/pallete.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class RouteMap extends StatefulWidget {
   final double longitude;
@@ -49,7 +50,6 @@ class _RouteMapState extends State<RouteMap> {
     Geolocator()
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
         .then((position) {
-      // setInitialMarker(position.latitude, position.longitude);
       if (!mounted) return;
       setState(() {
         _center = LatLng(position.latitude, position.longitude);
@@ -61,41 +61,41 @@ class _RouteMapState extends State<RouteMap> {
     });
   }
 
-  // setInitialMarker(double latitude, double longitude) async {
-  //   final Uint8List markerIcon =
-  //       await getBytesFromAsset('assets/icons/user_location.png', 150);
+  setInitialMarker(double latitude, double longitude) async {
+    final Uint8List markerIcon =
+        await getBytesFromAsset('assets/icons/user_location.png', 150);
 
-  //   final Uint8List markerShopIcon =
-  //       await getBytesFromAsset('assets/icons/dot.png', 100);
+    final Uint8List markerShopIcon =
+        await getBytesFromAsset('assets/icons/dot.png', 100);
 
-  //   setState(() {
-  //     _markers.add(
-  //       Marker(
-  //         markerId: MarkerId("location1"),
-  //         position: LatLng(latitude, longitude),
-  //         // rotation: newLocalData.heading,
-  //         icon: BitmapDescriptor.fromBytes(markerIcon),
-  //         flat: true,
-  //         anchor: Offset(1.0, 1.0),
-  //         zIndex: 2,
-  //         draggable: false,
-  //       ),
-  //     );
+    setState(() {
+      _markers.add(
+        Marker(
+          markerId: MarkerId("location0"),
+          position: LatLng(latitude, longitude),
+          // rotation: newLocalData.heading,
+          icon: BitmapDescriptor.fromBytes(markerIcon),
+          flat: true,
+          anchor: Offset(1.0, 1.0),
+          zIndex: 2,
+          draggable: false,
+        ),
+      );
 
-  //     _markers.add(
-  //       Marker(
-  //         markerId: MarkerId("location2"),
-  //         position: LatLng(widget.latitude, widget.longitude),
-  //         // rotation: newLocalData.heading,
-  //         icon: BitmapDescriptor.fromBytes(markerShopIcon),
-  //         flat: true,
-  //         anchor: Offset(1.0, 1.0),
-  //         zIndex: 2,
-  //         draggable: false,
-  //       ),
-  //     );
-  //   });
-  // }
+      _markers.add(
+        Marker(
+          markerId: MarkerId("location3"),
+          position: LatLng(widget.latitude, widget.longitude),
+          // rotation: newLocalData.heading,
+          icon: BitmapDescriptor.fromBytes(markerShopIcon),
+          flat: true,
+          anchor: Offset(1.0, 1.0),
+          zIndex: 2,
+          draggable: false,
+        ),
+      );
+    });
+  }
 
   changeMapMode() {
     getJsonFile('assets/json/map_style.json').then(setMapStyle);
@@ -124,22 +124,19 @@ class _RouteMapState extends State<RouteMap> {
   }
 
   setCoord() async {
+    changeMapMode();
+    final Uint8List markerIcon =
+        await getBytesFromAsset('assets/icons/user_location.png', 150);
+    final Uint8List markerShopIcon =
+        await getBytesFromAsset('assets/icons/dot.png', 100);
     try {
-      _locationTracker.getLocation().then((value) {
-        if (!mounted) return;
+      _locationTracker.getLocation().then((value) async {
         setState(() {});
       });
 
       if (_locationSubscription != null) {
         _locationSubscription.cancel();
       }
-
-      changeMapMode();
-      final Uint8List markerIcon =
-          await getBytesFromAsset('assets/icons/user_location.png', 150);
-      final Uint8List markerShopIcon =
-          await getBytesFromAsset('assets/icons/dot.png', 100);
-
       _locationSubscription =
           _locationTracker.onLocationChanged.listen((newLocalData) async {
         if (_controller != null) {
@@ -164,57 +161,100 @@ class _RouteMapState extends State<RouteMap> {
               totalTime = ((_distanceInMeters / speedInMps)).toDouble();
             });
           });
-
-          total_distance = _distanceInMeters;
-          _markers.add(Marker(
-            markerId: MarkerId("location1"),
-            position: LatLng(newLocalData.latitude, newLocalData.longitude),
-            // rotation: newLocalData.heading,
-            icon: BitmapDescriptor.fromBytes(markerIcon),
-            flat: true,
-            anchor: Offset(1.0, 1.0),
-            zIndex: 2,
-            draggable: false,
-          ));
-
-          _markers.add(
-            Marker(
-              markerId: MarkerId("location2"),
-              position: LatLng(widget.latitude, widget.longitude),
+          if (!mounted) {
+            return; // Just do nothing if the widget is disposed.
+          }
+          setState(() {
+            total_distance = _distanceInMeters;
+            _markers.add(Marker(
+              markerId: MarkerId("location1"),
+              position: LatLng(newLocalData.latitude, newLocalData.longitude),
               // rotation: newLocalData.heading,
-              icon: BitmapDescriptor.fromBytes(markerShopIcon),
+              icon: BitmapDescriptor.fromBytes(markerIcon),
               flat: true,
               anchor: Offset(1.0, 1.0),
               zIndex: 2,
               draggable: false,
-              infoWindow: InfoWindow(
-                title: (total_distance / 1000).round() < 1
-                    ? ((total_distance).round()).toString() +
-                        " M away from your location"
-                    : ((total_distance / 1000).round()).toString() +
-                        " km away from your location",
+            ));
+
+            _markers.add(
+              Marker(
+                markerId: MarkerId("location2"),
+                position: LatLng(widget.latitude, widget.longitude),
+                // rotation: newLocalData.heading,
+                icon: BitmapDescriptor.fromBytes(markerShopIcon),
+                flat: true,
+                anchor: Offset(1.0, 1.0),
+                zIndex: 2,
+                draggable: false,
+                infoWindow: InfoWindow(
+                  title: (total_distance / 1000).round() < 1
+                      ? ((total_distance).round()).toString() +
+                          " M away from your location"
+                      : ((total_distance / 1000).round()).toString() +
+                          " km away from your location",
+                ),
               ),
-            ),
-          );
+            );
 
-          circles.add(Circle(
-            circleId: CircleId("circle111"),
-            center: LatLng(newLocalData.latitude, newLocalData.longitude),
-            strokeColor: Colors.yellow,
-            zIndex: 1,
-            fillColor: Colors.blue.withAlpha(70),
-            radius: newLocalData.accuracy,
-          ));
-
+            circles.add(Circle(
+              circleId: CircleId("circle111"),
+              center: LatLng(newLocalData.latitude, newLocalData.longitude),
+              strokeColor: Colors.yellow,
+              zIndex: 1,
+              fillColor: Colors.blue.withAlpha(70),
+              radius: newLocalData.accuracy,
+            ));
+          });
           await setPolylines(newLocalData.latitude, newLocalData.longitude,
               widget.latitude, widget.longitude);
-          if (!mounted) return;
-          setState(() {});
         }
       });
+
+      var _distanceInMeters2 = await Geolocator().distanceBetween(
+        widget.latitude,
+        widget.longitude,
+        latitude,
+        longitude,
+      );
+      setState(() {
+        total_distance = _distanceInMeters2;
+        _markers.add(Marker(
+          markerId: MarkerId("location0"),
+          position: LatLng(latitude, longitude),
+          // rotation: newLocalData.heading,
+          icon: BitmapDescriptor.fromBytes(markerIcon),
+          flat: true,
+          anchor: Offset(1.0, 1.0),
+          zIndex: 2,
+          draggable: false,
+        ));
+
+        _markers.add(
+          Marker(
+            markerId: MarkerId("location3"),
+            position: LatLng(widget.latitude, widget.longitude),
+            // rotation: newLocalData.heading,
+            icon: BitmapDescriptor.fromBytes(markerShopIcon),
+            flat: true,
+            anchor: Offset(1.0, 1.0),
+            zIndex: 2,
+            draggable: false,
+            infoWindow: InfoWindow(
+              title: (total_distance / 1000).round() < 1
+                  ? ((total_distance).round()).toString() +
+                      " M away from your location"
+                  : ((total_distance / 1000).round()).toString() +
+                      " km away from your location",
+            ),
+          ),
+        );
+      });
+      await setPolylines(
+          latitude, longitude, widget.latitude, widget.longitude);
     } on PlatformException catch (e) {
       if (e.code == "PERMISSION_DENIED") {
-        debugPrint("permission denied");
+        print("permission denied");
       }
     }
   }
@@ -250,6 +290,20 @@ class _RouteMapState extends State<RouteMap> {
     setState(() {
       _polylines.add(polyline);
     });
+  }
+
+  checkLocationPermission() async {
+    var statusIn = await Permission.locationWhenInUse.status;
+    if (statusIn.isUndetermined) {
+      var statusInRe = await Permission.locationWhenInUse.request();
+      if (statusInRe.isGranted) {}
+    }
+
+    if (statusIn.isGranted) {
+    } else {
+      var statusReIn2 = await Permission.locationWhenInUse.request();
+      if (statusReIn2.isGranted) {}
+    }
   }
 
   @override
@@ -308,6 +362,7 @@ class _RouteMapState extends State<RouteMap> {
                   onCameraMove: _onCameraMove,
                   onMapCreated: (controller) async {
                     _controller = controller;
+                    await checkLocationPermission();
                     await setCoord();
                   },
                   polylines: _polylines,

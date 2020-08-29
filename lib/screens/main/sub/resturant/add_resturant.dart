@@ -1132,7 +1132,7 @@ class _AddResturantState extends State<AddResturant> {
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text("Add menu card",
+                          child: Text("Add menu items",
                               style: TextStyle(
                                   fontSize: 18, color: Colors.grey.shade800)),
                         ),

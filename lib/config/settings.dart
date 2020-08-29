@@ -1,6 +1,6 @@
 //Google PlacesAutocomplete
-const PlacesAutocompleteApiKey = 'AIzaSyDtDUNNUC_DKeQ8klcT-J-lQyB9cdxL_ZM';
-const GoogleServiceApi = 'AIzaSyDtDUNNUC_DKeQ8klcT-J-lQyB9cdxL_ZM';
+const PlacesAutocompleteApiKey = 'AIzaSyBF9jFWJIf9XMu1YbYj03UiC7WMo7cgxAE';
+const GoogleServiceApi = 'AIzaSyBF9jFWJIf9XMu1YbYj03UiC7WMo7cgxAE';
 //giphy api
 const GiphyApi_key = "id3MG5utNNq0JmIXxTGdaOMOkBFOGHeh";
 

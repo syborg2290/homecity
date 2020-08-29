@@ -58,6 +58,8 @@ dependencies:
   fluttertoast: ^7.0.2
   url_launcher: ^5.5.0
   flutter_polyline_points: ^0.2.3
+  geodesy: ^0.3.2
+  google_maps_utils: ^1.2.1+1
 
 dev_dependencies:
   
@@ -119,6 +121,7 @@ flutter:
     - assets/icons/thumbdown.png
     - assets/icons/reply.png
     - assets/icons/up.png
+    - assets/icons/filter.png
     - assets/icons/compass.png
     - assets/icons/menu.png
     - assets/icons/open-menu.png

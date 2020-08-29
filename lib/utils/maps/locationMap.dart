@@ -9,6 +9,8 @@ import 'package:nearby/utils/pallete.dart';
 import 'package:location/location.dart' as lo;
 import 'dart:ui' as ui;
 
+import 'package:permission_handler/permission_handler.dart';
+
 class LocationMap extends StatefulWidget {
   final List<double> locationCoord;
   final bool isFromFeed;
@@ -88,10 +90,10 @@ class _LocationMapState extends State<LocationMap> {
   }
 
   setCoord() async {
-    _locationTracker.getLocation().then((value) {
-      if (!mounted) return;
-      setState(() {});
-    });
+    // _locationTracker.getLocation().then((value) {
+    //   if (!mounted) return;
+    //   setState(() {});
+    // });
 
     changeMapMode();
     final Uint8List markerIcon =
@@ -117,6 +119,20 @@ class _LocationMapState extends State<LocationMap> {
     );
     if (!mounted) return;
     setState(() {});
+  }
+
+  checkLocationPermission() async {
+    var statusIn = await Permission.locationWhenInUse.status;
+    if (statusIn.isUndetermined) {
+      var statusInRe = await Permission.locationWhenInUse.request();
+      if (statusInRe.isGranted) {}
+    }
+
+    if (statusIn.isGranted) {
+    } else {
+      var statusReIn2 = await Permission.locationWhenInUse.request();
+      if (statusReIn2.isGranted) {}
+    }
   }
 
   @override
@@ -203,6 +219,7 @@ class _LocationMapState extends State<LocationMap> {
                   onCameraMove: _onCameraMove,
                   onMapCreated: (controller) async {
                     _controller = controller;
+                    await checkLocationPermission();
                     await setCoord();
                     // await updateLocation();
                   },

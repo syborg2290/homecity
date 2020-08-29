@@ -20,6 +20,7 @@ import 'package:nearby/utils/shimmers/main_window.dart';
 import 'package:nearby/widgets/services_categories.dart';
 
 import 'fetch&display/rest/rest_detail_view.dart';
+import 'fetch&display/rest/resturants_main.dart';
 
 class MainPage extends StatefulWidget {
   MainPage({Key key}) : super(key: key);
@@ -133,34 +134,6 @@ class _MainPageState extends State<MainPage> {
                   SizedBox(
                     height: 20,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            "Popular resturants & cafes",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Colors.grey[700],
-                                fontFamily: "Roboto",
-                                fontSize: 22,
-                                fontWeight: FontWeight.w700),
-                          ),
-                          Text(
-                            "more",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Colors.grey[500],
-                                fontSize: 18,
-                                fontWeight: FontWeight.w900),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
                   StreamBuilder(
                     stream: _resturantService.streamResturant(),
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -173,27 +146,22 @@ class _MainPageState extends State<MainPage> {
                         );
                       }
                       if (snapshot.data.documents == null) {
-                        return cardRow(context);
+                        return SizedBox.shrink();
                       } else if (snapshot.data.documents.length == 0) {
-                        return cardRow(context);
+                        return SizedBox.shrink();
                       } else {
                         List<Resturant> popularRests = [];
-                        List<String> docIds = [];
-                        List<int> totalList = [];
+                        List docIds = [];
 
                         snapshot.data.documents.forEach((doc) {
                           Resturant rest = Resturant.fromDocument(doc);
-                          if (rest.ratings != null) {
-                            if (rest.ratings.isNotEmpty) {
-                              int total = 0;
-                              rest.ratings.forEach((element) {
-                                total = total + element["rate"];
-                              });
-                              totalList.add(total);
-                            }
-                          }
+
                           popularRests.add(rest);
-                          docIds.add(doc.documentID);
+                          var docIdObj = {
+                            "id": rest.id,
+                            "docId": doc.documentID,
+                          };
+                          docIds.add(docIdObj);
                           if (popularRests.length > 1) {
                             popularRests.sort((b, a) =>
                                 a.totalratings.compareTo(b.totalratings));
@@ -202,23 +170,75 @@ class _MainPageState extends State<MainPage> {
 
                         return popularRests.isEmpty
                             ? cardRow(context)
-                            : SizedBox(
-                                height: height * 0.4,
-                                child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    shrinkWrap: true,
-                                    itemCount: popularRests.length,
-                                    itemBuilder: (context, index) =>
-                                        TrendingResturantsCards(
-                                          rest: popularRests[index],
-                                          docId: docIds[index],
-                                          currentUserId: currentUserId,
-                                          index: index,
-                                          rate: totalList[index] == 0
-                                              ? 0.0
-                                              : rateAlgorithm(totalList[index]),
-                                          bookmarkService: _bookmarkService,
-                                        )),
+                            : Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Text(
+                                            "Popular resturants & cafes",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Colors.grey[700],
+                                                fontFamily: "Roboto",
+                                                fontSize: 22,
+                                                fontWeight: FontWeight.w700),
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          ResturantsMain()));
+                                            },
+                                            child: Text(
+                                              "more",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  color: Colors.grey[500],
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w900),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: height * 0.4,
+                                    child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        shrinkWrap: true,
+                                        itemCount: popularRests.length,
+                                        itemBuilder: (context, index) =>
+                                            TrendingResturantsCards(
+                                              rest: popularRests[index],
+                                              docId: docIds[docIds.indexWhere(
+                                                  (element) =>
+                                                      element["id"] ==
+                                                      popularRests[index]
+                                                          .id)]["docId"],
+                                              currentUserId: currentUserId,
+                                              index: index,
+                                              rate: popularRests[index]
+                                                          .totalratings ==
+                                                      0
+                                                  ? 0.0
+                                                  : rateAlgorithm(
+                                                      popularRests[index]
+                                                          .totalratings
+                                                          .toInt()),
+                                              bookmarkService: _bookmarkService,
+                                            )),
+                                  ),
+                                ],
                               );
                       }
                     },

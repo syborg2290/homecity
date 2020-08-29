@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:nearby/screens/main/fetch&display/rest/resturants_main.dart';
 import 'package:nearby/utils/pallete.dart';
 
 class MainCategory extends StatefulWidget {
@@ -38,7 +39,15 @@ class _MainCategoryState extends State<MainCategory> {
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
                       return GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          if (myData[index]['service'] ==
+                              "Resturants & cafes") {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ResturantsMain()));
+                          }
+                        },
                         child: Padding(
                           padding: EdgeInsets.only(
                             left: 5,

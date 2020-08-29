@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:animator/animator.dart';
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +14,7 @@ import 'package:nearby/models/resturant.dart';
 import 'package:nearby/services/auth_services.dart';
 import 'package:nearby/services/bookmark_service.dart';
 import 'package:nearby/services/resturant_service.dart';
+import 'package:nearby/utils/maps/route_map.dart';
 import 'package:nearby/utils/pallete.dart';
 import 'package:nearby/utils/rate_algorithm.dart';
 import 'package:nearby/utils/videoplayers/network_player.dart';
@@ -72,8 +74,6 @@ class _ResturantDetailViewState extends State<ResturantDetailView> {
 
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(statusBarColor: Colors.transparent));
-    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
     return Scaffold(
       appBar: AppBar(
@@ -102,6 +102,96 @@ class _ResturantDetailViewState extends State<ResturantDetailView> {
                 }),
           ),
         ),
+        actions: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: Container(
+                    width: 45,
+                    height: 45,
+                    child: FloatingActionButton(
+                      onPressed: () async {
+                        bool statusBook =
+                            await _bookmarkService.checkBookmarkAlreadyIn(
+                                currentUserId, widget.docId, null);
+                        if (statusBook) {
+                          Fluttertoast.showToast(
+                              msg: "Already in the bookmark list",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.CENTER,
+                              backgroundColor: Pallete.mainAppColor,
+                              textColor: Colors.white,
+                              fontSize: 16.0);
+                        } else {
+                          await _bookmarkService.addToBookmark(
+                              currentUserId, "rest_main", widget.docId, null);
+                          Fluttertoast.showToast(
+                              msg: "Added to the bookmark list",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.CENTER,
+                              backgroundColor: Pallete.mainAppColor,
+                              textColor: Colors.white,
+                              fontSize: 16.0);
+                        }
+                      },
+                      heroTag: "rest&cafes",
+                      backgroundColor: Pallete.mainAppColor,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image.asset(
+                          'assets/icons/bookmark.png',
+                          color: Colors.white,
+                          height: 30,
+                          width: 30,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => RouteMap(
+                                  latitude: widget.rest.latitude,
+                                  longitude: widget.rest.longitude,
+                                )));
+                  },
+                  child: Container(
+                    width: 45,
+                    height: 45,
+                    decoration: new BoxDecoration(
+                        color: Pallete.mainAppColor,
+                        borderRadius:
+                            new BorderRadius.all(Radius.circular(30.0))),
+                    child: Center(
+                        child: Animator(
+                      duration: Duration(milliseconds: 1000),
+                      tween: Tween(begin: 1.1, end: 1.5),
+                      curve: Curves.easeInCirc,
+                      cycles: 0,
+                      builder: (anim) => Center(
+                        child: Transform.scale(
+                          scale: anim.value,
+                          child: Image.asset('assets/icons/direction.png',
+                              width: 25, height: 25, color: Colors.white),
+                        ),
+                      ),
+                    )),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
       extendBodyBehindAppBar: true,
       body: SingleChildScrollView(
