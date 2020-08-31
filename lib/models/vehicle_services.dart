@@ -34,6 +34,8 @@ class VehicleS {
   String enginecapacity;
   String status;
   double totalratings;
+  List ratings;
+  List reviews;
   Timestamp timestamp;
 
   VehicleS({
@@ -70,6 +72,8 @@ class VehicleS {
     this.fuel,
     this.enginecapacity,
     this.totalratings,
+    this.ratings,
+    this.reviews,
     this.transmission,
   });
 
@@ -108,6 +112,8 @@ class VehicleS {
       transmission: doc['transmission'],
       enginecapacity: doc['enginecapacity'],
       totalratings: doc['total_ratings'],
+      ratings: doc['ratings'],
+      reviews: doc['reviews'],
       timestamp: doc['timestamp'],
     );
   }

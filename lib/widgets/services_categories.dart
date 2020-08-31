@@ -2,12 +2,14 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:nearby/screens/main/fetch&display/places/place_main.dart';
 import 'package:nearby/screens/main/fetch&display/rest/resturants_main.dart';
 import 'package:nearby/utils/pallete.dart';
 
 class MainCategory extends StatefulWidget {
   final int restCount;
-  MainCategory({this.restCount, Key key}) : super(key: key);
+  final int placeCount;
+  MainCategory({this.restCount, this.placeCount, Key key}) : super(key: key);
 
   @override
   _MainCategoryState createState() => _MainCategoryState();
@@ -46,6 +48,13 @@ class _MainCategoryState extends State<MainCategory> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => ResturantsMain()));
+                          }
+
+                          if (myData[index]['service'] == "Places") {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => PlaceMainView()));
                           }
                         },
                         child: Padding(
@@ -100,6 +109,25 @@ class _MainCategoryState extends State<MainCategory> {
                                             padding: const EdgeInsets.all(4.0),
                                             child: Text(
                                               widget.restCount.toString(),
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                          ))
+                                      : SizedBox.shrink(),
+                                  myData[index]['service'] == "Places"
+                                      ? Container(
+                                          decoration: BoxDecoration(
+                                            color: Pallete.mainAppColor,
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(4.0),
+                                            child: Text(
+                                              widget.placeCount.toString(),
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                 color: Colors.white,

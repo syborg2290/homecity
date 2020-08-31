@@ -176,6 +176,7 @@ class _AddAnexesState extends State<AddAnexes> {
                     uploadGallery,
                     null,
                     _price.text.trim(),
+                    widget.type,
                   );
                   await _services.addService(_propertyTitle.text.trim(), restId,
                       latitude, longitude, widget.type, "Properties & renting");

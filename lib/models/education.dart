@@ -24,6 +24,8 @@ class Education {
   List schedule;
   List courses;
   double totalratings;
+  List ratings;
+  List reviews;
   Timestamp timestamp;
 
   Education({
@@ -50,6 +52,8 @@ class Education {
     this.subjectCategory,
     this.tutionType,
     this.totalratings,
+    this.ratings,
+    this.reviews,
     this.timestamp,
   });
 
@@ -78,6 +82,8 @@ class Education {
       subjectCategory: doc['subjectCategory'],
       courses: doc['courses'],
       totalratings: doc['total_ratings'],
+      ratings: doc['ratings'],
+      reviews: doc['reviews'],
       timestamp: doc['timestamp'],
     );
   }

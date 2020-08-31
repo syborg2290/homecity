@@ -19,6 +19,8 @@ class Grocery {
   List items;
   List gallery;
   double totalratings;
+  List ratings;
+  List reviews;
   Timestamp timestamp;
 
   Grocery({
@@ -40,6 +42,8 @@ class Grocery {
     this.items,
     this.gallery,
     this.totalratings,
+    this.ratings,
+    this.reviews,
     this.timestamp,
   });
 
@@ -63,6 +67,8 @@ class Grocery {
       items: doc['items'],
       gallery: doc['gallery'],
       totalratings: doc['total_ratings'],
+      ratings: doc['ratings'],
+      reviews: doc['reviews'],
       timestamp: doc['timestamp'],
     );
   }

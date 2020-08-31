@@ -188,6 +188,7 @@ class _AddEventState extends State<AddEvent> {
                       _telephone2.text.trim(),
                       uploadGallery,
                       selectedDistrict,
+                      widget.type,
                     );
                     await _services.addService(_eventDetails.text.trim(),
                         eventId, latitude, longitude, widget.type, "Events");

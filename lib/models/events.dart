@@ -4,6 +4,7 @@ class Events {
   String id;
   String ownerId;
   String eventTitle;
+  String type;
   String intialImage;
   String eventDetails;
   String address;
@@ -18,12 +19,15 @@ class Events {
   Timestamp startTime;
   List gallery;
   double totalratings;
+  List ratings;
+  List reviews;
   Timestamp timestamp;
 
   Events(
       {this.id,
       this.ownerId,
       this.eventTitle,
+      this.type,
       this.intialImage,
       this.eventDetails,
       this.address,
@@ -38,6 +42,8 @@ class Events {
       this.startTime,
       this.gallery,
       this.totalratings,
+      this.ratings,
+      this.reviews,
       this.timestamp});
 
   factory Events.fromDocument(DocumentSnapshot doc) {
@@ -45,6 +51,7 @@ class Events {
         id: doc['id'],
         ownerId: doc['ownerId'],
         eventTitle: doc['eventTitle'],
+        type: doc['type'],
         intialImage: doc['intialImage'],
         eventDetails: doc['eventDetails'],
         address: doc['address'],
@@ -59,6 +66,8 @@ class Events {
         startTime: doc['startTime'],
         gallery: doc['gallery'],
         totalratings: doc['total_ratings'],
+        ratings: doc['ratings'],
+        reviews: doc['reviews'],
         timestamp: doc['timestamp']);
   }
 }

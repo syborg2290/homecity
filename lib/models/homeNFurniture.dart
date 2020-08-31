@@ -20,6 +20,8 @@ class HomeNFurniture {
   List gallery;
   List items;
   double totalratings;
+  List ratings;
+  List reviews;
   Timestamp timestamp;
 
   HomeNFurniture({
@@ -42,6 +44,8 @@ class HomeNFurniture {
     this.gallery,
     this.items,
     this.totalratings,
+    this.ratings,
+    this.reviews,
     this.timestamp,
   });
 
@@ -66,6 +70,8 @@ class HomeNFurniture {
       gallery: doc['gallery'],
       items: doc['items'],
       totalratings: doc['total_ratings'],
+      ratings: doc['ratings'],
+      reviews: doc['reviews'],
       timestamp: doc['timestamp'],
     );
   }

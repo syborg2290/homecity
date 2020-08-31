@@ -20,6 +20,8 @@ class SportsNwellness {
   List gallery;
   List items;
   double totalratings;
+   List ratings;
+  List reviews;
   Timestamp timestamp;
 
   SportsNwellness({
@@ -42,6 +44,8 @@ class SportsNwellness {
     this.gallery,
     this.items,
     this.totalratings,
+    this.ratings,
+    this.reviews,
     this.timestamp,
   });
 
@@ -66,6 +70,8 @@ class SportsNwellness {
       gallery: doc['gallery'],
       items: doc['items'],
       totalratings: doc['total_ratings'],
+       ratings: doc['ratings'],
+      reviews: doc['reviews'],
       timestamp: doc['timestamp'],
     );
   }

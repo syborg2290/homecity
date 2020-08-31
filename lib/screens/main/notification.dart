@@ -186,6 +186,14 @@ class NotificationFeed extends StatelessWidget {
       activityItemText = "reacted your reply of a review";
     }
 
+    if (feed.type == "rate_place") {
+      activityItemText = "rated on you created place";
+    }
+    
+     if (feed.type == "review_place") {
+      activityItemText = "put a review on you created place";
+    }
+
     return Padding(
       padding: EdgeInsets.only(bottom: 2.0, top: 10),
       child: ListTile(

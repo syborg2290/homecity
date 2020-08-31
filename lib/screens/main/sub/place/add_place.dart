@@ -181,6 +181,7 @@ class _AddPlaceState extends State<AddPlace> {
                 _specialHolidaysAndHoursController.text.trim(),
                 selectedDistrict,
                 uploadGallery,
+                widget.type,
               );
               await _services.addService(_placeName.text.trim(), placeId,
                   latitude, longitude, widget.type, "Places");

@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'dart:math';
-
 import 'package:animator/animator.dart';
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
@@ -12,29 +10,27 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geodesy/geodesy.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_utils/poly_utils.dart';
-import 'package:nearby/models/resturant.dart';
-import 'package:nearby/screens/main/fetch&display/rest/rest_detail_view.dart';
-import 'package:nearby/screens/main/fetch&display/rest/rest_filter.dart';
-import 'package:nearby/screens/main/fetch&display/rest/rest_search.dart';
-import 'package:nearby/screens/main/sub/resturant/add_resturant.dart';
+import 'package:nearby/models/place.dart';
+import 'package:nearby/screens/main/fetch&display/places/place_details_page.dart';
+import 'package:nearby/screens/main/fetch&display/places/place_filter.dart';
+import 'package:nearby/screens/main/fetch&display/places/place_serach.dart';
+import 'package:nearby/screens/main/sub/place/place_type.dart';
 import 'package:nearby/services/auth_services.dart';
 import 'package:nearby/services/bookmark_service.dart';
-import 'package:nearby/services/resturant_service.dart';
+import 'package:nearby/services/place_service.dart';
 import 'package:nearby/utils/maps/route_map.dart';
 import 'package:nearby/utils/pallete.dart';
 import 'package:nearby/utils/rate_algorithm.dart';
 
-import 'menu_item_view.dart';
-
-class ResturantsMain extends StatefulWidget {
-  ResturantsMain({Key key}) : super(key: key);
+class PlaceMainView extends StatefulWidget {
+  PlaceMainView({Key key}) : super(key: key);
 
   @override
-  _ResturantsMainState createState() => _ResturantsMainState();
+  _PlaceMainViewState createState() => _PlaceMainViewState();
 }
 
-class _ResturantsMainState extends State<ResturantsMain> {
-  ResturantService _resturantService = ResturantService();
+class _PlaceMainViewState extends State<PlaceMainView> {
+  PlaceService _placeService = PlaceService();
   AuthServcies _auth = AuthServcies();
   BookmarkService _bookmarkService = BookmarkService();
   Geodesy geodesy = Geodesy();
@@ -85,6 +81,7 @@ class _ResturantsMainState extends State<ResturantsMain> {
 
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -92,7 +89,7 @@ class _ResturantsMainState extends State<ResturantsMain> {
         backgroundColor: Colors.transparent,
         elevation: 0.0,
         title: Text(
-          "Resturants",
+          "Places",
           style: TextStyle(
             color: Colors.black54,
             fontSize: 20,
@@ -125,7 +122,7 @@ class _ResturantsMainState extends State<ResturantsMain> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => RestSearch(
+                        builder: (context) => PlaceSearch(
                               currentUserId: currentUserId,
                             )));
               },
@@ -144,7 +141,7 @@ class _ResturantsMainState extends State<ResturantsMain> {
             child: GestureDetector(
               onTap: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => RestFilter()));
+                    MaterialPageRoute(builder: (context) => PlaceFilterPage()));
               },
               child: Image.asset(
                 'assets/icons/filter.png',
@@ -160,12 +157,8 @@ class _ResturantsMainState extends State<ResturantsMain> {
             ),
             child: GestureDetector(
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => AddResturant(
-                              type: "Resturants & cafes",
-                            )));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => PlaceType()));
               },
               child: Image.asset(
                 'assets/icons/plus.png',
@@ -183,7 +176,7 @@ class _ResturantsMainState extends State<ResturantsMain> {
               child: Center(child: SpinKitCircle(color: Pallete.mainAppColor)),
             )
           : StreamBuilder(
-              stream: _resturantService.streamResturant(),
+              stream: _placeService.streamPlaces(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 if (!snapshot.hasData) {
                   return Container(
@@ -197,12 +190,12 @@ class _ResturantsMainState extends State<ResturantsMain> {
                       child: Column(
                     children: [
                       Image.asset(
-                        'assets/icons/dining.png',
+                        'assets/icons/place.png',
                         width: width * 0.7,
                         color: Colors.grey,
                       ),
                       Text(
-                        "Resturants not available yet",
+                        "Places not available yet",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             color: Colors.grey,
@@ -217,12 +210,12 @@ class _ResturantsMainState extends State<ResturantsMain> {
                       child: Column(
                     children: [
                       Image.asset(
-                        'assets/icons/dining.png',
+                        'assets/icons/place.png',
                         width: width * 0.7,
                         color: Colors.grey,
                       ),
                       Text(
-                        "Resturants not available yet",
+                        "Places not available yet",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             color: Colors.grey,
@@ -233,91 +226,36 @@ class _ResturantsMainState extends State<ResturantsMain> {
                     ],
                   ));
                 } else {
-                  List<Resturant> allResturants = [];
+                  List<Place> allPlaces = [];
                   List allDocId = [];
-                  List<Resturant> nearbyResturants = [];
+                  List<Place> nearbyPlaces = [];
                   List nearbyDocId = [];
-                  List nearbyItems = [];
-                  List<Resturant> topRatedResturants = [];
+
+                  List<Place> topRatedPlace = [];
                   List topRatedDocId = [];
-                  List topRatedItems = [];
 
                   snapshot.data.documents.forEach((doc) {
-                    Resturant _rest = Resturant.fromDocument(doc);
-                    allResturants.add(_rest);
+                    Place _rest = Place.fromDocument(doc);
+                    allPlaces.add(_rest);
                     allDocId.add(doc.documentID);
-                    topRatedResturants.add(_rest);
+                    topRatedPlace.add(_rest);
                     var docIdObj = {
                       "id": _rest.id,
                       "docId": doc.documentID,
                     };
                     topRatedDocId.add(docIdObj);
-                    List menuTopRated = _rest.menu;
-                    menuTopRated.forEach((element) {
-                      var objRated = json.decode(element);
-                      var updatedRatedObj = {
-                        "id": objRated["id"],
-                        "restId": _rest.id,
-                        "restOwnerId": _rest.ownerId,
-                        "docId": doc.documentID,
-                        "index": menuTopRated.indexWhere((element) =>
-                            json.decode(element)["id"] == objRated["id"]),
-                        "initialImage": objRated["initialImage"],
-                        "item_type": objRated["item_type"],
-                        "item_name": objRated["item_name"],
-                        "price": objRated["price"],
-                        "portion_count": objRated["portion_count"],
-                        "about": objRated["about"],
-                        "foodTake": objRated["foodTake"],
-                        "gallery": objRated["gallery"],
-                        "total_ratings": objRated["total_ratings"],
-                        "ratings": objRated["ratings"],
-                        "review": objRated["review"],
-                      };
-                      topRatedItems.add(updatedRatedObj);
-                    });
 
                     bool contains = PolyUtils.containsLocationPoly(
                         Point(_rest.latitude, _rest.longitude), polygon);
                     if (contains) {
-                      nearbyResturants.add(_rest);
+                      nearbyPlaces.add(_rest);
                       nearbyDocId.add(doc.documentID);
-                      List menu = _rest.menu;
-                      menu.forEach((element) {
-                        var obj = json.decode(element);
-                        var updatedObj = {
-                          "id": obj["id"],
-                          "restId": _rest.id,
-                          "restOwnerId": _rest.ownerId,
-                          "docId": doc.documentID,
-                          "index": menu.indexWhere((element) =>
-                              json.decode(element)["id"] == obj["id"]),
-                          "initialImage": obj["initialImage"],
-                          "item_type": obj["item_type"],
-                          "item_name": obj["item_name"],
-                          "price": obj["price"],
-                          "portion_count": obj["portion_count"],
-                          "about": obj["about"],
-                          "foodTake": obj["foodTake"],
-                          "gallery": obj["gallery"],
-                          "total_ratings": obj["total_ratings"],
-                          "ratings": obj["ratings"],
-                          "review": obj["review"],
-                        };
-
-                        nearbyItems.add(updatedObj);
-                      });
                     }
                   });
 
-                  if (topRatedResturants.length > 1) {
-                    topRatedResturants.sort(
+                  if (topRatedPlace.length > 1) {
+                    topRatedPlace.sort(
                         (b, a) => a.totalratings.compareTo(b.totalratings));
-                  }
-
-                  if (topRatedItems.length > 1) {
-                    topRatedItems.sort((b, a) =>
-                        a["total_ratings"].compareTo(b["total_ratings"]));
                   }
 
                   return SingleChildScrollView(
@@ -325,16 +263,16 @@ class _ResturantsMainState extends State<ResturantsMain> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        nearbyResturants.isNotEmpty
+                        nearbyPlaces.isNotEmpty
                             ? SizedBox(
                                 height: 20,
                               )
                             : SizedBox.shrink(),
-                        nearbyResturants.isNotEmpty
+                        nearbyPlaces.isNotEmpty
                             ? Align(
                                 alignment: Alignment.center,
                                 child: Text(
-                                  "Nearby resturants & cafes",
+                                  "Nearby places",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       color: Colors.grey[900],
@@ -344,46 +282,45 @@ class _ResturantsMainState extends State<ResturantsMain> {
                                 ),
                               )
                             : SizedBox.shrink(),
-                        nearbyResturants.isNotEmpty
+                        nearbyPlaces.isNotEmpty
                             ? SizedBox(
                                 height: 10,
                               )
                             : SizedBox.shrink(),
-                        nearbyResturants.isNotEmpty
+                        nearbyPlaces.isNotEmpty
                             ? SizedBox(
                                 height: height * 0.33,
                                 child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    shrinkWrap: true,
-                                    itemCount: nearbyResturants.length,
-                                    itemBuilder: (context, index) =>
-                                        NearbyResturantsCards(
-                                          rest: nearbyResturants[index],
-                                          docId: nearbyDocId[index],
-                                          currentUserId: currentUserId,
-                                          index: index,
-                                          rate: nearbyResturants[index]
-                                                      .totalratings ==
-                                                  0.0
-                                              ? 0.0
-                                              : rateAlgorithm(
-                                                  nearbyResturants[index]
-                                                      .totalratings
-                                                      .toInt()),
-                                          bookmarkService: _bookmarkService,
-                                        )),
+                                  scrollDirection: Axis.horizontal,
+                                  shrinkWrap: true,
+                                  itemCount: nearbyPlaces.length,
+                                  itemBuilder: (context, index) =>
+                                      NearbyPlaceCards(
+                                    place: nearbyPlaces[index],
+                                    docId: nearbyDocId[index],
+                                    currentUserId: currentUserId,
+                                    index: index,
+                                    rate:
+                                        nearbyPlaces[index].totalratings == 0.0
+                                            ? 0.0
+                                            : rateAlgorithm(nearbyPlaces[index]
+                                                .totalratings
+                                                .toInt()),
+                                    bookmarkService: _bookmarkService,
+                                  ),
+                                ),
                               )
                             : SizedBox.shrink(),
-                        nearbyItems.isNotEmpty
+                        topRatedPlace.isNotEmpty
                             ? SizedBox(
                                 height: 20,
                               )
                             : SizedBox.shrink(),
-                        nearbyItems.isNotEmpty
+                        topRatedPlace.isNotEmpty
                             ? Align(
                                 alignment: Alignment.center,
                                 child: Text(
-                                  "Nearby food items",
+                                  "Popular places",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       color: Colors.grey[900],
@@ -393,49 +330,48 @@ class _ResturantsMainState extends State<ResturantsMain> {
                                 ),
                               )
                             : SizedBox.shrink(),
-                        nearbyItems.isNotEmpty
+                        topRatedPlace.isNotEmpty
                             ? SizedBox(
                                 height: 10,
                               )
                             : SizedBox.shrink(),
-                        nearbyItems.isNotEmpty
+                        topRatedPlace.isNotEmpty
                             ? SizedBox(
                                 height: height * 0.33,
                                 child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    shrinkWrap: true,
-                                    itemCount: nearbyItems.length,
-                                    itemBuilder: (context, index) =>
-                                        NearbyMenuItems(
-                                          restMenu: nearbyItems[index],
-                                          docId: nearbyItems[index]["docId"],
-                                          listIndex: index,
-                                          currentUserId: currentUserId,
-                                          index: nearbyItems[index]["index"],
-                                          rate: nearbyItems[index]
-                                                      ["total_ratings"] ==
-                                                  0.0
-                                              ? 0.0
-                                              : rateAlgorithm(nearbyItems[index]
-                                                      ["total_ratings"]
-                                                  .toInt()),
-                                          bookmarkService: _bookmarkService,
-                                          id: nearbyItems[index]["restId"],
-                                          ownerId: nearbyItems[index]
-                                              ["restOwnerId"],
-                                        )),
+                                  scrollDirection: Axis.horizontal,
+                                  shrinkWrap: true,
+                                  itemCount: topRatedPlace.length,
+                                  itemBuilder: (context, index) =>
+                                      TopRatedPlaceCards(
+                                    place: topRatedPlace[index],
+                                    docId: topRatedDocId[
+                                        topRatedDocId.indexWhere((element) =>
+                                            element["id"] ==
+                                            topRatedPlace[index].id)]["docId"],
+                                    currentUserId: currentUserId,
+                                    index: index,
+                                    rate:
+                                        topRatedPlace[index].totalratings == 0.0
+                                            ? 0.0
+                                            : rateAlgorithm(topRatedPlace[index]
+                                                .totalratings
+                                                .toInt()),
+                                    bookmarkService: _bookmarkService,
+                                  ),
+                                ),
                               )
                             : SizedBox.shrink(),
-                        topRatedResturants.isNotEmpty
+                        allPlaces.isNotEmpty
                             ? SizedBox(
                                 height: 20,
                               )
                             : SizedBox.shrink(),
-                        topRatedResturants.isNotEmpty
+                        allPlaces.isNotEmpty
                             ? Align(
                                 alignment: Alignment.center,
                                 child: Text(
-                                  "Popular resturants & cafes",
+                                  "All places",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       color: Colors.grey[900],
@@ -445,131 +381,23 @@ class _ResturantsMainState extends State<ResturantsMain> {
                                 ),
                               )
                             : SizedBox.shrink(),
-                        topRatedResturants.isNotEmpty
+                        allPlaces.isNotEmpty
                             ? SizedBox(
                                 height: 10,
                               )
                             : SizedBox.shrink(),
-                        topRatedResturants.isNotEmpty
-                            ? SizedBox(
-                                height: height * 0.33,
-                                child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    shrinkWrap: true,
-                                    itemCount: topRatedResturants.length,
-                                    itemBuilder: (context, index) =>
-                                        TopRatedResturantsCards(
-                                          rest: topRatedResturants[index],
-                                          docId: topRatedDocId[topRatedDocId
-                                              .indexWhere((element) =>
-                                                  element["id"] ==
-                                                  topRatedResturants[index]
-                                                      .id)]["docId"],
-                                          currentUserId: currentUserId,
-                                          index: index,
-                                          rate: topRatedResturants[index]
-                                                      .totalratings ==
-                                                  0.0
-                                              ? 0.0
-                                              : rateAlgorithm(
-                                                  topRatedResturants[index]
-                                                      .totalratings
-                                                      .toInt()),
-                                          bookmarkService: _bookmarkService,
-                                        )),
-                              )
-                            : SizedBox.shrink(),
-                        topRatedItems.isNotEmpty
-                            ? SizedBox(
-                                height: 20,
-                              )
-                            : SizedBox.shrink(),
-                        topRatedItems.isNotEmpty
-                            ? Align(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "Popular food items",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.grey[900],
-                                      fontFamily: "Roboto",
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.w800),
-                                ),
-                              )
-                            : SizedBox.shrink(),
-                        topRatedItems.isNotEmpty
-                            ? SizedBox(
-                                height: 10,
-                              )
-                            : SizedBox.shrink(),
-                        topRatedItems.isNotEmpty
-                            ? SizedBox(
-                                height: height * 0.33,
-                                child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    shrinkWrap: true,
-                                    itemCount: topRatedItems.length,
-                                    itemBuilder: (context, index) =>
-                                        TopRatedMenuItems(
-                                          restMenu: topRatedItems[index],
-                                          docId: topRatedItems[index]["docId"],
-                                          currentUserId: currentUserId,
-                                          index: topRatedItems[index]["index"],
-                                          listIndex: index,
-                                          rate: topRatedItems[index]
-                                                      ["total_ratings"] ==
-                                                  0.0
-                                              ? 0.0
-                                              : rateAlgorithm(
-                                                  topRatedItems[index]
-                                                          ["total_ratings"]
-                                                      .toInt()),
-                                          bookmarkService: _bookmarkService,
-                                          id: topRatedItems[index]["restId"],
-                                          ownerId: topRatedItems[index]
-                                              ["restOwnerId"],
-                                        )),
-                              )
-                            : SizedBox.shrink(),
-                        allResturants.isNotEmpty
-                            ? SizedBox(
-                                height: 20,
-                              )
-                            : SizedBox.shrink(),
-                        allResturants.isNotEmpty
-                            ? Align(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "All resturants & cafes",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.grey[900],
-                                      fontFamily: "Roboto",
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.w800),
-                                ),
-                              )
-                            : SizedBox.shrink(),
-                        allResturants.isNotEmpty
-                            ? SizedBox(
-                                height: 10,
-                              )
-                            : SizedBox.shrink(),
-                        allResturants.isNotEmpty
-                            ? allResturants.length == 1
-                                ? ResturantsCards(
+                        allPlaces.isNotEmpty
+                            ? allPlaces.length == 1
+                                ? PlacesCards(
                                     bookmarkService: _bookmarkService,
                                     currentUserId: currentUserId,
                                     docId: allDocId[0],
                                     index: 0,
-                                    rest: allResturants[0],
-                                    rate: allResturants[0].totalratings == 0.0
+                                    place: allPlaces[0],
+                                    rate: allPlaces[0].totalratings == 0.0
                                         ? 0.0
                                         : rateAlgorithm(
-                                            allResturants[0]
-                                                .totalratings
-                                                .toInt(),
+                                            allPlaces[0].totalratings.toInt(),
                                           ),
                                   )
                                 : Flexible(
@@ -577,23 +405,22 @@ class _ResturantsMainState extends State<ResturantsMain> {
                                       physics: ScrollPhysics(),
                                       crossAxisCount: 2,
                                       shrinkWrap: true,
-                                      children: List.generate(
-                                          allResturants.length, (index) {
-                                        return ResturantsCards(
+                                      children: List.generate(allPlaces.length,
+                                          (index) {
+                                        return PlacesCards(
                                           bookmarkService: _bookmarkService,
                                           currentUserId: currentUserId,
                                           docId: allDocId[index],
                                           index: index,
-                                          singleIndex: allResturants.length == 0
+                                          singleIndex: allPlaces.length == 0
                                               ? true
                                               : false,
-                                          rest: allResturants[index],
-                                          rate: allResturants[index]
-                                                      .totalratings ==
+                                          place: allPlaces[index],
+                                          rate: allPlaces[index].totalratings ==
                                                   0.0
                                               ? 0.0
                                               : rateAlgorithm(
-                                                  allResturants[index]
+                                                  allPlaces[index]
                                                       .totalratings
                                                       .toInt(),
                                                 ),
@@ -612,17 +439,17 @@ class _ResturantsMainState extends State<ResturantsMain> {
   }
 }
 
-class NearbyResturantsCards extends StatelessWidget {
-  final Resturant rest;
+class NearbyPlaceCards extends StatelessWidget {
+  final Place place;
   final String docId;
   final int index;
   final double rate;
   final String currentUserId;
   final BookmarkService bookmarkService;
 
-  const NearbyResturantsCards(
+  const NearbyPlaceCards(
       {this.rate,
-      this.rest,
+      this.place,
       this.index,
       this.currentUserId,
       this.bookmarkService,
@@ -637,8 +464,8 @@ class NearbyResturantsCards extends StatelessWidget {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => ResturantDetailView(
-                      rest: rest,
+                builder: (context) => PlaceDetails(
+                      place: place,
                       docId: docId,
                     )));
       },
@@ -651,13 +478,13 @@ class NearbyResturantsCards extends StatelessWidget {
           child: Stack(
             children: <Widget>[
               FancyShimmerImage(
-                imageUrl: rest.initialImage,
+                imageUrl: place.intialImage,
                 boxFit: BoxFit.cover,
                 shimmerBackColor: Color(0xffe0e0e0),
                 shimmerBaseColor: Color(0xffe0e0e0),
                 shimmerHighlightColor: Colors.grey[200],
                 width: MediaQuery.of(context).size.width * 0.7,
-                height: MediaQuery.of(context).size.height * 0.2,
+                height: MediaQuery.of(context).size.height * 0.17,
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -680,7 +507,7 @@ class NearbyResturantsCards extends StatelessWidget {
                               fontSize: 16.0);
                         } else {
                           await bookmarkService.addToBookmark(
-                              currentUserId, "rest_main", docId, null);
+                              currentUserId, "place", docId, null);
                           Fluttertoast.showToast(
                               msg: "Added to the bookmark list",
                               toastLength: Toast.LENGTH_SHORT,
@@ -690,7 +517,7 @@ class NearbyResturantsCards extends StatelessWidget {
                               fontSize: 16.0);
                         }
                       },
-                      heroTag: index.toString() + "rest&cafesNearby",
+                      heroTag: index.toString() + "placeNearby",
                       backgroundColor: Pallete.mainAppColor,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -713,8 +540,8 @@ class NearbyResturantsCards extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) => RouteMap(
-                                  latitude: rest.latitude,
-                                  longitude: rest.longitude,
+                                  latitude: place.latitude,
+                                  longitude: place.longitude,
                                 )));
                   },
                   child: Container(
@@ -743,11 +570,11 @@ class NearbyResturantsCards extends StatelessWidget {
               ),
               Padding(
                 padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height * 0.2,
+                  top: MediaQuery.of(context).size.height * 0.17,
                 ),
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.7,
-                  height: 80,
+                  height: 110,
                   decoration: new BoxDecoration(
                       color: Colors.black.withOpacity(0.8),
                       borderRadius: new BorderRadius.all(Radius.circular(0.0))),
@@ -757,7 +584,7 @@ class NearbyResturantsCards extends StatelessWidget {
                         height: 10,
                       ),
                       Text(
-                        rest.restName,
+                        place.placeName,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.white,
@@ -768,7 +595,18 @@ class NearbyResturantsCards extends StatelessWidget {
                         height: 5,
                       ),
                       Text(
-                        rest.address,
+                        place.type,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        place.district,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.grey,
@@ -813,17 +651,17 @@ class NearbyResturantsCards extends StatelessWidget {
   }
 }
 
-class TopRatedResturantsCards extends StatelessWidget {
-  final Resturant rest;
+class TopRatedPlaceCards extends StatelessWidget {
+  final Place place;
   final String docId;
   final int index;
   final double rate;
   final String currentUserId;
   final BookmarkService bookmarkService;
 
-  const TopRatedResturantsCards(
+  const TopRatedPlaceCards(
       {this.rate,
-      this.rest,
+      this.place,
       this.index,
       this.currentUserId,
       this.bookmarkService,
@@ -838,8 +676,8 @@ class TopRatedResturantsCards extends StatelessWidget {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => ResturantDetailView(
-                      rest: rest,
+                builder: (context) => PlaceDetails(
+                      place: place,
                       docId: docId,
                     )));
       },
@@ -852,13 +690,13 @@ class TopRatedResturantsCards extends StatelessWidget {
           child: Stack(
             children: <Widget>[
               FancyShimmerImage(
-                imageUrl: rest.initialImage,
+                imageUrl: place.intialImage,
                 boxFit: BoxFit.cover,
                 shimmerBackColor: Color(0xffe0e0e0),
                 shimmerBaseColor: Color(0xffe0e0e0),
                 shimmerHighlightColor: Colors.grey[200],
                 width: MediaQuery.of(context).size.width * 0.7,
-                height: MediaQuery.of(context).size.height * 0.2,
+                height: MediaQuery.of(context).size.height * 0.17,
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -881,7 +719,7 @@ class TopRatedResturantsCards extends StatelessWidget {
                               fontSize: 16.0);
                         } else {
                           await bookmarkService.addToBookmark(
-                              currentUserId, "rest_main", docId, null);
+                              currentUserId, "place", docId, null);
                           Fluttertoast.showToast(
                               msg: "Added to the bookmark list",
                               toastLength: Toast.LENGTH_SHORT,
@@ -891,7 +729,7 @@ class TopRatedResturantsCards extends StatelessWidget {
                               fontSize: 16.0);
                         }
                       },
-                      heroTag: index.toString() + "rest&cafesTopRated",
+                      heroTag: index.toString() + "placeTopRated",
                       backgroundColor: Pallete.mainAppColor,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -914,8 +752,8 @@ class TopRatedResturantsCards extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) => RouteMap(
-                                  latitude: rest.latitude,
-                                  longitude: rest.longitude,
+                                  latitude: place.latitude,
+                                  longitude: place.longitude,
                                 )));
                   },
                   child: Container(
@@ -944,11 +782,11 @@ class TopRatedResturantsCards extends StatelessWidget {
               ),
               Padding(
                 padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height * 0.2,
+                  top: MediaQuery.of(context).size.height * 0.17,
                 ),
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.7,
-                  height: 80,
+                  height: 110,
                   decoration: new BoxDecoration(
                       color: Colors.black.withOpacity(0.8),
                       borderRadius: new BorderRadius.all(Radius.circular(0.0))),
@@ -958,7 +796,7 @@ class TopRatedResturantsCards extends StatelessWidget {
                         height: 10,
                       ),
                       Text(
-                        rest.restName,
+                        place.placeName,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.white,
@@ -969,7 +807,18 @@ class TopRatedResturantsCards extends StatelessWidget {
                         height: 5,
                       ),
                       Text(
-                        rest.address,
+                        place.type,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        place.district,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.grey,
@@ -1014,8 +863,8 @@ class TopRatedResturantsCards extends StatelessWidget {
   }
 }
 
-class ResturantsCards extends StatelessWidget {
-  final Resturant rest;
+class PlacesCards extends StatelessWidget {
+  final Place place;
   final String docId;
   final int index;
   final bool singleIndex;
@@ -1023,9 +872,9 @@ class ResturantsCards extends StatelessWidget {
   final String currentUserId;
   final BookmarkService bookmarkService;
 
-  const ResturantsCards(
+  const PlacesCards(
       {this.rate,
-      this.rest,
+      this.place,
       this.index,
       this.singleIndex,
       this.currentUserId,
@@ -1041,8 +890,8 @@ class ResturantsCards extends StatelessWidget {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => ResturantDetailView(
-                      rest: rest,
+                builder: (context) => PlaceDetails(
+                      place: place,
                       docId: docId,
                     )));
       },
@@ -1055,7 +904,7 @@ class ResturantsCards extends StatelessWidget {
           child: Stack(
             children: <Widget>[
               FancyShimmerImage(
-                imageUrl: rest.initialImage,
+                imageUrl: place.intialImage,
                 boxFit: BoxFit.cover,
                 shimmerBackColor: Color(0xffe0e0e0),
                 shimmerBaseColor: Color(0xffe0e0e0),
@@ -1084,7 +933,7 @@ class ResturantsCards extends StatelessWidget {
                               fontSize: 16.0);
                         } else {
                           await bookmarkService.addToBookmark(
-                              currentUserId, "rest_main", docId, null);
+                              currentUserId, "place", docId, null);
                           Fluttertoast.showToast(
                               msg: "Added to the bookmark list",
                               toastLength: Toast.LENGTH_SHORT,
@@ -1094,7 +943,7 @@ class ResturantsCards extends StatelessWidget {
                               fontSize: 16.0);
                         }
                       },
-                      heroTag: index.toString() + "rest&cafes",
+                      heroTag: index.toString() + "place",
                       backgroundColor: Pallete.mainAppColor,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -1117,8 +966,8 @@ class ResturantsCards extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) => RouteMap(
-                                  latitude: rest.latitude,
-                                  longitude: rest.longitude,
+                                  latitude: place.latitude,
+                                  longitude: place.longitude,
                                 )));
                   },
                   child: Container(
@@ -1149,11 +998,11 @@ class ResturantsCards extends StatelessWidget {
                 padding: EdgeInsets.only(
                   top: singleIndex == true
                       ? MediaQuery.of(context).size.height * 0.17
-                      : MediaQuery.of(context).size.height * 0.13,
+                      : MediaQuery.of(context).size.height * 0.12,
                 ),
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.75,
-                  height: singleIndex == true ? 80 : 100,
+                  height: singleIndex == true ? 100 : 100,
                   decoration: new BoxDecoration(
                       color: Colors.black.withOpacity(0.8),
                       borderRadius: new BorderRadius.all(Radius.circular(0.0))),
@@ -1163,7 +1012,7 @@ class ResturantsCards extends StatelessWidget {
                         height: 10,
                       ),
                       Text(
-                        rest.restName,
+                        place.placeName,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.white,
@@ -1174,353 +1023,11 @@ class ResturantsCards extends StatelessWidget {
                         height: 5,
                       ),
                       Text(
-                        rest.address,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 14,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      RatingBar(
-                        initialRating: rate == 0.0 ? 0.0 : rate,
-                        minRating: 0,
-                        itemSize: 16,
-                        unratedColor: Colors.grey,
-                        direction: Axis.horizontal,
-                        allowHalfRating: true,
-                        glow: true,
-                        tapOnlyMode: true,
-                        glowColor: Colors.white,
-                        itemCount: 5,
-                        itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                        itemBuilder: (context, _) => Icon(
-                          MaterialIcons.star,
-                          color: Pallete.mainAppColor,
-                        ),
-                        onRatingUpdate: (rating) {},
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
-          ),
-          elevation: 5,
-          margin: EdgeInsets.all(10),
-        ),
-      ),
-    );
-  }
-}
-
-class NearbyMenuItems extends StatelessWidget {
-  final restMenu;
-  final String currentUserId;
-  final String docId;
-  final String id;
-  final String ownerId;
-  final int index;
-  final int listIndex;
-  final double rate;
-  final BookmarkService bookmarkService;
-
-  const NearbyMenuItems(
-      {this.restMenu,
-      this.id,
-      this.listIndex,
-      this.bookmarkService,
-      this.index,
-      this.ownerId,
-      this.currentUserId,
-      this.docId,
-      this.rate,
-      Key key})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => MenuItemView(
-                      menuItem: restMenu,
-                      currentUserId: currentUserId,
-                      docId: docId,
-                      index: index,
-                      id: id,
-                      ownerId: ownerId,
-                    )));
-      },
-      child: Container(
-        width: MediaQuery.of(context).size.width * 0.6,
-        child: Card(
-          semanticContainer: true,
-          color: Colors.black.withOpacity(0.8),
-          clipBehavior: Clip.antiAliasWithSaveLayer,
-          child: Stack(
-            children: <Widget>[
-              FancyShimmerImage(
-                imageUrl: restMenu["initialImage"],
-                boxFit: BoxFit.cover,
-                shimmerBackColor: Color(0xffe0e0e0),
-                shimmerBaseColor: Color(0xffe0e0e0),
-                shimmerHighlightColor: Colors.grey[200],
-                height: MediaQuery.of(context).size.height * 0.2,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  width: 45,
-                  height: 45,
-                  child: FloatingActionButton(
-                    onPressed: () async {
-                      bool statusBook = await bookmarkService
-                          .checkBookmarkAlreadyIn(currentUserId, docId, index);
-                      if (statusBook) {
-                        Fluttertoast.showToast(
-                            msg: "Already in the bookmark list",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.CENTER,
-                            backgroundColor: Pallete.mainAppColor,
-                            textColor: Colors.white,
-                            fontSize: 16.0);
-                      } else {
-                        await bookmarkService.addToBookmark(
-                            currentUserId, "rest_item", docId, index);
-                        Fluttertoast.showToast(
-                            msg: "Added to the bookmark list",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.CENTER,
-                            backgroundColor: Pallete.mainAppColor,
-                            textColor: Colors.white,
-                            fontSize: 16.0);
-                      }
-                    },
-                    heroTag: listIndex.toString() + "nearbyItemes",
-                    backgroundColor: Pallete.mainAppColor,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Image.asset(
-                        'assets/icons/bookmark.png',
-                        color: Colors.white,
-                        height: 30,
-                        width: 30,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height * 0.2,
-                ),
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.6,
-                  height: 80,
-                  decoration: new BoxDecoration(
-                      color: Colors.black.withOpacity(0.8),
-                      borderRadius: new BorderRadius.all(Radius.circular(0.0))),
-                  child: Column(
-                    children: <Widget>[
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        restMenu["item_name"],
+                        place.type,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Text(
-                        restMenu["price"] + " LKR",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 14,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      RatingBar(
-                        initialRating: rate == 0.0 ? 0.0 : rate,
-                        minRating: 0,
-                        itemSize: 16,
-                        unratedColor: Colors.grey,
-                        direction: Axis.horizontal,
-                        allowHalfRating: true,
-                        glow: true,
-                        tapOnlyMode: true,
-                        glowColor: Colors.white,
-                        itemCount: 5,
-                        itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                        itemBuilder: (context, _) => Icon(
-                          MaterialIcons.star,
-                          color: Pallete.mainAppColor,
-                        ),
-                        onRatingUpdate: (rating) {},
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
-          ),
-          elevation: 5,
-          margin: EdgeInsets.all(10),
-        ),
-      ),
-    );
-  }
-}
-
-class TopRatedMenuItems extends StatelessWidget {
-  final restMenu;
-  final String currentUserId;
-  final String docId;
-  final String id;
-  final String ownerId;
-  final int index;
-  final int listIndex;
-  final double rate;
-  final BookmarkService bookmarkService;
-
-  const TopRatedMenuItems(
-      {this.restMenu,
-      this.id,
-      this.bookmarkService,
-      this.index,
-      this.ownerId,
-      this.listIndex,
-      this.currentUserId,
-      this.docId,
-      this.rate,
-      Key key})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => MenuItemView(
-                      menuItem: restMenu,
-                      currentUserId: currentUserId,
-                      docId: docId,
-                      index: index,
-                      id: id,
-                      ownerId: ownerId,
-                    )));
-      },
-      child: Container(
-        width: MediaQuery.of(context).size.width * 0.6,
-        child: Card(
-          semanticContainer: true,
-          color: Colors.black.withOpacity(0.8),
-          clipBehavior: Clip.antiAliasWithSaveLayer,
-          child: Stack(
-            children: <Widget>[
-              FancyShimmerImage(
-                imageUrl: restMenu["initialImage"],
-                boxFit: BoxFit.cover,
-                shimmerBackColor: Color(0xffe0e0e0),
-                shimmerBaseColor: Color(0xffe0e0e0),
-                shimmerHighlightColor: Colors.grey[200],
-                height: MediaQuery.of(context).size.height * 0.2,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  width: 45,
-                  height: 45,
-                  child: FloatingActionButton(
-                    onPressed: () async {
-                      bool statusBook = await bookmarkService
-                          .checkBookmarkAlreadyIn(currentUserId, docId, index);
-                      if (statusBook) {
-                        Fluttertoast.showToast(
-                            msg: "Already in the bookmark list",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.CENTER,
-                            backgroundColor: Pallete.mainAppColor,
-                            textColor: Colors.white,
-                            fontSize: 16.0);
-                      } else {
-                        await bookmarkService.addToBookmark(
-                            currentUserId, "rest_item", docId, index);
-                        Fluttertoast.showToast(
-                            msg: "Added to the bookmark list",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.CENTER,
-                            backgroundColor: Pallete.mainAppColor,
-                            textColor: Colors.white,
-                            fontSize: 16.0);
-                      }
-                    },
-                    heroTag: listIndex.toString() + "TopratedItems",
-                    backgroundColor: Pallete.mainAppColor,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Image.asset(
-                        'assets/icons/bookmark.png',
-                        color: Colors.white,
-                        height: 30,
-                        width: 30,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height * 0.2,
-                ),
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.6,
-                  height: 80,
-                  decoration: new BoxDecoration(
-                      color: Colors.black.withOpacity(0.8),
-                      borderRadius: new BorderRadius.all(Radius.circular(0.0))),
-                  child: Column(
-                    children: <Widget>[
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        restMenu["item_name"],
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Text(
-                        restMenu["price"] + " LKR",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 14,
                         ),
                       ),
                       SizedBox(

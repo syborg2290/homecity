@@ -77,6 +77,14 @@ exports.onCreateActivityFeedItem = functions.firestore
                     body = `${doc.data().username} reacted your reply of a review`;
                     type = "review_reply_dislike";
                     break;
+                case "rate_place":
+                    body = `${doc.data().username} rated on you created place`;
+                    type = "rate_place";
+                    break;
+                case "review_place":
+                    body = `${doc.data().username} put a review on you created place`;
+                    type = "review_place";
+                    break;
 
                 default:
                     break;

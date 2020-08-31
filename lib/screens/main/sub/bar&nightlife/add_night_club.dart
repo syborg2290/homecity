@@ -291,6 +291,7 @@ class _NightClubFormState extends State<NightClubForm> {
                     _specialHolidaysAndHoursController.text.trim(),
                     selectedDistrict,
                     uploadGallery,
+                    widget.type,
                   );
                   await _services.addService(_name.text.trim(), restId,
                       latitude, longitude, widget.type, "Night-life");

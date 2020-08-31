@@ -23,12 +23,14 @@ class NightLifeService {
     String specialHolidayshoursOfClosing,
     String district,
     List gallery,
+    String type,
   ) async {
     var uuid = Uuid();
     DocumentReference docRe = await nightLifeRef.add({
       "id": uuid.v1().toString() + new DateTime.now().toString(),
       "ownerId": ownerId,
       "name": name,
+      "type": type,
       "about": about,
       "intialImage": initialImage,
       "district": district,

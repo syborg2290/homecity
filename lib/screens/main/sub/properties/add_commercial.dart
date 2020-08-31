@@ -178,6 +178,7 @@ class _AddCommercialPropertyState extends State<AddCommercialProperty> {
                       uploadGallery,
                       _size.text.trim(),
                       _price.text.trim(),
+                       widget.type,
                     );
                     await _services.addService(
                         _propertyTitle.text.trim(),

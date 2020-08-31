@@ -138,7 +138,7 @@ class _AddShortTermRoomState extends State<AddShortTermRoom> {
                           "url": downUrl,
                           "thumb": thumbUrl,
                           "type": "image",
-                          "ownerId":currentUserId,
+                          "ownerId": currentUserId,
                         };
                         uploadGallery.add(json.encode(obj));
                       } else {
@@ -151,7 +151,7 @@ class _AddShortTermRoomState extends State<AddShortTermRoom> {
                           "url": downUrl,
                           "thumb": thumbUrl,
                           "type": "video",
-                          "ownerId":currentUserId,
+                          "ownerId": currentUserId,
                         };
                         uploadGallery.add(json.encode(obj));
                       }
@@ -176,6 +176,7 @@ class _AddShortTermRoomState extends State<AddShortTermRoom> {
                     uploadGallery,
                     null,
                     _price.text.trim(),
+                    widget.type,
                   );
                   await _services.addService(_propertyTitle.text.trim(), restId,
                       latitude, longitude, widget.type, "Properties & renting");

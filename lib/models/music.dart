@@ -22,6 +22,8 @@ class Music {
   List rent;
   List sellingItems;
   double totalratings;
+   List ratings;
+  List reviews;
   Timestamp timestamp;
 
   Music({
@@ -46,6 +48,8 @@ class Music {
     this.rent,
     this.sellingItems,
     this.totalratings,
+    this.ratings,
+    this.reviews,
     this.timestamp,
   });
 
@@ -72,6 +76,8 @@ class Music {
       repairs: doc['repairs'],
       sellingItems: doc['sellingItems'],
       totalratings: doc['total_ratings'],
+       ratings: doc['ratings'],
+      reviews: doc['reviews'],
       timestamp: doc['timestamp'],
     );
   }

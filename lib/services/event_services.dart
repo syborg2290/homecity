@@ -22,12 +22,14 @@ class EventServices {
     String telephone2,
     List gallery,
     String district,
+    String type,
   ) async {
     var uuid = Uuid();
     DocumentReference docRe = await eventsRef.add({
       "id": uuid.v1().toString() + new DateTime.now().toString(),
       "ownerId": ownerId,
       "eventTitle": eventTitle,
+      "type": type,
       "intialImage": initialImage,
       "eventDetails": details,
       "address": address,

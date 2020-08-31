@@ -21,12 +21,14 @@ class PropertyService {
     List gallery,
     String size,
     String price,
+    String type,
   ) async {
     var uuid = Uuid();
     DocumentReference docRe = await propertyRef.add({
       "id": uuid.v1().toString() + new DateTime.now().toString(),
       "ownerId": ownerId,
       "title": title,
+      "type": type,
       "details": details,
       "intialImage": initialImage,
       "district": district,

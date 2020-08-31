@@ -21,6 +21,8 @@ class SaloonNPro {
   List products;
   List customiseSaloon;
   double totalratings;
+   List ratings;
+  List reviews;
   Timestamp timestamp;
 
   SaloonNPro({
@@ -44,6 +46,8 @@ class SaloonNPro {
     this.customiseSaloon,
     this.products,
     this.totalratings,
+    this.ratings,
+    this.reviews,
     this.timestamp,
   });
 
@@ -69,6 +73,8 @@ class SaloonNPro {
       customiseSaloon: doc['customiseSaloon'],
       products: doc['products'],
       totalratings: doc['total_ratings'],
+       ratings: doc['ratings'],
+      reviews: doc['reviews'],
       timestamp: doc['timestamp'],
     );
   }

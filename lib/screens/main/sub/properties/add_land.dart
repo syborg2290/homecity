@@ -140,7 +140,7 @@ class _AddLandState extends State<AddLand> {
                             "url": downUrl,
                             "thumb": thumbUrl,
                             "type": "image",
-                            "ownerId":currentUserId,
+                            "ownerId": currentUserId,
                           };
                           uploadGallery.add(json.encode(obj));
                         } else {
@@ -153,7 +153,7 @@ class _AddLandState extends State<AddLand> {
                             "url": downUrl,
                             "thumb": thumbUrl,
                             "type": "video",
-                            "ownerId":currentUserId,
+                            "ownerId": currentUserId,
                           };
                           uploadGallery.add(json.encode(obj));
                         }
@@ -178,6 +178,7 @@ class _AddLandState extends State<AddLand> {
                       uploadGallery,
                       _perches.text.trim(),
                       _pricePerPerch.text.trim(),
+                      widget.type,
                     );
                     await _services.addService(
                         _propertyTitle.text.trim(),

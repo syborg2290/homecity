@@ -21,6 +21,8 @@ class Apparel {
   List tailor;
   List rent;
   List gallery;
+  List ratings;
+  List reviews;
   double totalratings;
   Timestamp timestamp;
 
@@ -46,6 +48,8 @@ class Apparel {
     this.rent,
     this.gallery,
     this.totalratings,
+    this.ratings,
+    this.reviews,
     this.timestamp,
   });
 
@@ -72,6 +76,8 @@ class Apparel {
       tailor: doc['tailor'],
       gallery: doc['gallery'],
       totalratings: doc['total_ratings'],
+      ratings: doc['ratings'],
+      reviews: doc['reviews'],
       timestamp: doc['timestamp'],
     );
   }

@@ -5,6 +5,7 @@ class NightLife {
   String ownerId;
   String intialImage;
   String name;
+  String type;
   String about;
   String address;
   String district;
@@ -19,12 +20,15 @@ class NightLife {
   String specialHolidayshoursOfClosing;
   List gallery;
   double totalratings;
+  List ratings;
+  List reviews;
   Timestamp timestamp;
 
   NightLife({
     this.id,
     this.ownerId,
     this.intialImage,
+    this.type,
     this.name,
     this.about,
     this.address,
@@ -40,6 +44,8 @@ class NightLife {
     this.specialHolidayshoursOfClosing,
     this.gallery,
     this.totalratings,
+    this.ratings,
+    this.reviews,
     this.timestamp,
   });
 
@@ -47,6 +53,7 @@ class NightLife {
     return NightLife(
       id: doc['id'],
       ownerId: doc['ownerId'],
+      type: doc['type'],
       name: doc['name'],
       about: doc['about'],
       intialImage: doc['initialImage'],
@@ -63,6 +70,8 @@ class NightLife {
       specialHolidayshoursOfClosing: doc['specialHolidayshoursOfClosing'],
       gallery: doc['gallery'],
       totalratings: doc['total_ratings'],
+      ratings: doc['ratings'],
+      reviews: doc['reviews'],
       timestamp: doc['timestamp'],
     );
   }

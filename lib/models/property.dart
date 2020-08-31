@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Property {
   String id;
   String ownerId;
+  String type;
   String intialImage;
   String title;
   String details;
@@ -17,12 +18,15 @@ class Property {
   String email;
   List gallery;
   double totalratings;
+   List ratings;
+  List reviews;
   Timestamp timestamp;
 
   Property({
     this.id,
     this.ownerId,
     this.intialImage,
+    this.type,
     this.title,
     this.details,
     this.address,
@@ -36,6 +40,8 @@ class Property {
     this.email,
     this.gallery,
     this.totalratings,
+    this.ratings,
+    this.reviews,
     this.timestamp,
   });
 
@@ -43,6 +49,7 @@ class Property {
     return Property(
       id: doc['id'],
       ownerId: doc['ownerId'],
+      type: doc['type'],
       title: doc['title'],
       details: doc['details'],
       intialImage: doc['initialImage'],
@@ -57,6 +64,8 @@ class Property {
       price: doc['price'],
       gallery: doc['gallery'],
       totalratings: doc['total_ratings'],
+       ratings: doc['ratings'],
+      reviews: doc['reviews'],
       timestamp: doc['timestamp'],
     );
   }
