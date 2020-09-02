@@ -8,26 +8,26 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:nearby/models/resturant.dart';
-import 'package:nearby/screens/main/fetch&display/rest/rest_detail_view.dart';
+import 'package:nearby/models/grocery.dart';
 import 'package:nearby/services/bookmark_service.dart';
-import 'package:nearby/services/resturant_service.dart';
+import 'package:nearby/services/grocery_service.dart';
 import 'package:nearby/utils/maps/route_map.dart';
 import 'package:nearby/utils/pallete.dart';
 import 'package:nearby/utils/rate_algorithm.dart';
 
-import 'menu_item_view.dart';
+import 'groc_item_view.dart';
+import 'grocery_details.dart';
 
-class RestSearch extends StatefulWidget {
+class GrocSearch extends StatefulWidget {
   final String currentUserId;
-  RestSearch({this.currentUserId, Key key}) : super(key: key);
+  GrocSearch({this.currentUserId, Key key}) : super(key: key);
 
   @override
-  _RestSearchState createState() => _RestSearchState();
+  _GrocSearchState createState() => _GrocSearchState();
 }
 
-class _RestSearchState extends State<RestSearch> {
-  ResturantService _resturantService = ResturantService();
+class _GrocSearchState extends State<GrocSearch> {
+  GroceryService _groceryService = GroceryService();
   TextEditingController searchController = TextEditingController();
   BookmarkService _bookmarkService = BookmarkService();
   List search = [];
@@ -37,25 +37,25 @@ class _RestSearchState extends State<RestSearch> {
   @override
   void initState() {
     super.initState();
-    _resturantService.getAllResturant().then((doc) {
+    _groceryService.getAllGrocery().then((doc) {
       doc.documents.forEach((element) {
-        Resturant rest = Resturant.fromDocument(element);
+        Grocery groc = Grocery.fromDocument(element);
         var objRest = {
-          "type": "rest",
-          "rest": rest,
+          "type": "groceries",
+          "groc": groc,
           "docId": element.documentID,
-          "name": rest.restName.toLowerCase(),
+          "name": groc.grocName.toLowerCase(),
         };
         setState(() {
           search.add(objRest);
         });
 
-        rest.menu.forEach((menuI) {
+        groc.items.forEach((menuI) {
           var objItem = {
             "type": "item",
-            "index": rest.menu.indexWhere(
+            "index": groc.items.indexWhere(
                 (re) => json.decode(re)["id"] == json.decode(menuI)["id"]),
-            "rest": rest,
+            "groc": groc,
             "docId": element.documentID,
             "item": json.decode(menuI),
             "name": json.decode(menuI)["item_name"].toString().toLowerCase()
@@ -167,12 +167,12 @@ class _RestSearchState extends State<RestSearch> {
                   child: Column(
                   children: [
                     Image.asset(
-                      'assets/icons/dining.png',
+                      'assets/icons/canned-food.png',
                       width: width * 0.7,
                       color: Colors.grey,
                     ),
                     Text(
-                      "Resturants not available yet",
+                      "Groceries not available yet",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           color: Colors.grey,
@@ -191,32 +191,32 @@ class _RestSearchState extends State<RestSearch> {
                           shrinkWrap: true,
                           children:
                               List.generate(filteredSearch.length, (index) {
-                            if (filteredSearch[index]["type"] == "rest") {
-                              return ResturantsCards(
+                            if (filteredSearch[index]["type"] == "groceries") {
+                              return GroceryCards(
                                 bookmarkService: _bookmarkService,
                                 currentUserId: widget.currentUserId,
                                 singleIndex: false,
-                                rest: filteredSearch[index]["rest"],
+                                groc: filteredSearch[index]["groc"],
                                 index: index,
-                                rate: filteredSearch[index]["rest"]
+                                rate: filteredSearch[index]["groc"]
                                             .totalratings ==
                                         0.0
                                     ? 0.0
                                     : rateAlgorithm(filteredSearch[index]
-                                            ["rest"]
+                                            ["groc"]
                                         .totalratings
                                         .toInt()),
                               );
                             } else {
-                              return MenuItems(
+                              return GrocItems(
                                 bookmarkService: _bookmarkService,
                                 currentUserId: widget.currentUserId,
                                 docId: filteredSearch[index]["docId"],
-                                id: filteredSearch[index]["rest"].id,
+                                id: filteredSearch[index]["groc"].id,
                                 listIndex: index,
                                 index: filteredSearch[index]["index"],
-                                ownerId: filteredSearch[index]["rest"].ownerId,
-                                restMenu: filteredSearch[index]["item"],
+                                ownerId: filteredSearch[index]["groc"].ownerId,
+                                item: filteredSearch[index]["item"],
                                 rate: filteredSearch[index]["item"] == null
                                     ? 0.0
                                     : filteredSearch[index]["item"]
@@ -234,29 +234,29 @@ class _RestSearchState extends State<RestSearch> {
                           crossAxisCount: 2,
                           shrinkWrap: true,
                           children: List.generate(search.length, (index) {
-                            if (search[index]["type"] == "rest") {
-                              return ResturantsCards(
+                            if (search[index]["type"] == "groceries") {
+                              return GroceryCards(
                                 bookmarkService: _bookmarkService,
                                 currentUserId: widget.currentUserId,
                                 singleIndex: false,
-                                rest: search[index]["rest"],
+                                groc: search[index]["groc"],
                                 index: index,
-                                rate: search[index]["rest"].totalratings == 0.0
+                                rate: search[index]["groc"].totalratings == 0.0
                                     ? 0.0
-                                    : rateAlgorithm(search[index]["rest"]
+                                    : rateAlgorithm(search[index]["groc"]
                                         .totalratings
                                         .toInt()),
                               );
                             } else {
-                              return MenuItems(
+                              return GrocItems(
                                 bookmarkService: _bookmarkService,
                                 currentUserId: widget.currentUserId,
                                 docId: search[index]["docId"],
-                                id: search[index]["rest"].id,
+                                id: search[index]["groc"].id,
                                 listIndex: index,
                                 index: search[index]["index"],
-                                ownerId: search[index]["rest"].ownerId,
-                                restMenu: search[index]["item"],
+                                ownerId: search[index]["groc"].ownerId,
+                                item: search[index]["item"],
                                 rate: search[index]["item"] == null
                                     ? 0.0
                                     : search[index]["item"]["total_ratings"] ==
@@ -273,8 +273,8 @@ class _RestSearchState extends State<RestSearch> {
   }
 }
 
-class ResturantsCards extends StatelessWidget {
-  final Resturant rest;
+class GroceryCards extends StatelessWidget {
+  final Grocery groc;
   final String docId;
   final int index;
   final bool singleIndex;
@@ -282,9 +282,9 @@ class ResturantsCards extends StatelessWidget {
   final String currentUserId;
   final BookmarkService bookmarkService;
 
-  const ResturantsCards(
+  const GroceryCards(
       {this.rate,
-      this.rest,
+      this.groc,
       this.index,
       this.singleIndex,
       this.currentUserId,
@@ -300,8 +300,8 @@ class ResturantsCards extends StatelessWidget {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => ResturantDetailView(
-                      rest: rest,
+                builder: (context) => GroceryDetailView(
+                      groc: groc,
                       docId: docId,
                     )));
       },
@@ -314,7 +314,7 @@ class ResturantsCards extends StatelessWidget {
           child: Stack(
             children: <Widget>[
               FancyShimmerImage(
-                imageUrl: rest.initialImage,
+                imageUrl: groc.initialImage,
                 boxFit: BoxFit.cover,
                 shimmerBackColor: Color(0xffe0e0e0),
                 shimmerBaseColor: Color(0xffe0e0e0),
@@ -343,7 +343,7 @@ class ResturantsCards extends StatelessWidget {
                               fontSize: 16.0);
                         } else {
                           await bookmarkService.addToBookmark(
-                              currentUserId, "rest_main", docId, null);
+                              currentUserId, "grocery", docId, null);
                           Fluttertoast.showToast(
                               msg: "Added to the bookmark list",
                               toastLength: Toast.LENGTH_SHORT,
@@ -353,7 +353,7 @@ class ResturantsCards extends StatelessWidget {
                               fontSize: 16.0);
                         }
                       },
-                      heroTag: index.toString() + "rest&cafes",
+                      heroTag: index.toString() + "grocery",
                       backgroundColor: Pallete.mainAppColor,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -376,8 +376,8 @@ class ResturantsCards extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) => RouteMap(
-                                  latitude: rest.latitude,
-                                  longitude: rest.longitude,
+                                  latitude: groc.latitude,
+                                  longitude: groc.longitude,
                                 )));
                   },
                   child: Container(
@@ -422,7 +422,7 @@ class ResturantsCards extends StatelessWidget {
                         height: 10,
                       ),
                       Text(
-                        rest.restName,
+                        groc.grocName,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.white,
@@ -433,7 +433,7 @@ class ResturantsCards extends StatelessWidget {
                         height: 5,
                       ),
                       Text(
-                        rest.address,
+                        groc.address,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.grey,
@@ -478,8 +478,8 @@ class ResturantsCards extends StatelessWidget {
   }
 }
 
-class MenuItems extends StatelessWidget {
-  final restMenu;
+class GrocItems extends StatelessWidget {
+  final item;
   final String currentUserId;
   final String docId;
   final String id;
@@ -489,8 +489,8 @@ class MenuItems extends StatelessWidget {
   final double rate;
   final BookmarkService bookmarkService;
 
-  const MenuItems(
-      {this.restMenu,
+  const GrocItems(
+      {this.item,
       this.id,
       this.bookmarkService,
       this.index,
@@ -509,8 +509,8 @@ class MenuItems extends StatelessWidget {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => MenuItemView(
-                      menuItem: restMenu,
+                builder: (context) => GrocItemView(
+                      grocItem: item,
                       currentUserId: currentUserId,
                       docId: docId,
                       index: index,
@@ -527,7 +527,7 @@ class MenuItems extends StatelessWidget {
           child: Stack(
             children: <Widget>[
               FancyShimmerImage(
-                imageUrl: restMenu["initialImage"],
+                imageUrl: item["initialImage"],
                 boxFit: BoxFit.cover,
                 shimmerBackColor: Color(0xffe0e0e0),
                 shimmerBaseColor: Color(0xffe0e0e0),
@@ -553,7 +553,7 @@ class MenuItems extends StatelessWidget {
                             fontSize: 16.0);
                       } else {
                         await bookmarkService.addToBookmark(
-                            currentUserId, "rest_item", docId, index);
+                            currentUserId, "grocery_item", docId, index);
                         Fluttertoast.showToast(
                             msg: "Added to the bookmark list",
                             toastLength: Toast.LENGTH_SHORT,
@@ -593,7 +593,7 @@ class MenuItems extends StatelessWidget {
                         height: 10,
                       ),
                       Text(
-                        restMenu["item_name"],
+                        item["item_name"],
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.white,
@@ -604,7 +604,7 @@ class MenuItems extends StatelessWidget {
                         height: 5,
                       ),
                       Text(
-                        restMenu["price"] + " LKR",
+                        item["price"] + " LKR",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.grey,

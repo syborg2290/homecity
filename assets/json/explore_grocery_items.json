@@ -1,0 +1,44 @@
+[
+    {
+        "category_name": "All"
+    },
+    {
+        "category_name": "Beverages"
+    },
+    {
+        "category_name": "Bread/Bakery"
+    },
+    {
+        "category_name": "Canned/Jarred Goods"
+    },
+    {
+        "category_name": "Dairy"
+    },
+    {
+        "category_name": "Dry/Baking Goods"
+    },
+    {
+        "category_name": "Frozen Foods"
+    },
+    {
+        "category_name": "Meat"
+    },
+    {
+        "category_name": "Produce"
+    },
+    {
+        "category_name": "Cleaners"
+    },
+    {
+        "category_name": "Paper Goods"
+    },
+    {
+        "category_name": "Personal Care"
+    },
+    {
+        "category_name": "Healthcare"
+    },
+    {
+        "category_name": "Other"
+    }
+]

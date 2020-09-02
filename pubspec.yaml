@@ -388,6 +388,7 @@ flutter:
     #all jsons
     - assets/json/services.json
     - assets/json/explore_Foods.json
+    - assets/json/explore_grocery_items.json
     - assets/json/apparel/rent_apparel.json
     - assets/json/apparel/tailor.json
     - assets/json/services.json

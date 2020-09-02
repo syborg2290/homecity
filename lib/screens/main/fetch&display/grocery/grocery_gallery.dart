@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:nearby/models/place.dart';
-import 'package:nearby/services/place_service.dart';
+import 'package:nearby/models/grocery.dart';
+import 'package:nearby/services/grocery_service.dart';
 import 'package:nearby/utils/compress_media.dart';
 import 'package:nearby/utils/full_screen_network_file.dart';
 import 'package:nearby/utils/image_cropper.dart';
@@ -21,22 +21,22 @@ import 'package:progress_dialog/progress_dialog.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_trimmer/video_trimmer.dart';
 
-class PlaceGallery extends StatefulWidget {
+class GroceryGallery extends StatefulWidget {
   final String currentUserId;
   final String docid;
   final String id;
-  final String placeOwnerId;
-  PlaceGallery(
-      {this.currentUserId, this.docid, this.id, this.placeOwnerId, Key key})
+  final String groceryOwnerId;
+  GroceryGallery(
+      {this.currentUserId, this.docid, this.id, this.groceryOwnerId, Key key})
       : super(key: key);
 
   @override
-  _PlaceGalleryState createState() => _PlaceGalleryState();
+  _GroceryGalleryState createState() => _GroceryGalleryState();
 }
 
-class _PlaceGalleryState extends State<PlaceGallery> {
+class _GroceryGalleryState extends State<GroceryGallery> {
   VideoPlayerController _videocontroller;
-  PlaceService _placeService = PlaceService();
+  GroceryService _groceryService = GroceryService();
   ProgressDialog pr;
   String status = "okay";
 
@@ -81,10 +81,10 @@ class _PlaceGalleryState extends State<PlaceGallery> {
 
   uploadMediaReply(File upload, String type) async {
     if (type == "image") {
-      String downUrl = await _placeService
-          .uploadImagePlace(await compressImageFile(upload, 70));
-      String thumbUrl = await _placeService
-          .uploadImagePlaceThumbnail(await compressImageFile(upload, 40));
+      String downUrl = await _groceryService
+          .uploadImageGroc(await compressImageFile(upload, 70));
+      String thumbUrl = await _groceryService
+          .uploadImageGrocThumbnail(await compressImageFile(upload, 40));
       var obj = {
         "url": downUrl,
         "thumb": thumbUrl,
@@ -92,15 +92,15 @@ class _PlaceGalleryState extends State<PlaceGallery> {
         "ownerId": widget.currentUserId,
       };
 
-      await _placeService.updatePlaceGallery(
+      await _groceryService.updateGroceryGallery(
         widget.docid,
         json.encode(obj),
       );
     } else {
-      String downUrl = await _placeService
-          .uploadVideoToPlace(await compressVideoFile(upload));
-      String thumbUrl = await _placeService
-          .uploadVideoToPlaceThumb(await getThumbnailForVideo(upload));
+      String downUrl = await _groceryService
+          .uploadVideoToGroc(await compressVideoFile(upload));
+      String thumbUrl = await _groceryService
+          .uploadVideoToGrocThumb(await getThumbnailForVideo(upload));
       var obj = {
         "url": downUrl,
         "thumb": thumbUrl,
@@ -108,7 +108,7 @@ class _PlaceGalleryState extends State<PlaceGallery> {
         "ownerId": widget.currentUserId,
       };
 
-      await _placeService.updatePlaceGallery(
+      await _groceryService.updateGroceryGallery(
         widget.docid,
         json.encode(obj),
       );
@@ -398,7 +398,7 @@ class _PlaceGalleryState extends State<PlaceGallery> {
         ],
       ),
       body: StreamBuilder(
-        stream: _placeService.streamSinglePlace(widget.id),
+        stream: _groceryService.streamSingleGrocery(widget.id),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (!snapshot.hasData) {
             return Center(child: SpinKitCircle(color: Pallete.mainAppColor));
@@ -407,10 +407,10 @@ class _PlaceGalleryState extends State<PlaceGallery> {
           } else if (snapshot.data.documents.length == 0) {
             return Center(child: SpinKitCircle(color: Pallete.mainAppColor));
           } else {
-            Place placeSnap = Place.fromDocument(snapshot.data.documents[0]);
+            Grocery restSnap = Grocery.fromDocument(snapshot.data.documents[0]);
             List gallery = [];
-            if (placeSnap.gallery != null) {
-              gallery = placeSnap.gallery;
+            if (restSnap.gallery != null) {
+              gallery = restSnap.gallery;
             }
 
             return gallery.isEmpty
@@ -502,15 +502,15 @@ class _PlaceGalleryState extends State<PlaceGallery> {
                                               ],
                                             ),
                                           ))),
-                            widget.currentUserId == widget.placeOwnerId ||
+                            widget.currentUserId == widget.groceryOwnerId ||
                                     widget.currentUserId ==
                                         json.decode(gallery[index])["ownerId"]
                                 ? Align(
                                     alignment: Alignment.topRight,
                                     child: GestureDetector(
                                       onTap: () async {
-                                        await _placeService
-                                            .deletePlaceGalleryMedia(
+                                        await _groceryService
+                                            .deleteGroceryGalleryMedia(
                                                 index, widget.docid);
                                         Fluttertoast.showToast(
                                             msg: "Gallery item removed",

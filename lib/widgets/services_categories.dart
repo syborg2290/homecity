@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:nearby/screens/main/fetch&display/grocery/grocery_main.dart';
 import 'package:nearby/screens/main/fetch&display/places/place_main.dart';
 import 'package:nearby/screens/main/fetch&display/rest/resturants_main.dart';
 import 'package:nearby/utils/pallete.dart';
@@ -9,7 +10,9 @@ import 'package:nearby/utils/pallete.dart';
 class MainCategory extends StatefulWidget {
   final int restCount;
   final int placeCount;
-  MainCategory({this.restCount, this.placeCount, Key key}) : super(key: key);
+  final int groceryCount;
+  MainCategory({this.restCount, this.placeCount, this.groceryCount, Key key})
+      : super(key: key);
 
   @override
   _MainCategoryState createState() => _MainCategoryState();
@@ -55,6 +58,14 @@ class _MainCategoryState extends State<MainCategory> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => PlaceMainView()));
+                          }
+
+                          if (myData[index]['service'] ==
+                              "Groceries & markets") {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => GrocerysMain()));
                           }
                         },
                         child: Padding(
@@ -128,6 +139,26 @@ class _MainCategoryState extends State<MainCategory> {
                                             padding: const EdgeInsets.all(4.0),
                                             child: Text(
                                               widget.placeCount.toString(),
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                          ))
+                                      : SizedBox.shrink(),
+                                  myData[index]['service'] ==
+                                          "Groceries & markets"
+                                      ? Container(
+                                          decoration: BoxDecoration(
+                                            color: Pallete.mainAppColor,
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(4.0),
+                                            child: Text(
+                                              widget.groceryCount.toString(),
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                 color: Colors.white,

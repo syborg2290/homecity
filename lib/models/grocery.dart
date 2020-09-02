@@ -52,7 +52,7 @@ class Grocery {
       id: doc['id'],
       ownerId: doc['ownerId'],
       grocName: doc['grocName'],
-      about: doc['about'],
+      about: doc['aboutRest'],
       initialImage: doc['initialImage'],
       district: doc['district'],
       address: doc['address'],

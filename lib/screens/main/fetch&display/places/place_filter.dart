@@ -6,6 +6,7 @@ import 'package:nearby/models/user.dart';
 import 'package:nearby/screens/main/fetch&display/places/place_filter_result.dart';
 import 'package:nearby/services/auth_services.dart';
 import 'package:nearby/services/place_service.dart';
+import 'package:nearby/utils/flush_bars.dart';
 import 'package:nearby/utils/pallete.dart';
 
 class PlaceFilterPage extends StatefulWidget {
@@ -184,6 +185,9 @@ class _PlaceFilterPageState extends State<PlaceFilterPage> {
                                       currentUserId: currentUserId,
                                       list: filteredPlace,
                                     )));
+                      } else {
+                        GradientSnackBar.showMessage(context,
+                            "Not available any results on this filter");
                       }
                     },
               child: Center(

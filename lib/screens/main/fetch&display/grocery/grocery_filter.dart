@@ -3,29 +3,29 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nearby/models/resturant.dart';
+import 'package:nearby/models/grocery.dart';
 import 'package:nearby/models/user.dart';
 import 'package:nearby/services/auth_services.dart';
-import 'package:nearby/services/resturant_service.dart';
+import 'package:nearby/services/grocery_service.dart';
 import 'package:nearby/utils/flush_bars.dart';
 import 'package:nearby/utils/pallete.dart';
 
-import 'display_filltered_rest.dart';
-import 'display_filtered_items.dart';
+import 'filtered_groc.dart';
+import 'grocery_items_filter.dart';
 
-class RestFilter extends StatefulWidget {
-  RestFilter({Key key}) : super(key: key);
+class GroceryFilter extends StatefulWidget {
+  GroceryFilter({Key key}) : super(key: key);
 
   @override
-  _RestFilterState createState() => _RestFilterState();
+  _GroceryFilterState createState() => _GroceryFilterState();
 }
 
-class _RestFilterState extends State<RestFilter> {
+class _GroceryFilterState extends State<GroceryFilter> {
   AuthServcies _auth = AuthServcies();
-  ResturantService _resturantService = ResturantService();
+  GroceryService _grocService = GroceryService();
   TextEditingController _firstRange = TextEditingController();
   TextEditingController _secondRange = TextEditingController();
-  String current = "Resturants";
+  String current = "Groceries";
   List<String> _districtsList = [
     "Ampara",
     "Anuradhapura",
@@ -55,20 +55,25 @@ class _RestFilterState extends State<RestFilter> {
   ];
 
   List<String> itemTypes = [
-    "Hot dishes",
-    "Fast foods",
-    "Meats",
-    "Seafoods",
-    "Vegetarian",
-    "Drinks",
-    "Desserts",
-    "Other",
+    "Beverages",
+    "Bread/Bakery",
+    "Canned/Jarred Goods",
+    "Dairy",
+    "Dry/Baking Goods",
+    "Frozen Foods",
+    "Meat",
+    "Produce",
+    "Cleaners",
+    "Paper Goods",
+    "Personal Care",
+    "Healthcare",
+    "Other"
   ];
 
   List selectedDistrict = [];
   List selectedItemsTypes = [];
   List selectedServices = [];
-  List<Resturant> allRest = [];
+  List<Grocery> allGroc = [];
   List allMenuItems = [];
   String currentUserId;
   bool isLoading = true;
@@ -88,33 +93,34 @@ class _RestFilterState extends State<RestFilter> {
         });
       });
     });
-    getAllResturants();
+    getAllGroc();
   }
 
-  getAllResturants() async {
-    QuerySnapshot qSnap = await _resturantService.getAllResturant();
+  getAllGroc() async {
+    QuerySnapshot qSnap = await _grocService.getAllGrocery();
     qSnap.documents.forEach((docRest) {
-      Resturant rest = Resturant.fromDocument(docRest);
+      Grocery groc = Grocery.fromDocument(docRest);
 
-      List menuItemsList = rest.menu;
+      List menuItemsList = groc.items;
 
       menuItemsList.forEach((element) {
         var objRated = json.decode(element);
+
         var itemObj = {
           "id": objRated["id"],
-          "restId": rest.id,
-          "district": rest.district,
-          "restOwnerId": rest.ownerId,
+          "grocId": groc.id,
+          "district": groc.district,
+          "grocOwnerId": groc.ownerId,
           "docId": docRest.documentID,
           "index": menuItemsList.indexWhere(
               (element) => json.decode(element)["id"] == objRated["id"]),
           "initialImage": objRated["initialImage"],
           "item_type": objRated["item_type"],
           "item_name": objRated["item_name"],
+          "status": objRated["status"],
           "price": objRated["price"],
-          "portion_count": objRated["portion_count"],
           "about": objRated["about"],
-          "foodTake": objRated["foodTake"],
+          "brand": objRated["brand"],
           "gallery": objRated["gallery"],
           "total_ratings": objRated["total_ratings"],
           "ratings": objRated["ratings"],
@@ -125,7 +131,7 @@ class _RestFilterState extends State<RestFilter> {
         });
       });
       setState(() {
-        allRest.add(rest);
+        allGroc.add(groc);
         isLoading = false;
       });
     });
@@ -227,10 +233,10 @@ class _RestFilterState extends State<RestFilter> {
               onPressed: isLoading
                   ? null
                   : () async {
-                      if (current == "Resturants") {
-                        List<Resturant> filteredRest = [];
+                      if (current == "Groceries") {
+                        List<Grocery> filteredRest = [];
                         selectedDistrict.forEach((dis) {
-                          allRest
+                          allGroc
                               .where((fetchRest) => fetchRest.district == dis)
                               .toList()
                               .forEach((fRERest) {
@@ -243,26 +249,11 @@ class _RestFilterState extends State<RestFilter> {
                           });
                         });
 
-                        selectedServices.forEach((ser) {
-                          allRest
-                              .where((fetchRest) =>
-                                  fetchRest.serviceType.contains(ser) ||
-                                  fetchRest.serviceType.contains("Any"))
-                              .toList()
-                              .forEach((fRERest) {
-                            if (filteredRest.firstWhere(
-                                    (testRest) => testRest.id == fRERest.id,
-                                    orElse: () => null) ==
-                                null) {
-                              filteredRest.add(fRERest);
-                            }
-                          });
-                        });
                         if (filteredRest.isNotEmpty) {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => FilteredRest(
+                                  builder: (context) => FilteredGroc(
                                         currentUserId: currentUserId,
                                         list: filteredRest,
                                       )));
@@ -379,34 +370,34 @@ class _RestFilterState extends State<RestFilter> {
                 GestureDetector(
                   onTap: () {
                     setState(() {
-                      current = "Resturants";
+                      current = "Groceries";
                     });
                   },
                   child: Chip(
                       backgroundColor:
-                          current == "Resturants" ? Pallete.mainAppColor : null,
+                          current == "Groceries" ? Pallete.mainAppColor : null,
                       label: Text(
-                        "Resturants",
+                        "Groceries",
                         style: TextStyle(
                           fontSize: 23,
-                          color: current == "Resturants" ? Colors.white : null,
+                          color: current == "Groceries" ? Colors.white : null,
                         ),
                       )),
                 ),
                 GestureDetector(
                   onTap: () {
                     setState(() {
-                      current = "Food items";
+                      current = "Items";
                     });
                   },
                   child: Chip(
                       backgroundColor:
-                          current == "Food items" ? Pallete.mainAppColor : null,
+                          current == "Items" ? Pallete.mainAppColor : null,
                       label: Text(
-                        "Food items",
+                        "Items",
                         style: TextStyle(
                           fontSize: 23,
-                          color: current == "Food items" ? Colors.white : null,
+                          color: current == "Items" ? Colors.white : null,
                         ),
                       )),
                 )
@@ -471,22 +462,24 @@ class _RestFilterState extends State<RestFilter> {
             SizedBox(
               height: 20,
             ),
-            Align(
-              alignment: Alignment.center,
-              child: Text(
-                current == "Resturants" ? "Services" : "Food item types",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: Colors.grey[900],
-                    fontFamily: "Roboto",
-                    fontSize: 25,
-                    fontWeight: FontWeight.w800),
-              ),
-            ),
+            current == "Items"
+                ? Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      "Item types",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.grey[900],
+                          fontFamily: "Roboto",
+                          fontSize: 25,
+                          fontWeight: FontWeight.w800),
+                    ),
+                  )
+                : SizedBox.shrink(),
             SizedBox(
               height: 10,
             ),
-            current == "Food items"
+            current == "Items"
                 ? GridView.builder(
                     physics: NeverScrollableScrollPhysics(),
                     itemCount: itemTypes.length,
@@ -525,304 +518,13 @@ class _RestFilterState extends State<RestFilter> {
                                 ),
                               )));
                     })
-                : SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        SizedBox(
-                          width: 10,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            if (selectedServices.contains("Dine-in")) {
-                              setState(() {
-                                selectedServices.remove("Dine-in");
-                              });
-                            } else {
-                              setState(() {
-                                selectedServices.add("Dine-in");
-                              });
-                            }
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: selectedServices.contains("Dine-in")
-                                    ? Pallete.mainAppColor
-                                    : null,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(30)),
-                                border: Border.all(
-                                  color: selectedServices.contains("Dine-in")
-                                      ? Colors.white
-                                      : Colors.black,
-                                )),
-                            child: Padding(
-                              padding: const EdgeInsets.all(6.0),
-                              child: Image.asset(
-                                'assets/icons/dining.png',
-                                width: 30,
-                                height: 30,
-                                color: selectedServices.contains("Dine-in")
-                                    ? Colors.white
-                                    : Colors.black,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            if (selectedServices.contains("Take-away")) {
-                              setState(() {
-                                selectedServices.remove("Take-away");
-                              });
-                            } else {
-                              setState(() {
-                                selectedServices.add("Take-away");
-                              });
-                            }
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: selectedServices.contains("Take-away")
-                                    ? Pallete.mainAppColor
-                                    : null,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(30)),
-                                border: Border.all(
-                                  color: selectedServices.contains("Take-away")
-                                      ? Colors.white
-                                      : Colors.black,
-                                )),
-                            child: Padding(
-                              padding: const EdgeInsets.all(6.0),
-                              child: Image.asset(
-                                'assets/icons/takeaway.png',
-                                width: 30,
-                                height: 30,
-                                color: selectedServices.contains("Take-away")
-                                    ? Colors.white
-                                    : Colors.black,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            if (selectedServices.contains("delivery")) {
-                              setState(() {
-                                selectedServices.remove("delivery");
-                              });
-                            } else {
-                              setState(() {
-                                selectedServices.add("delivery");
-                              });
-                            }
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: selectedServices.contains("delivery")
-                                    ? Pallete.mainAppColor
-                                    : null,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(30)),
-                                border: Border.all(
-                                  color: selectedServices.contains("delivery")
-                                      ? Colors.white
-                                      : Colors.black,
-                                )),
-                            child: Padding(
-                              padding: const EdgeInsets.all(6.0),
-                              child: Image.asset(
-                                'assets/icons/delivery.png',
-                                width: 30,
-                                height: 30,
-                                color: selectedServices.contains("delivery")
-                                    ? Colors.white
-                                    : Colors.black,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            if (selectedServices.contains("Wifi")) {
-                              setState(() {
-                                selectedServices.remove("Wifi");
-                              });
-                            } else {
-                              setState(() {
-                                selectedServices.add("Wifi");
-                              });
-                            }
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: selectedServices.contains("Wifi")
-                                    ? Pallete.mainAppColor
-                                    : null,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(30)),
-                                border: Border.all(
-                                  color: selectedServices.contains("Wifi")
-                                      ? Colors.white
-                                      : Colors.black,
-                                )),
-                            child: Padding(
-                              padding: const EdgeInsets.all(6.0),
-                              child: Image.asset(
-                                'assets/icons/wifi.png',
-                                width: 30,
-                                height: 30,
-                                color: selectedServices.contains("Wifi")
-                                    ? Colors.white
-                                    : Colors.black,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            if (selectedServices.contains("Parking")) {
-                              setState(() {
-                                selectedServices.remove("Parking");
-                              });
-                            } else {
-                              setState(() {
-                                selectedServices.add("Parking");
-                              });
-                            }
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: selectedServices.contains("Parking")
-                                    ? Pallete.mainAppColor
-                                    : null,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(30)),
-                                border: Border.all(
-                                  color: selectedServices.contains("Parking")
-                                      ? Colors.white
-                                      : Colors.black,
-                                )),
-                            child: Padding(
-                              padding: const EdgeInsets.all(6.0),
-                              child: Image.asset(
-                                'assets/icons/car_park.png',
-                                width: 30,
-                                height: 30,
-                                color: selectedServices.contains("Parking")
-                                    ? Colors.white
-                                    : Colors.black,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            if (selectedServices.contains("Drinks")) {
-                              setState(() {
-                                selectedServices.remove("Drinks");
-                              });
-                            } else {
-                              setState(() {
-                                selectedServices.add("Drinks");
-                              });
-                            }
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: selectedServices.contains("Drinks")
-                                    ? Pallete.mainAppColor
-                                    : null,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(30)),
-                                border: Border.all(
-                                  color: selectedServices.contains("Drinks")
-                                      ? Colors.white
-                                      : Colors.black,
-                                )),
-                            child: Padding(
-                              padding: const EdgeInsets.all(6.0),
-                              child: Image.asset(
-                                'assets/icons/wine.png',
-                                width: 30,
-                                height: 30,
-                                color: selectedServices.contains("Drinks")
-                                    ? Colors.white
-                                    : Colors.black,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            if (selectedServices.contains("Celebrations")) {
-                              setState(() {
-                                selectedServices.remove("Celebrations");
-                              });
-                            } else {
-                              setState(() {
-                                selectedServices.add("Celebrations");
-                              });
-                            }
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: selectedServices.contains("Celebrations")
-                                    ? Pallete.mainAppColor
-                                    : null,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(30)),
-                                border: Border.all(
-                                  color:
-                                      selectedServices.contains("Celebrations")
-                                          ? Colors.white
-                                          : Colors.black,
-                                )),
-                            child: Padding(
-                              padding: const EdgeInsets.all(6.0),
-                              child: Image.asset(
-                                'assets/icons/birthday.png',
-                                width: 30,
-                                height: 30,
-                                color: selectedServices.contains("Celebrations")
-                                    ? Colors.white
-                                    : Colors.black,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                      ],
-                    ),
-                  ),
-            current == "Food items"
+                : SizedBox.shrink(),
+            current == "Items"
                 ? SizedBox(
                     height: 20,
                   )
                 : SizedBox.shrink(),
-            current == "Food items"
+            current == "Items"
                 ? Align(
                     alignment: Alignment.center,
                     child: Text(
@@ -836,12 +538,12 @@ class _RestFilterState extends State<RestFilter> {
                     ),
                   )
                 : SizedBox.shrink(),
-            current == "Food items"
+            current == "Items"
                 ? SizedBox(
                     height: 10,
                   )
                 : SizedBox.shrink(),
-            current == "Food items"
+            current == "Items"
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
