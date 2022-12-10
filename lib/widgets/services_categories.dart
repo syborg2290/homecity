@@ -2,10 +2,17 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:nearby/screens/main/fetch&display/grocery/grocery_main.dart';
+import 'package:nearby/screens/main/fetch&display/places/place_main.dart';
+import 'package:nearby/screens/main/fetch&display/rest/resturants_main.dart';
 import 'package:nearby/utils/pallete.dart';
 
 class MainCategory extends StatefulWidget {
-  MainCategory({Key key}) : super(key: key);
+  final int restCount;
+  final int placeCount;
+  final int groceryCount;
+  MainCategory({this.restCount, this.placeCount, this.groceryCount, Key key})
+      : super(key: key);
 
   @override
   _MainCategoryState createState() => _MainCategoryState();
@@ -16,12 +23,11 @@ class _MainCategoryState extends State<MainCategory> {
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
-    var orientation = MediaQuery.of(context).orientation;
 
     return Padding(
         padding: EdgeInsets.only(top: 0),
         child: Container(
-          height: height * 0.17,
+          height: height * 0.2,
           color: Colors.white,
           child: FutureBuilder(
               future: DefaultAssetBundle.of(context)
@@ -39,69 +45,28 @@ class _MainCategoryState extends State<MainCategory> {
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         onTap: () {
-                          // if (myData[index]['category_name'] == "Garages") {
-                          //   Navigator.push(
-                          //       context,
-                          //       MaterialPageRoute(
-                          //           builder: (context) => Garages(
-                          //             currentUser: widget.currentUser,
-                          //           )));
-                          // }
-                          // if (myData[index]['category_name'] == "Parkings") {
-                          //   Navigator.push(
-                          //       context,
-                          //       MaterialPageRoute(
-                          //           builder: (context) => Parking()));
-                          // }
-                          // if (myData[index]['category_name'] ==
-                          //     "Service centers") {
-                          //   Navigator.push(
-                          //       context,
-                          //       MaterialPageRoute(
-                          //           builder: (context) => ServiceCenters()));
-                          // }
-                          // if (myData[index]['category_name'] ==
-                          //     "Spare parts/accessories") {
-                          //   Navigator.push(
-                          //       context,
-                          //       MaterialPageRoute(
-                          //           builder: (context) => SpareParts()));
-                          // }
-                          // if (myData[index]['category_name'] ==
-                          //     "Emergency vehicles") {
-                          //   Navigator.push(
-                          //       context,
-                          //       MaterialPageRoute(
-                          //           builder: (context) => EmergencyTruck()));
-                          // }
-                          // if (myData[index]['category_name'] ==
-                          //     "Vehicle Modifications") {
-                          //   Navigator.push(
-                          //       context,
-                          //       MaterialPageRoute(
-                          //           builder: (context) => VehicleModify()));
-                          // }
-                          // if (myData[index]['category_name'] ==
-                          //     "Tire services & shops") {
-                          //   Navigator.push(
-                          //       context,
-                          //       MaterialPageRoute(
-                          //           builder: (context) => TireService()));
-                          // }
-                          // if (myData[index]['category_name'] ==
-                          //     "Hiring vehicles") {
-                          //   Navigator.push(
-                          //       context,
-                          //       MaterialPageRoute(
-                          //           builder: (context) => HireVehicles()));
-                          // }
-                          // if (myData[index]['category_name'] ==
-                          //     "Renting vehicles") {
-                          //   Navigator.push(
-                          //       context,
-                          //       MaterialPageRoute(
-                          //           builder: (context) => RentVehicles()));
-                          // }
+                          if (myData[index]['service'] ==
+                              "Resturants & cafes") {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ResturantsMain()));
+                          }
+
+                          if (myData[index]['service'] == "Places") {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => PlaceMainView()));
+                          }
+
+                          if (myData[index]['service'] ==
+                              "Groceries & markets") {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => GrocerysMain()));
+                          }
                         },
                         child: Padding(
                           padding: EdgeInsets.only(
@@ -110,45 +75,105 @@ class _MainCategoryState extends State<MainCategory> {
                           ),
                           child: Container(
                             width: width * 0.28,
-                            height: height * 0.17,
+                            height: height * 0.2,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0),
+                                border: Border.all(
+                                  color: Colors.black.withOpacity(0.6),
+                                  width: 1,
+                                )),
                             child: Card(
                               clipBehavior: Clip.antiAliasWithSaveLayer,
-                              child: Container(
-                                width: width * 0.28,
-                                height: height * 0.17,
-                                child: Column(
-                                  children: <Widget>[
-                                    Column(
-                                      children: <Widget>[
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text(
-                                            myData[index]['service'],
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: Pallete.mainAppColor,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                        Image.asset(
-                                          myData[index]['image_path'],
-                                          width: 50,
-                                          height: 50,
-                                          color: Pallete.mainAppColor,
-                                          fit: BoxFit.contain,
-                                        ),
-                                      ],
+                              child: Column(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      myData[index]['service'],
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Colors.black.withOpacity(0.6),
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                  Image.asset(
+                                    myData[index]['image_path'],
+                                    width: 50,
+                                    height: 50,
+                                    color: Colors.black.withOpacity(0.6),
+                                    fit: BoxFit.contain,
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  myData[index]['service'] ==
+                                          "Resturants & cafes"
+                                      ? Container(
+                                          decoration: BoxDecoration(
+                                            color: Pallete.mainAppColor,
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(4.0),
+                                            child: Text(
+                                              widget.restCount.toString(),
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                          ))
+                                      : SizedBox.shrink(),
+                                  myData[index]['service'] == "Places"
+                                      ? Container(
+                                          decoration: BoxDecoration(
+                                            color: Pallete.mainAppColor,
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(4.0),
+                                            child: Text(
+                                              widget.placeCount.toString(),
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                          ))
+                                      : SizedBox.shrink(),
+                                  myData[index]['service'] ==
+                                          "Groceries & markets"
+                                      ? Container(
+                                          decoration: BoxDecoration(
+                                            color: Pallete.mainAppColor,
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(4.0),
+                                            child: Text(
+                                              widget.groceryCount.toString(),
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                          ))
+                                      : SizedBox.shrink(),
+                                ],
                               ),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
-                              elevation: 5,
-                              margin: EdgeInsets.all(5),
+                              elevation: 2,
+                              margin: EdgeInsets.all(0),
                             ),
                           ),
                         ),

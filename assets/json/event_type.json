@@ -1,0 +1,58 @@
+[
+    {
+        "category_name": "Music",
+        "image_path": "assets/icons/music.png"
+    },
+    {
+        "category_name": "Cleanup",
+        "image_path": "assets/icons/cleanup.png"
+    },
+    {
+        "category_name": "Meetup",
+        "image_path": "assets/icons/meetup.png"
+    },
+    {
+        "category_name": "Sports",
+        "image_path": "assets/icons/sports.png"
+    },
+    {
+        "category_name": "Seminars",
+        "image_path": "assets/icons/seminar.png"
+    },
+    {
+        "category_name": "Conferences",
+        "image_path": "assets/icons/conference.png"
+    },
+    {
+        "category_name": "Trade Shows and expos",
+        "image_path": "assets/icons/tradeshow.png"
+    },
+    {
+        "category_name": "Workshops",
+        "image_path": "assets/icons/workshop.png"
+    },
+    {
+        "category_name": "Reunions",
+        "image_path": "assets/icons/meetup.png"
+    },
+    {
+        "category_name": "Parties",
+        "image_path": "assets/icons/parties.png"
+    },
+    {
+        "category_name": "Product Launch",
+        "image_path": "assets/icons/launch.png"
+    },
+    {
+        "category_name": "Awards and competitions",
+        "image_path": "assets/icons/award.png"
+    },
+    {
+        "category_name": "Charity",
+        "image_path": "assets/icons/help.png"
+    },
+    {
+        "category_name": "Other",
+        "image_path": "assets/icons/other.png"
+    }
+]

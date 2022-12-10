@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:panorama/panorama.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:video_player/video_player.dart';
 
@@ -96,93 +97,98 @@ class _FullScreenMediaFileState extends State<FullScreenMediaFile> {
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.black,
       body: Center(
-        child: AspectRatio(
-          aspectRatio: 11 / 16,
-          child: widget.type == "image"
-              ? PhotoView(
-                  imageProvider: FileImage(widget.file),
-                )
-              : GestureDetector(
-                  onTap: () {
-                    if (_controller.value.isPlaying) {
-                      setState(() {
-                        _controller.pause();
-                      });
-                    } else {
-                      setState(() {
-                        _controller.play();
-                      });
-                    }
-                  },
-                  child: SizedBox(
-                      height: double.infinity,
-                      width: double.infinity,
-                      child: Stack(
-                        children: <Widget>[
-                          VideoPlayer(_controller),
-                          _controller.value.isPlaying
-                              ? SizedBox.shrink()
-                              : Center(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        _controller.play();
-                                      });
-                                    },
-                                    child: Container(
-                                      width: width * 0.16,
-                                      height: height * 0.08,
-                                      decoration: BoxDecoration(
-                                          color: Colors.black.withOpacity(0.6),
-                                          border: Border.all(
-                                            color: Colors.black,
+        child: widget.type == "pano"
+            ? Panorama(
+                child: Image.file(widget.file),
+              )
+            : AspectRatio(
+                aspectRatio: 11 / 16,
+                child: widget.type == "image"
+                    ? PhotoView(
+                        imageProvider: FileImage(widget.file),
+                      )
+                    : GestureDetector(
+                        onTap: () {
+                          if (_controller.value.isPlaying) {
+                            setState(() {
+                              _controller.pause();
+                            });
+                          } else {
+                            setState(() {
+                              _controller.play();
+                            });
+                          }
+                        },
+                        child: SizedBox(
+                            height: double.infinity,
+                            width: double.infinity,
+                            child: Stack(
+                              children: <Widget>[
+                                VideoPlayer(_controller),
+                                _controller.value.isPlaying
+                                    ? SizedBox.shrink()
+                                    : Center(
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              _controller.play();
+                                            });
+                                          },
+                                          child: Container(
+                                            width: width * 0.16,
+                                            height: height * 0.08,
+                                            decoration: BoxDecoration(
+                                                color: Colors.black
+                                                    .withOpacity(0.6),
+                                                border: Border.all(
+                                                  color: Colors.black,
+                                                ),
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(
+                                                        height * 0.09))),
+                                            child: Center(
+                                              child: Image.asset(
+                                                'assets/icons/play.png',
+                                                width: width * 0.12,
+                                                height: height * 0.1,
+                                                color: Colors.white,
+                                              ),
+                                            ),
                                           ),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(height * 0.09))),
-                                      child: Center(
-                                        child: Image.asset(
-                                          'assets/icons/play.png',
-                                          width: width * 0.12,
-                                          height: height * 0.1,
+                                        ),
+                                      ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    top: height * 0.6,
+                                    left: 10,
+                                  ),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      color: Colors.black,
+                                      border: Border.all(
+                                        width: 3,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        _printDuration(Duration(
+                                          seconds: position,
+                                        )),
+                                        style: TextStyle(
+                                          fontSize: 15,
                                           color: Colors.white,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                     ),
                                   ),
                                 ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                              top: height * 0.6,
-                              left: 10,
-                            ),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                color: Colors.black,
-                                border: Border.all(
-                                  width: 3,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  _printDuration(Duration(
-                                    seconds: position,
-                                  )),
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
+                              ],
+                            )),
                       )),
-                ),
-        ),
       ),
     );
   }

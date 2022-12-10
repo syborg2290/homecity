@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:nearby/screens/main/sub/place/add_place.dart';
 import 'package:nearby/utils/pallete.dart';
 
 class PlaceType extends StatefulWidget {
@@ -68,7 +69,14 @@ class _PlaceTypeState extends State<PlaceType> {
                   shrinkWrap: true,
                   children: List.generate(myData.length, (index) {
                     return GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AddPlace(
+                                      type: myData[index]['category_name'],
+                                    )));
+                      },
                       child: Padding(
                         padding: EdgeInsets.only(
                           left: 5,
@@ -92,7 +100,8 @@ class _PlaceTypeState extends State<PlaceType> {
                                           myData[index]['category_name'],
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
-                                            color: Pallete.mainAppColor,
+                                            color:
+                                                Colors.black.withOpacity(0.6),
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -103,7 +112,7 @@ class _PlaceTypeState extends State<PlaceType> {
                                           myData[index]['image_path'],
                                           width: 80,
                                           height: 80,
-                                          color: Pallete.mainAppColor,
+                                          color: Colors.black.withOpacity(0.6),
                                           fit: BoxFit.contain,
                                         ),
                                       ),

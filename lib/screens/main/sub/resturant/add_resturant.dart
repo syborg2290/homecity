@@ -5,6 +5,7 @@ import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:nearby/screens/main/sub/gallery.dart';
 import 'package:nearby/screens/main/sub/resturant/add_menu.dart';
 import 'package:nearby/services/auth_services.dart';
 import 'package:nearby/services/resturant_service.dart';
@@ -18,6 +19,7 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:nearby/utils/image_cropper.dart';
 import 'package:intl/intl.dart' as dd;
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:uuid/uuid.dart';
 
 class AddResturant extends StatefulWidget {
   final String type;
@@ -42,20 +44,11 @@ class _AddResturantState extends State<AddResturant> {
   TextEditingController closeController = TextEditingController();
   TextEditingController _specialHolidaysAndHoursController =
       TextEditingController();
+
   double latitude;
   double longitude;
   List foodTakeTypes = ["Any"];
-  List<int> closingDays = [];
-  List<String> selectedClosingDays = [];
-  List<String> daysOfAWeek = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday"
-  ];
+
   final format = dd.DateFormat("HH:mm");
   DateTime open;
   DateTime close;
@@ -65,6 +58,35 @@ class _AddResturantState extends State<AddResturant> {
   ResturantService _resturantService = ResturantService();
   ProgressDialog pr;
   String currentUserId;
+  String selectedDistrict = "Colombo";
+  var _districtsList = [
+    "Ampara",
+    "Anuradhapura",
+    "Badulla",
+    "Batticaloa",
+    "Colombo",
+    "Galle",
+    "Gampaha",
+    "Hambantota",
+    "Jaffna",
+    "Kalutara",
+    "Kandy",
+    "Kegalle",
+    "Kilinochchi",
+    "Kurunegala",
+    "Mannar",
+    "Matale",
+    "Matara",
+    "Moneragala",
+    "Mullaitivu",
+    "Nuwara Eliya",
+    "Polonnaruwa",
+    "Puttalam",
+    "Ratnapura",
+    "Trincomalee",
+    "Vavuniya"
+  ];
+  List gallery = [];
 
   @override
   void initState() {
@@ -94,7 +116,10 @@ class _AddResturantState extends State<AddResturant> {
             child: Column(
               children: <Widget>[
                 SpinKitPouringHourglass(color: Pallete.mainAppColor),
-                Text("Creating resturant...",
+                SizedBox(
+                  height: 10,
+                ),
+                Text("Creating resturant & cafe...",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Color.fromRGBO(129, 165, 168, 1),
@@ -232,84 +257,198 @@ class _AddResturantState extends State<AddResturant> {
   done() async {
     if (intialImage != null) {
       if (_restName.text.trim() != "") {
-        if (_address.text.trim() != "") {
-          if (latitude != null) {
-            if (_telephone1.text != "") {
-              if (foodTakeTypes.isNotEmpty) {
-                if (openController.text != "" && closeController.text != "") {
-                  pr.show();
-                  List menuUpload = [];
-                  if (menu.isNotEmpty) {
-                    for (var item in menu) {
-                      String downUrl = await _resturantService.uploadImageRest(
-                          await compressImageFile(item["initialImage"], 80));
-                      var obj = {
-                        "initialImage": downUrl,
-                        "item_type": item["item_type"],
-                        "item_name": item["item_name"],
-                        "price": item["price"],
-                        "portion_count": item["portion_count"],
-                        "about": item["about"],
-                        "foodTake": item["foodTake"],
-                        "foodTimes": item["foodTimes"],
-                      };
-                      menuUpload.add(json.encode(obj));
+        if (selectedDistrict != null) {
+          if (_address.text.trim() != "") {
+            if (latitude != null) {
+              if (_telephone1.text != "" || _telephone2.text != "") {
+                if (foodTakeTypes.isNotEmpty) {
+                  if (openController.text != "" && closeController.text != "") {
+                    pr.show();
+                    List uploadGallery = [];
+                    if (gallery.isNotEmpty) {
+                      for (var ele in gallery) {
+                        if (ele["type"] == "image") {
+                          String downUrl =
+                              await _resturantService.uploadImageRest(
+                                  await compressImageFile(ele["media"], 80));
+                          String thumbUrl =
+                              await _resturantService.uploadImageRestThumbnail(
+                                  await compressImageFile(ele["media"], 40));
+                          var obj = {
+                            "url": downUrl,
+                            "thumb": thumbUrl,
+                            "type": "image",
+                            "ownerId": currentUserId,
+                          };
+                          uploadGallery.add(json.encode(obj));
+                        } else {
+                          String downUrl =
+                              await _resturantService.uploadVideoToRest(
+                                  await compressVideoFile(ele["media"]));
+                          String thumbUrl =
+                              await _resturantService.uploadVideoToRestThumb(
+                                  await getThumbnailForVideo(ele["media"]));
+                          var obj = {
+                            "url": downUrl,
+                            "thumb": thumbUrl,
+                            "type": "video",
+                            "ownerId": currentUserId,
+                          };
+                          uploadGallery.add(json.encode(obj));
+                        }
+                      }
                     }
+                    List menuUpload = [];
+                    if (menu.isNotEmpty) {
+                      for (var item in menu) {
+                        String downUrl = await _resturantService
+                            .uploadImageRest(await compressImageFile(
+                                item["initialImage"], 80));
+
+                        List uploadGalleryItems = [];
+                        if (item["gallery"].isNotEmpty) {
+                          for (var ele in item["gallery"]) {
+                            if (ele["type"] == "image") {
+                              String downUrl = await _resturantService
+                                  .uploadImageRest(await compressImageFile(
+                                      ele["media"], 80));
+                              String thumbUrl = await _resturantService
+                                  .uploadImageRestThumbnail(
+                                      await compressImageFile(
+                                          ele["media"], 40));
+                              var obj = {
+                                "url": downUrl,
+                                "thumb": thumbUrl,
+                                "type": "image",
+                                "ownerId": currentUserId,
+                              };
+                              uploadGalleryItems.add(json.encode(obj));
+                            } else {
+                              String downUrl =
+                                  await _resturantService.uploadVideoToRest(
+                                      await compressVideoFile(ele["media"]));
+                              String thumbUrl = await _resturantService
+                                  .uploadVideoToRestThumb(
+                                      await getThumbnailForVideo(ele["media"]));
+                              var obj = {
+                                "url": downUrl,
+                                "thumb": thumbUrl,
+                                "type": "video",
+                                "ownerId": currentUserId,
+                              };
+                              uploadGalleryItems.add(json.encode(obj));
+                            }
+                          }
+                        }
+                        var uuid = Uuid();
+                        String id = uuid.v1().toString() +
+                            new DateTime.now().toString();
+                        var obj = {
+                          "id": id,
+                          "initialImage": downUrl,
+                          "item_type": item["item_type"],
+                          "item_name": item["item_name"],
+                          "status": "available",
+                          "price": item["price"],
+                          "portion_count": item["portion_count"],
+                          "about": item["about"],
+                          "foodTake": item["foodTake"],
+                          "foodTimes": item["foodTimes"],
+                          "gallery": uploadGalleryItems,
+                          "total_ratings": 0.0,
+                        };
+                        menuUpload.add(json.encode(obj));
+                      }
+                    }
+
+                    String initialImageUpload =
+                        await _resturantService.uploadImageRest(
+                            await compressImageFile(intialImage, 80));
+
+                    String restId = await _resturantService.addResturant(
+                      currentUserId,
+                      _restName.text.trim(),
+                      _aboutTheRest.text.trim(),
+                      initialImageUpload,
+                      _address.text.trim(),
+                      latitude,
+                      longitude,
+                      _email.text.trim(),
+                      _website.text.trim(),
+                      close,
+                      open,
+                      _telephone1.text.trim(),
+                      _telephone2.text.trim(),
+                      foodTakeTypes,
+                      _specialHolidaysAndHoursController.text.trim(),
+                      menuUpload,
+                      selectedDistrict,
+                      uploadGallery,
+                      _rangeOfDelivery.text.trim(),
+                    );
+                    await _services.addService(_restName.text.trim(), restId,
+                        latitude, longitude, widget.type, widget.type);
+
+                    pr.hide().whenComplete(() {
+                      Navigator.pop(context);
+                    });
+                  } else {
+                    GradientSnackBar.showMessage(
+                        context, "Open and close time is required");
                   }
-
-                  String initialImageUpload =
-                      await _resturantService.uploadImageRest(
-                          await compressImageFile(intialImage, 80));
-
-                  String restId = await _resturantService.addResturant(
-                    currentUserId,
-                    _restName.text.trim(),
-                    _aboutTheRest.text.trim(),
-                    initialImageUpload,
-                    _address.text.trim(),
-                    latitude,
-                    longitude,
-                    _email.text.trim(),
-                    _website.text.trim(),
-                    closingDays,
-                    close,
-                    open,
-                    _telephone1.text.trim(),
-                    _telephone2.text.trim(),
-                    foodTakeTypes,
-                    _specialHolidaysAndHoursController.text.trim(),
-                    menuUpload,
-                  );
-                  await _services.addService(
-                      _restName.text.trim(), restId, widget.type, widget.type);
-                  pr.hide().whenComplete(() {
-                    Navigator.pop(context);
-                  });
                 } else {
                   GradientSnackBar.showMessage(
-                      context, "Open and close time is required");
+                      context, "Resturant features is required");
                 }
               } else {
                 GradientSnackBar.showMessage(
-                    context, "Resturant type of service is required");
+                    context, "Only one telephone number is required");
               }
             } else {
-              GradientSnackBar.showMessage(
-                  context, "Resturant telephone number is required");
+              GradientSnackBar.showMessage(context, "Please pin the location");
             }
           } else {
-            GradientSnackBar.showMessage(context, "Please pin the location");
+            GradientSnackBar.showMessage(
+                context, "Resturant or cafe address is required");
           }
         } else {
-          GradientSnackBar.showMessage(
-              context, "Resturant address is required");
+          GradientSnackBar.showMessage(context, "Please select a district");
         }
       } else {
-        GradientSnackBar.showMessage(context, "Resturant name is required");
+        GradientSnackBar.showMessage(
+            context, "Resturant or cafe name is required");
       }
     } else {
       GradientSnackBar.showMessage(context, "Initial image is required");
     }
+  }
+
+  Widget textBoxContainer(TextEditingController _contro, String hint, int lines,
+      double width, bool autoFocus, TextInputType typeText) {
+    return Container(
+      width: width * 0.89,
+      child: TextField(
+        controller: _contro,
+        maxLines: lines,
+        autofocus: autoFocus,
+        keyboardType: typeText,
+        decoration: InputDecoration(
+          labelText: hint,
+          labelStyle: TextStyle(fontSize: 18, color: Colors.grey.shade500),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(
+              color: Colors.grey.shade500,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(
+                color: Pallete.mainAppColor,
+              )),
+        ),
+      ),
+    );
   }
 
   @override
@@ -344,11 +483,11 @@ class _AddResturantState extends State<AddResturant> {
         ),
         centerTitle: false,
         title: Text(
-          'Add new resturant',
+          'Add new resturant & cafe',
           style: TextStyle(
               color: Colors.grey[700],
               fontFamily: "Roboto",
-              fontSize: 20,
+              fontSize: 18,
               fontWeight: FontWeight.w400),
         ),
         actions: <Widget>[
@@ -384,6 +523,7 @@ class _AddResturantState extends State<AddResturant> {
                         'assets/resturant_back.png',
                         height: height * 0.3,
                         width: width,
+                        fit: BoxFit.cover,
                       ),
                       Container(
                         color: Colors.black.withOpacity(0.5),
@@ -396,7 +536,7 @@ class _AddResturantState extends State<AddResturant> {
                           children: <Widget>[
                             Center(
                                 child: Text(
-                              "* Add initial image for your resturant",
+                              "* Add initial image for your resturant or cafe",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.white,
@@ -415,6 +555,7 @@ class _AddResturantState extends State<AddResturant> {
                                         builder: (context) => GalleryPick(
                                               isOnlyImage: true,
                                               isSingle: true,
+                                              isPano: false,
                                             )));
                                 if (obj != null) {
                                   if (obj["type"] == "gallery") {
@@ -469,6 +610,7 @@ class _AddResturantState extends State<AddResturant> {
                                       builder: (context) => GalleryPick(
                                             isOnlyImage: true,
                                             isSingle: true,
+                                            isPano: false,
                                           )));
                               if (obj != null) {
                                 if (obj["type"] == "gallery") {
@@ -534,80 +676,68 @@ class _AddResturantState extends State<AddResturant> {
             SizedBox(
               height: 20,
             ),
-            Container(
-              width: width * 0.89,
-              child: TextField(
-                controller: _restName,
-                decoration: InputDecoration(
-                  labelText: "* Name of the resturant",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
-                ),
-              ),
+            textBoxContainer(_restName, "* Name of the resturant or cafe", 1,
+                width, false, TextInputType.text),
+            SizedBox(
+              height: 20,
             ),
+            textBoxContainer(_aboutTheRest, "About the resturant or cafe", 3,
+                width, false, TextInputType.text),
             SizedBox(
               height: 20,
             ),
             Container(
               width: width * 0.89,
-              child: TextField(
-                controller: _aboutTheRest,
-                maxLines: 3,
-                decoration: InputDecoration(
-                  labelText: "About the resturant",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
+              decoration:
+                  BoxDecoration(borderRadius: BorderRadius.circular(10)),
+              child: FormField<String>(
+                builder: (FormFieldState<String> state) {
+                  return InputDecorator(
+                    decoration: InputDecoration(
+                      labelText: "District",
+                      hintText: 'District',
+                      labelStyle:
+                          TextStyle(fontSize: 18, color: Colors.grey.shade500),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(3),
+                        borderSide: BorderSide(
+                          color: Colors.grey.shade500,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(3),
+                          borderSide: BorderSide(
+                            color: Pallete.mainAppColor,
+                          )),
                     ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
-                ),
+                    isEmpty: selectedDistrict == '',
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        value: selectedDistrict,
+                        isDense: true,
+                        onChanged: (String newValue) {
+                          setState(() {
+                            selectedDistrict = newValue;
+                            state.didChange(newValue);
+                          });
+                        },
+                        items: _districtsList.map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
-            Divider(),
             SizedBox(
               height: 20,
             ),
-            Container(
-              width: width * 0.89,
-              child: TextField(
-                controller: _address,
-                decoration: InputDecoration(
-                  labelText: "* Address of the resturant",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
-                ),
-              ),
-            ),
+            textBoxContainer(_address, "* Address of the resturant or cafe", 1,
+                width, false, TextInputType.text),
             SizedBox(
               height: 20,
             ),
@@ -655,87 +785,21 @@ class _AddResturantState extends State<AddResturant> {
                 ),
               ),
             ),
-            Divider(),
             SizedBox(
               height: 20,
             ),
-            Container(
-              width: width * 0.89,
-              child: TextField(
-                controller: _telephone1,
-                autofocus: false,
-                keyboardType: TextInputType.phone,
-                decoration: InputDecoration(
-                  labelText: "* Telephone 1",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
-                ),
-              ),
-            ),
+            textBoxContainer(_telephone1, "* Telephone 1", 1, width, false,
+                TextInputType.phone),
             SizedBox(
               height: 20,
             ),
-            Container(
-              width: width * 0.89,
-              child: TextField(
-                autofocus: false,
-                controller: _telephone2,
-                keyboardType: TextInputType.phone,
-                decoration: InputDecoration(
-                  labelText: "Telephone 2",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
-                ),
-              ),
-            ),
+            textBoxContainer(_telephone2, "Telephone 2", 1, width, false,
+                TextInputType.phone),
             SizedBox(
               height: 20,
             ),
-            Container(
-              width: width * 0.89,
-              child: TextField(
-                controller: _email,
-                keyboardType: TextInputType.text,
-                decoration: InputDecoration(
-                  labelText: "Email address",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
-                ),
-              ),
-            ),
+            textBoxContainer(
+                _email, "Email address", 1, width, false, TextInputType.text),
             SizedBox(
               height: 20,
             ),
@@ -770,14 +834,13 @@ class _AddResturantState extends State<AddResturant> {
                 ),
               ),
             ),
-            Divider(),
             SizedBox(
               height: 10,
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                "* Type of services your resturant able to provide",
+                "* Features that your resturant or cafe able to provide",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.black.withOpacity(0.5),
@@ -868,6 +931,94 @@ class _AddResturantState extends State<AddResturant> {
                     child: foodTake("Delivery", 'assets/icons/delivery.png',
                         foodTakeTypes.contains("Delivery")),
                   ),
+                  GestureDetector(
+                    onTap: () {
+                      if (foodTakeTypes.contains("Any")) {
+                        setState(() {
+                          foodTakeTypes.clear();
+                          foodTakeTypes.add("Wifi");
+                        });
+                      } else {
+                        if (foodTakeTypes.contains("Wifi")) {
+                          setState(() {
+                            foodTakeTypes.remove("Wifi");
+                          });
+                        } else {
+                          setState(() {
+                            foodTakeTypes.add("Wifi");
+                          });
+                        }
+                      }
+                    },
+                    child: foodTake("Wifi", 'assets/icons/wifi.png',
+                        foodTakeTypes.contains("Wifi")),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      if (foodTakeTypes.contains("Any")) {
+                        setState(() {
+                          foodTakeTypes.clear();
+                          foodTakeTypes.add("Parking");
+                        });
+                      } else {
+                        if (foodTakeTypes.contains("Parking")) {
+                          setState(() {
+                            foodTakeTypes.remove("Parking");
+                          });
+                        } else {
+                          setState(() {
+                            foodTakeTypes.add("Parking");
+                          });
+                        }
+                      }
+                    },
+                    child: foodTake("Parking", 'assets/icons/car_park.png',
+                        foodTakeTypes.contains("Parking")),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      if (foodTakeTypes.contains("Any")) {
+                        setState(() {
+                          foodTakeTypes.clear();
+                          foodTakeTypes.add("Drinks");
+                        });
+                      } else {
+                        if (foodTakeTypes.contains("Drinks")) {
+                          setState(() {
+                            foodTakeTypes.remove("Drinks");
+                          });
+                        } else {
+                          setState(() {
+                            foodTakeTypes.add("Drinks");
+                          });
+                        }
+                      }
+                    },
+                    child: foodTake("Drinks", 'assets/icons/wine.png',
+                        foodTakeTypes.contains("Drinks")),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      if (foodTakeTypes.contains("Any")) {
+                        setState(() {
+                          foodTakeTypes.clear();
+                          foodTakeTypes.add("Celebrations");
+                        });
+                      } else {
+                        if (foodTakeTypes.contains("Celebrations")) {
+                          setState(() {
+                            foodTakeTypes.remove("Celebrations");
+                          });
+                        } else {
+                          setState(() {
+                            foodTakeTypes.add("Celebrations");
+                          });
+                        }
+                      }
+                    },
+                    child: foodTake("Celebrations", 'assets/icons/birthday.png',
+                        foodTakeTypes.contains("Celebrations")),
+                  ),
                 ],
               ),
             ),
@@ -909,162 +1060,15 @@ class _AddResturantState extends State<AddResturant> {
             SizedBox(
               height: 20,
             ),
-            Divider(),
-            Text(
-              "* Mention days of closing your resturant",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.black.withOpacity(0.5),
-                fontSize: 19,
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            SizedBox(
-                height: height * 0.1,
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    left: 10,
-                    right: 10,
-                  ),
-                  child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: daysOfAWeek.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            if (daysOfAWeek[index] == "Monday") {
-                              if (selectedClosingDays.contains("Monday")) {
-                                setState(() {
-                                  closingDays.remove(1);
-                                  selectedClosingDays.remove("Monday");
-                                });
-                              } else {
-                                setState(() {
-                                  closingDays.add(1);
-                                  selectedClosingDays.add("Monday");
-                                });
-                              }
-                            }
-                            if (daysOfAWeek[index] == "Tuesday") {
-                              if (selectedClosingDays.contains("Tuesday")) {
-                                setState(() {
-                                  closingDays.remove(2);
-                                  selectedClosingDays.remove("Tuesday");
-                                });
-                              } else {
-                                setState(() {
-                                  closingDays.add(2);
-                                  selectedClosingDays.add("Tuesday");
-                                });
-                              }
-                            }
-                            if (daysOfAWeek[index] == "Wednesday") {
-                              if (selectedClosingDays.contains("Wednesday")) {
-                                setState(() {
-                                  closingDays.remove(3);
-                                  selectedClosingDays.remove("Wednesday");
-                                });
-                              } else {
-                                setState(() {
-                                  closingDays.add(3);
-                                  selectedClosingDays.add("Wednesday");
-                                });
-                              }
-                            }
-                            if (daysOfAWeek[index] == "Thursday") {
-                              if (selectedClosingDays.contains("Thursday")) {
-                                setState(() {
-                                  closingDays.remove(4);
-                                  selectedClosingDays.remove("Thursday");
-                                });
-                              } else {
-                                setState(() {
-                                  closingDays.add(4);
-                                  selectedClosingDays.add("Thursday");
-                                });
-                              }
-                            }
-                            if (daysOfAWeek[index] == "Friday") {
-                              if (selectedClosingDays.contains("Friday")) {
-                                setState(() {
-                                  closingDays.remove(5);
-                                  selectedClosingDays.remove("Friday");
-                                });
-                              } else {
-                                setState(() {
-                                  closingDays.add(5);
-                                  selectedClosingDays.add("Friday");
-                                });
-                              }
-                            }
-                            if (daysOfAWeek[index] == "Saturday") {
-                              if (selectedClosingDays.contains("Saturday")) {
-                                setState(() {
-                                  closingDays.remove(6);
-                                  selectedClosingDays.remove("Saturday");
-                                });
-                              } else {
-                                setState(() {
-                                  closingDays.add(6);
-                                  selectedClosingDays.add("Saturday");
-                                });
-                              }
-                            }
-                            if (daysOfAWeek[index] == "Sunday") {
-                              if (selectedClosingDays.contains("Sunday")) {
-                                setState(() {
-                                  closingDays.remove(7);
-                                  selectedClosingDays.remove("Sunday");
-                                });
-                              } else {
-                                setState(() {
-                                  closingDays.add(7);
-                                  selectedClosingDays.add("Sunday");
-                                });
-                              }
-                            }
-                          },
-                          child: Container(
-                            width: width * 0.3,
-                            height: height * 0.1,
-                            child: Card(
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              color: selectedClosingDays
-                                      .contains(daysOfAWeek[index])
-                                  ? Colors.red
-                                  : Colors.white,
-                              child: Center(
-                                child: Text(daysOfAWeek[index],
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: selectedClosingDays
-                                              .contains(daysOfAWeek[index])
-                                          ? Colors.white
-                                          : Colors.black,
-                                      fontSize: 17,
-                                    )),
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              elevation: 5,
-                              margin: EdgeInsets.all(10),
-                            ),
-                          ),
-                        );
-                      }),
-                )),
-            SizedBox(
-              height: 20,
-            ),
-            Text(
-              "* Open and close time of the resturant",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.black.withOpacity(0.5),
-                fontSize: 19,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "* Open and close time of the resturant or cafe",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.black.withOpacity(0.5),
+                  fontSize: 19,
+                ),
               ),
             ),
             SizedBox(
@@ -1080,34 +1084,16 @@ class _AddResturantState extends State<AddResturant> {
             SizedBox(
               height: 20,
             ),
-            Container(
-              width: width * 0.89,
-              child: TextField(
-                controller: _specialHolidaysAndHoursController,
-                maxLines: 3,
-                keyboardType: TextInputType.text,
-                decoration: InputDecoration(
-                  labelText: "Special holidays and hours of closing",
-                  labelStyle:
-                      TextStyle(fontSize: 18, color: Colors.grey.shade500),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: Pallete.mainAppColor,
-                      )),
-                ),
-              ),
-            ),
+            textBoxContainer(
+                _specialHolidaysAndHoursController,
+                "Special holidays and hours of closing",
+                3,
+                width,
+                false,
+                TextInputType.text),
             SizedBox(
               height: 20,
             ),
-            Divider(),
             GestureDetector(
               onTap: () async {
                 List menuCard = await Navigator.push(
@@ -1132,10 +1118,11 @@ class _AddResturantState extends State<AddResturant> {
                   height: height * 0.09,
                   child: Center(
                       child: Padding(
-                    padding: EdgeInsets.only(
-                      left: width * 0.2,
+                    padding: EdgeInsets.all(
+                      0,
                     ),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Image.asset(
                           'assets/icons/foodmenu.png',
@@ -1145,9 +1132,57 @@ class _AddResturantState extends State<AddResturant> {
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text("Add menu card",
+                          child: Text("Add menu items",
                               style: TextStyle(
-                                  fontSize: 18, color: Colors.grey.shade500)),
+                                  fontSize: 18, color: Colors.grey.shade800)),
+                        ),
+                      ],
+                    ),
+                  ))),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            GestureDetector(
+              onTap: () async {
+                List reGallery = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => Gallery(
+                              gallery: gallery,
+                            )));
+                if (reGallery != null) {
+                  setState(() {
+                    gallery = reGallery;
+                  });
+                }
+              },
+              child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: Colors.grey.shade500,
+                      )),
+                  width: width * 0.89,
+                  height: height * 0.09,
+                  child: Center(
+                      child: Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.3,
+                    ),
+                    child: Row(
+                      children: <Widget>[
+                        Image.asset(
+                          'assets/icons/album.png',
+                          width: 30,
+                          height: 30,
+                          color: Colors.grey.shade800,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text("Gallery",
+                              style: TextStyle(
+                                  fontSize: 18, color: Colors.grey.shade800)),
                         ),
                       ],
                     ),

@@ -1,0 +1,54 @@
+[
+    {
+        "category_name": "Wedding dresses",
+        "image_path": "assets/icons/sew.png"
+    },
+    {
+        "category_name": "Kids wear",
+        "image_path": "assets/icons/sew.png"
+    },
+    {
+        "category_name": "Suit & blazer",
+        "image_path": "assets/icons/sew.png"
+    },
+    {
+        "category_name": "Uniforms",
+        "image_path": "assets/icons/sew.png"
+    },
+    {
+        "category_name": "Shirts & polo",
+        "image_path": "assets/icons/sew.png"
+    },
+    {
+        "category_name": "Tuxedo suits (men/women)",
+        "image_path": "assets/icons/sew.png"
+    },
+    {
+        "category_name": "Sequenced and beaded apparel",
+        "image_path": "assets/icons/sew.png"
+    },
+    {
+        "category_name": "Vintage restorations",
+        "image_path": "assets/icons/sew.png"
+    },
+    {
+        "category_name": "Corsetry and boning",
+        "image_path": "assets/icons/sew.png"
+    },
+    {
+        "category_name": "Gown and/or suit re-cut/reconstructions",
+        "image_path": "assets/icons/sew.png"
+    },
+    {
+        "category_name": "Repairing zippers",
+        "image_path": "assets/icons/sew.png"
+    },
+    {
+        "category_name": "Hemming trousers",
+        "image_path": "assets/icons/sew.png"
+    },
+    {
+        "category_name": "Other",
+        "image_path": "assets/icons/other.png"
+    }
+]

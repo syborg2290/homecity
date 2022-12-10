@@ -1,0 +1,38 @@
+[
+    {
+        "category_name": "Bedroom",
+        "image_path": "assets/icons/furniture.png"
+    },
+    {
+        "category_name": "Bathroom",
+        "image_path": "assets/icons/furniture.png"
+    },
+    {
+        "category_name": "Cleaning",
+        "image_path": "assets/icons/furniture.png"
+    },
+    {
+        "category_name": "Dining room",
+        "image_path": "assets/icons/furniture.png"
+    },
+    {
+        "category_name": "Home appliances",
+        "image_path": "assets/icons/furniture.png"
+    },
+    {
+        "category_name": "Kitchen",
+        "image_path": "assets/icons/furniture.png"
+    },
+    {
+        "category_name": "Living room",
+        "image_path": "assets/icons/furniture.png"
+    },
+    {
+        "category_name": "Garden",
+        "image_path": "assets/icons/furniture.png"
+    },
+    {
+        "category_name": "Other",
+        "image_path": "assets/icons/other.png"
+    }
+]

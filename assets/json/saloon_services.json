@@ -1,0 +1,70 @@
+[
+    {
+        "category_name": "Mens only",
+        "image_path": "assets/icons/salon.png"
+    },
+    {
+        "category_name": "Womens only",
+        "image_path": "assets/icons/salon.png"
+    },
+    {
+        "category_name": "Mens & Womens",
+        "image_path": "assets/icons/salon.png"
+    },
+    {
+        "category_name": "Mens,Womens & Kids",
+        "image_path": "assets/icons/salon.png"
+    },
+    {
+        "category_name": "Hair, colouring & styling",
+        "image_path": "assets/icons/salon.png"
+    },
+    {
+        "category_name": "Beard cutting & trimmer",
+        "image_path": "assets/icons/salon.png"
+    },
+    {
+        "category_name": "Waxing & other forms of hair removal",
+        "image_path": "assets/icons/salon.png"
+    },
+    {
+        "category_name": "Nail treatments",
+        "image_path": "assets/icons/salon.png"
+    },
+    {
+        "category_name": "Facials & skin care treatments",
+        "image_path": "assets/icons/salon.png"
+    },
+    {
+        "category_name": "Tanning",
+        "image_path": "assets/icons/salon.png"
+    },
+    {
+        "category_name": "Massages",
+        "image_path": "assets/icons/salon.png"
+    },
+    {
+        "category_name": "Laser treatments",
+        "image_path": "assets/icons/salon.png"
+    },
+    {
+        "category_name": "Eyebrows designing",
+        "image_path": "assets/icons/salon.png"
+    },
+    {
+        "category_name": "Tattoo & piercing",
+        "image_path": "assets/icons/salon.png"
+    },
+    {
+        "category_name": "Med spa",
+        "image_path": "assets/icons/salon.png"
+    },
+    {
+        "category_name": "Complementary care such as aromatherapy",
+        "image_path": "assets/icons/salon.png"
+    },
+    {
+        "category_name": "Other",
+        "image_path": "assets/icons/other.png"
+    }
+]

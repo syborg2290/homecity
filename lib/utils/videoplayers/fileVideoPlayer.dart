@@ -64,7 +64,7 @@ class _FileVideoplayerState extends State<FileVideoplayer> {
           ? Stack(
               children: <Widget>[
                 ClipRRect(
-                    borderRadius: BorderRadius.circular(0),
+                    borderRadius: BorderRadius.circular(10),
                     child: VideoPlayer(_controller)),
                 _controller.value.isPlaying
                     ? SizedBox.shrink()
@@ -83,15 +83,20 @@ class _FileVideoplayerState extends State<FileVideoplayer> {
                         child: Center(
                           child: GestureDetector(
                             onTap: () {
-                              setState(() {
-                                _controller.play();
-                              });
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => FullScreenMediaFile(
+                                          file: widget.video,
+                                          type: "video",
+                                        )),
+                              );
                             },
                             child: Container(
-                              width: width * 0.16,
-                              height: height * 0.08,
+                              width: width * 0.1,
+                              height: height * 0.05,
                               decoration: BoxDecoration(
-                                  color: Colors.black.withOpacity(0.6),
+                                  color: Colors.black.withOpacity(0.9),
                                   border: Border.all(
                                     color: Colors.black,
                                   ),

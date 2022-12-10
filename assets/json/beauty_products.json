@@ -1,0 +1,38 @@
+[
+    {
+        "category_name": "Makeup products & items",
+        "image_path": "assets/icons/makeup.png"
+    },
+    {
+        "category_name": "Hair products & items",
+        "image_path": "assets/icons/makeup.png"
+    },
+    {
+        "category_name": "Face products & items",
+        "image_path": "assets/icons/makeup.png"
+    },
+    {
+        "category_name": "Body & Skin care products & items",
+        "image_path": "assets/icons/makeup.png"
+    },
+    {
+        "category_name": "Fragrances products",
+        "image_path": "assets/icons/makeup.png"
+    },
+    {
+        "category_name": "Personal Care products",
+        "image_path": "assets/icons/makeup.png"
+    },
+    {
+        "category_name": "Saloon  devices & items",
+        "image_path": "assets/icons/makeup.png"
+    },
+    {
+        "category_name": "Tattoo / piercing items",
+        "image_path": "assets/icons/makeup.png"
+    },
+    {
+        "category_name": "Other",
+        "image_path": "assets/icons/other.png"
+    }
+]

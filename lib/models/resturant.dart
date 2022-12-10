@@ -8,17 +8,22 @@ class Resturant {
   String initialImage;
   double latitude;
   double longitude;
+  String district;
   String address;
   String email;
   String website;
   String telephone1;
   String telephone2;
   List serviceType;
-  List closingDays;
   Timestamp closingTime;
   Timestamp openingTime;
   String specialHolidayshoursOfClosing;
   List menu;
+  List gallery;
+  List ratings;
+  double totalratings;
+  List reviews;
+  String deliveryrRange;
   Timestamp timestamp;
 
   Resturant({
@@ -27,6 +32,7 @@ class Resturant {
     this.restName,
     this.aboutRest,
     this.initialImage,
+    this.district,
     this.address,
     this.latitude,
     this.longitude,
@@ -34,12 +40,16 @@ class Resturant {
     this.telephone2,
     this.email,
     this.website,
-    this.closingDays,
     this.closingTime,
     this.openingTime,
     this.serviceType,
     this.specialHolidayshoursOfClosing,
     this.menu,
+    this.gallery,
+    this.ratings,
+    this.totalratings,
+    this.reviews,
+    this.deliveryrRange,
     this.timestamp,
   });
 
@@ -50,12 +60,12 @@ class Resturant {
       restName: doc['restName'],
       aboutRest: doc['aboutRest'],
       initialImage: doc['initialImage'],
+      district: doc['district'],
       address: doc['address'],
       latitude: doc['latitude'],
       longitude: doc['longitude'],
       email: doc['email'],
       website: doc['website'],
-      closingDays: doc['closingDays'],
       closingTime: doc['closingTime'],
       openingTime: doc['openingTime'],
       telephone1: doc['telephone1'],
@@ -63,6 +73,11 @@ class Resturant {
       serviceType: doc['serviceType'],
       specialHolidayshoursOfClosing: doc['specialHolidayshoursOfClosing'],
       menu: doc['menu'],
+      gallery: doc['gallery'],
+      ratings: doc['ratings'],
+      totalratings: doc['total_ratings'],
+      reviews: doc['reviews'],
+      deliveryrRange: doc['delivery_range'],
       timestamp: doc['timestamp'],
     );
   }

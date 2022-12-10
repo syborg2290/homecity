@@ -1,0 +1,22 @@
+[
+    {
+        "category_name": "Pre-school",
+        "image_path": "assets/icons/pre_school.png"
+    },
+    {
+        "category_name": "Private school",
+        "image_path": "assets/icons/school2.png"
+    },
+    {
+        "category_name": "Tution",
+        "image_path": "assets/icons/tution_classes.png"
+    },
+    {
+        "category_name": "Higher education",
+        "image_path": "assets/icons/higher.png"
+    },
+    {
+        "category_name": "Vocational education",
+        "image_path": "assets/icons/vocational.png"
+    }
+]

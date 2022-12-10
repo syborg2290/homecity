@@ -1,50 +1,50 @@
 [
     {
-        "category_name": "Beaches",
+        "category_name": "Beach",
         "image_path": "assets/icons/beach.png"
     },
     {
-        "category_name": "National Parks",
+        "category_name": "National Park",
         "image_path": "assets/icons/national-park.png"
     },
     {
-        "category_name": "Mountains",
+        "category_name": "Mountain",
         "image_path": "assets/icons/mountain.png"
     },
     {
-        "category_name": "Forests",
+        "category_name": "Forest",
         "image_path": "assets/icons/forest.png"
     },
     {
-        "category_name": "Waterfalls",
+        "category_name": "Waterfall",
         "image_path": "assets/icons/river.png"
     },
     {
-        "category_name": "Lakes",
+        "category_name": "Lake",
         "image_path": "assets/icons/trees.png"
     },
     {
-        "category_name": "Historical Places",
+        "category_name": "Historical Place",
         "image_path": "assets/icons/historical.png"
     },
     {
-        "category_name": "Ancient Temples",
+        "category_name": "Ancient Temple",
         "image_path": "assets/icons/temple.png"
     },
     {
-        "category_name": "Museums",
+        "category_name": "Museum",
         "image_path": "assets/icons/museum.png"
     },
     {
-        "category_name": "Theme Parks",
+        "category_name": "Theme Park",
         "image_path": "assets/icons/theme-park.png"
     },
     {
-        "category_name": "Zoos and Aquaria",
+        "category_name": "Zoo and Aquaria",
         "image_path": "assets/icons/zoo.png"
     },
     {
-        "category_name": "Botanical Gardens",
+        "category_name": "Botanical Garden",
         "image_path": "assets/icons/botnical_gardens.png"
     },
     {
@@ -66,5 +66,9 @@
     {
         "category_name": "Agri",
         "image_path": "assets/icons/agri.png"
+    },
+    {
+        "category_name": "Other",
+        "image_path": "assets/icons/other.png"
     }
 ]

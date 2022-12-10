@@ -1,0 +1,62 @@
+[
+    {
+        "category_name": "Any",
+        "image_path": "assets/icons/repair.png"
+    },
+    {
+        "category_name": "Engine Repairs",
+        "image_path": "assets/icons/engine_repair.png"
+    },
+    {
+        "category_name": "Engine Tune-up/Performance",
+        "image_path": "assets/icons/engine_tune.png"
+    },
+    {
+        "category_name": "Front End, Suspension & Steering Systems",
+        "image_path": "assets/icons/suspension.png"
+    },
+    {
+        "category_name": "Brakes & Braking Systems",
+        "image_path": "assets/icons/breaking.png"
+    },
+    {
+        "category_name": "Interior",
+        "image_path": "assets/icons/interio_modify.png"
+    },
+    {
+        "category_name": "Exterior",
+        "image_path": "assets/icons/exterio_modify.png"
+    },
+    {
+        "category_name": "Electronic",
+        "image_path": "assets/icons/lights_modify.png"
+    },
+    {
+        "category_name": "Audio & Video",
+        "image_path": "assets/icons/car_audio_modify.png"
+    },
+    {
+        "category_name": "Safety & Security",
+        "image_path": "assets/icons/safety_modify.png"
+    },
+    {
+        "category_name": "Aircondtion",
+        "image_path": "assets/icons/air-conditioning.png"
+    },
+    {
+        "category_name": "Paint & Tinker",
+        "image_path": "assets/icons/paint_modify.png"
+    },
+    {
+        "category_name": "Stickers",
+        "image_path": "assets/icons/car_stickers.png"
+    },
+    {
+        "category_name": "OffRoad",
+        "image_path": "assets/icons/offroad_modify.png"
+    },
+    {
+        "category_name": "Other",
+        "image_path": "assets/icons/other.png"
+    }
+]

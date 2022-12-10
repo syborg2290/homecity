@@ -1,0 +1,118 @@
+[
+    {
+        "category_name": "Blouse",
+        "image_path": "assets/icons/blouse.png"
+    },
+    {
+        "category_name": "Dresses",
+        "image_path": "assets/icons/dress.png"
+    },
+    {
+        "category_name": "Long Tops",
+        "image_path": "assets/icons/tops.png"
+    },
+    {
+        "category_name": "Denim",
+        "image_path": "assets/icons/female_denim.png"
+    },
+    {
+        "category_name": "Joggers",
+        "image_path": "assets/icons/joggers.png"
+    },
+    {
+        "category_name": "Pant",
+        "image_path": "assets/icons/girls_pant.png"
+    },
+    {
+        "category_name": "T-Shirt",
+        "image_path": "assets/icons/female_shirt.png"
+    },
+    {
+        "category_name": "Saree",
+        "image_path": "assets/icons/saree1.png"
+    },
+    {
+        "category_name": "Frock",
+        "image_path": "assets/icons/frock.png"
+    },
+    {
+        "category_name": "Skirt",
+        "image_path": "assets/icons/skirt.png"
+    },
+    {
+        "category_name": "Kurti",
+        "image_path": "assets/icons/kurti.png"
+    },
+    {
+        "category_name": "Ladies Over Coat",
+        "image_path": "assets/icons/over_coat.png"
+    },
+    {
+        "category_name": "Sleepwear",
+        "image_path": "assets/icons/sleepwear.png"
+    },
+    {
+        "category_name": "Bra",
+        "image_path": "assets/icons/bra.png"
+    },
+    {
+        "category_name": "Panties",
+        "image_path": "assets/icons/panties.png"
+    },
+    {
+        "category_name": "Shoes",
+        "image_path": "assets/icons/female_shoe.png"
+    },
+    {
+        "category_name": "Slippers",
+        "image_path": "assets/icons/female_slipper.png"
+    },
+    {
+        "category_name": "Belt",
+        "image_path": "assets/icons/belt.png"
+    },
+    {
+        "category_name": "Bags & luggages",
+        "image_path": "assets/icons/bag.png"
+    },
+    {
+        "category_name": "Sunglasses",
+        "image_path": "assets/icons/sunglasses.png"
+    },
+    {
+        "category_name": "Watches",
+        "image_path": "assets/icons/watch.png"
+    },
+    {
+        "category_name": "Wallet",
+        "image_path": "assets/icons/ladies_wallet.png"
+    },
+    {
+        "category_name": "Hats & Caps",
+        "image_path": "assets/icons/ladies_hat.png"
+    },
+    {
+        "category_name": "Shawl",
+        "image_path": "assets/icons/shawl.png"
+    },
+    {
+        "category_name": "Hair Accessories",
+        "image_path": "assets/icons/hair_Acc.png"
+    },
+    {
+        "category_name": "Jewellery",
+        "image_path": "assets/icons/jewellery.png"
+    },
+    {
+        "category_name": "Socks",
+        "image_path": "assets/icons/socks.png"
+    },
+    {
+        "category_name": "Sports wear",
+        "image_path": "assets/icons/sports_wear.png"
+    },
+    {
+        "category_name": "Other",
+        "image_path": "assets/icons/other.png"
+    }
+]

@@ -1,0 +1,86 @@
+[
+    {
+        "category_name": "A/L-Arts",
+        "image_path": "assets/icons/tution_sub.png"
+    },
+    {
+        "category_name": "A/L-Commerce",
+        "image_path": "assets/icons/tution_sub.png"
+    },
+    {
+        "category_name": "A/L-Science",
+        "image_path": "assets/icons/tution_sub.png"
+    },
+    {
+        "category_name": "A/L-Technology",
+        "image_path": "assets/icons/tution_sub.png"
+    },
+    {
+        "category_name": "A/L-Technology",
+        "image_path": "assets/icons/tution_sub.png"
+    },
+    {
+        "category_name": "Grade 1 to 5",
+        "image_path": "assets/icons/tution_sub.png"
+    },
+    {
+        "category_name": "Grade 6 to 9",
+        "image_path": "assets/icons/tution_sub.png"
+    },
+    {
+        "category_name": "O/L",
+        "image_path": "assets/icons/tution_sub.png"
+    },
+    {
+        "category_name": "Spoken english",
+        "image_path": "assets/icons/tution_sub.png"
+    },
+    {
+        "category_name": "Languages",
+        "image_path": "assets/icons/tution_sub.png"
+    },
+    {
+        "category_name": "ICT",
+        "image_path": "assets/icons/tution_sub.png"
+    },
+    {
+        "category_name": "Logic",
+        "image_path": "assets/icons/tution_sub.png"
+    },
+    {
+        "category_name": "Communication & media",
+        "image_path": "assets/icons/tution_sub.png"
+    },
+    {
+        "category_name": "Electronics",
+        "image_path": "assets/icons/tution_sub.png"
+    },
+    {
+        "category_name": "Music",
+        "image_path": "assets/icons/tution_sub.png"
+    },
+    {
+        "category_name": "Dance",
+        "image_path": "assets/icons/tution_sub.png"
+    },
+    {
+        "category_name": "Drama",
+        "image_path": "assets/icons/tution_sub.png"
+    },
+    {
+        "category_name": "Art & design",
+        "image_path": "assets/icons/tution_sub.png"
+    },
+    {
+        "category_name": "Martial arts",
+        "image_path": "assets/icons/tution_sub.png"
+    },
+    {
+        "category_name": "Sports",
+        "image_path": "assets/icons/tution_sub.png"
+    },
+    {
+        "category_name": "Other",
+        "image_path": "assets/icons/other.png"
+    }
+]

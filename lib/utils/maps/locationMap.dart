@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -9,6 +8,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nearby/utils/pallete.dart';
 import 'package:location/location.dart' as lo;
 import 'dart:ui' as ui;
+
+import 'package:permission_handler/permission_handler.dart';
 
 class LocationMap extends StatefulWidget {
   final List<double> locationCoord;
@@ -26,8 +27,6 @@ class _LocationMapState extends State<LocationMap> {
   Set<Marker> _markers = Set();
   LatLng _lastMapPosition;
   lo.Location _locationTracker = lo.Location();
-  StreamSubscription _locationSubscription;
-
   double latitude;
   double longitude;
   bool isLoading = true;
@@ -35,7 +34,9 @@ class _LocationMapState extends State<LocationMap> {
   @override
   void initState() {
     super.initState();
-    if (widget.locationCoord!=null) {
+
+    if (widget.locationCoord != null) {
+      if (!mounted) return;
       setState(() {
         _center = LatLng(widget.locationCoord[0], widget.locationCoord[1]);
         _lastMapPosition =
@@ -49,6 +50,7 @@ class _LocationMapState extends State<LocationMap> {
       Geolocator()
           .getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
           .then((position) {
+        if (!mounted) return;
         setState(() {
           _center = LatLng(position.latitude, position.longitude);
           _lastMapPosition = LatLng(position.latitude, position.longitude);
@@ -77,26 +79,6 @@ class _LocationMapState extends State<LocationMap> {
     _lastMapPosition = position.target;
   }
 
-  _onMapTypeButtonPressed() {
-    if (_currentType == MapType.normal) {
-      setState(() {
-        _currentType = MapType.satellite;
-      });
-    } else if (_currentType == MapType.satellite) {
-      setState(() {
-        _currentType = MapType.terrain;
-      });
-    } else if (_currentType == MapType.terrain) {
-      setState(() {
-        _currentType = MapType.hybrid;
-      });
-    } else if (_currentType == MapType.hybrid) {
-      setState(() {
-        _currentType = MapType.normal;
-      });
-    }
-  }
-
   Future<Uint8List> getBytesFromAsset(String path, int width) async {
     ByteData data = await rootBundle.load(path);
     ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
@@ -108,7 +90,11 @@ class _LocationMapState extends State<LocationMap> {
   }
 
   setCoord() async {
-    var location = await _locationTracker.getLocation();
+    // _locationTracker.getLocation().then((value) {
+    //   if (!mounted) return;
+    //   setState(() {});
+    // });
+
     changeMapMode();
     final Uint8List markerIcon =
         await getBytesFromAsset('assets/icons/dot.png', 100);
@@ -131,7 +117,22 @@ class _LocationMapState extends State<LocationMap> {
         },
       ),
     );
+    if (!mounted) return;
     setState(() {});
+  }
+
+  checkLocationPermission() async {
+    var statusIn = await Permission.locationWhenInUse.status;
+    if (statusIn.isUndetermined) {
+      var statusInRe = await Permission.locationWhenInUse.request();
+      if (statusInRe.isGranted) {}
+    }
+
+    if (statusIn.isGranted) {
+    } else {
+      var statusReIn2 = await Permission.locationWhenInUse.request();
+      if (statusReIn2.isGranted) {}
+    }
   }
 
   @override
@@ -218,6 +219,7 @@ class _LocationMapState extends State<LocationMap> {
                   onCameraMove: _onCameraMove,
                   onMapCreated: (controller) async {
                     _controller = controller;
+                    await checkLocationPermission();
                     await setCoord();
                     // await updateLocation();
                   },

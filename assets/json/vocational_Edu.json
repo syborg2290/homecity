@@ -1,0 +1,78 @@
+[
+    {
+        "category_name": "Banking",
+        "image_path": "assets/icons/voca_training.png"
+    },
+    {
+        "category_name": "AAT",
+        "image_path": "assets/icons/voca_training.png"
+    },
+    {
+        "category_name": "ASEC",
+        "image_path": "assets/icons/voca_training.png"
+    },
+    {
+        "category_name": "CIMA",
+        "image_path": "assets/icons/voca_training.png"
+    },
+    {
+        "category_name": "Beauty & hair",
+        "image_path": "assets/icons/voca_training.png"
+    },
+    {
+        "category_name": "Culinary & Cookery",
+        "image_path": "assets/icons/voca_training.png"
+    },
+    {
+        "category_name": "IELTS",
+        "image_path": "assets/icons/voca_training.png"
+    },
+    {
+        "category_name": "HRM",
+        "image_path": "assets/icons/voca_training.png"
+    },
+    {
+        "category_name": "Hotel Management",
+        "image_path": "assets/icons/voca_training.png"
+    },
+    {
+        "category_name": "Pharmacist",
+        "image_path": "assets/icons/voca_training.png"
+    },
+    {
+        "category_name": "Fashion Design",
+        "image_path": "assets/icons/voca_training.png"
+    },
+    {
+        "category_name": "Textile Design",
+        "image_path": "assets/icons/voca_training.png"
+    },
+    {
+        "category_name": "Mechanical",
+        "image_path": "assets/icons/voca_training.png"
+    },
+    {
+        "category_name": "Quantity Surveying (QS) ",
+        "image_path": "assets/icons/voca_training.png"
+    },
+    {
+        "category_name": "Computer & mobile",
+        "image_path": "assets/icons/voca_training.png"
+    },
+    {
+        "category_name": "IT & computer network",
+        "image_path": "assets/icons/voca_training.png"
+    },
+    {
+        "category_name": "Communication & media",
+        "image_path": "assets/icons/voca_training.png"
+    },
+    {
+        "category_name": "Electronics",
+        "image_path": "assets/icons/voca_training.png"
+    },
+    {
+        "category_name": "Other",
+        "image_path": "assets/icons/other.png"
+    }
+]

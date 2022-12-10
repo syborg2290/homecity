@@ -1,0 +1,22 @@
+[
+    {
+        "category_name": "Any",
+        "image_path": "assets/icons/vehicle.png"
+    },
+    {
+        "category_name": "None hybrid/electric",
+        "image_path": "assets/icons/none.png"
+    },
+    {
+        "category_name": "Hybrid",
+        "image_path": "assets/icons/hybrid.png"
+    },
+    {
+        "category_name": "Electric",
+        "image_path": "assets/icons/electric.png"
+    },
+    {
+        "category_name": "Other",
+        "image_path": "assets/icons/other.png"
+    }
+]

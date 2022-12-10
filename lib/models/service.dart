@@ -6,6 +6,8 @@ class Service {
   String type;
   String subType;
   String name;
+  double latitude;
+  double longitude;
   Timestamp timestamp;
 
   Service({
@@ -14,6 +16,8 @@ class Service {
     this.type,
     this.subType,
     this.name,
+    this.latitude,
+    this.longitude,
     this.timestamp,
   });
 
@@ -24,6 +28,8 @@ class Service {
       serviceId: doc['serviceId'],
       subType: doc['subType'],
       type: doc['type'],
+      latitude: doc['latitude'],
+      longitude: doc['longitude'],
       timestamp: doc['timestamp'],
     );
   }

@@ -1,0 +1,26 @@
+[
+    {
+        "category_name": "Nightclubs",
+        "image_path": "assets/icons/night_club.png"
+    },
+    {
+        "category_name": "Bars",
+        "image_path": "assets/icons/_night_bar.png"
+    },
+    {
+        "category_name": "Pubs",
+        "image_path": "assets/icons/pub.png"
+    },
+    {
+        "category_name": "Night cafes",
+        "image_path": "assets/icons/cafe.png"
+    },
+    {
+        "category_name": "Night resturants",
+        "image_path": "assets/icons/night_Rest.png"
+    },
+    {
+        "category_name": "Other",
+        "image_path": "assets/icons/other.png"
+    }
+]

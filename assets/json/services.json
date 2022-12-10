@@ -1,6 +1,6 @@
 [
     {
-        "service": "Resturants",
+        "service": "Resturants & cafes",
         "image_path": "assets/icons/resturant.png"
     },
     {
@@ -24,15 +24,15 @@
         "image_path": "assets/icons/vehicle.png"
     },
     {
-        "service": "Bars & night-life",
-        "image_path": "assets/icons/bar.png"
+        "service": "Night-life",
+        "image_path": "assets/icons/night_club.png"
     },
     {
-        "service": "Hotels & stayings",
+        "service": "Stays",
         "image_path": "assets/icons/hotel.png"
     },
     {
-        "service": "Education & stationeries",
+        "service": "Education",
         "image_path": "assets/icons/tution.png"
     },
     {
@@ -50,5 +50,17 @@
     {
         "service": "Home & furnitures",
         "image_path": "assets/icons/furniture.png"
+    },
+    {
+        "service": "Sports,wellness & outdoors",
+        "image_path": "assets/icons/sports_wellness.png"
+    },
+    {
+        "service": "Music instruments & services",
+        "image_path": "assets/icons/guitar.png"
+    },
+    {
+        "service": "Hardware,tools & materials",
+        "image_path": "assets/icons/constru.png"
     }
 ]

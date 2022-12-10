@@ -1,0 +1,42 @@
+[
+    {
+        "category_name": "Mobile phones",
+        "image_path": "assets/icons/cellphone.png"
+    },
+    {
+        "category_name": "Computers & tablets & others",
+        "image_path": "assets/icons/sell_electronics.png"
+    },
+    {
+        "category_name": "Tvs",
+        "image_path": "assets/icons/television.png"
+    },
+    {
+        "category_name": "Cameras,drones & others",
+        "image_path": "assets/icons/camera.png"
+    },
+    {
+        "category_name": "Audio & mp3",
+        "image_path": "assets/icons/mp3_electronics.png"
+    },
+    {
+        "category_name": "Electronic home appliances",
+        "image_path": "assets/icons/refrigerator.png"
+    },
+    {
+        "category_name": "Air conditions & Electrical fittings",
+        "image_path": "assets/icons/air-conditioner.png"
+    },
+    {
+        "category_name": "Electronics toys & others",
+        "image_path": "assets/icons/_electrincs_toy.png"
+    },
+    {
+        "category_name": "Video games console & others",
+        "image_path": "assets/icons/gamepad.png"
+    },
+    {
+        "category_name": "Other",
+        "image_path": "assets/icons/other.png"
+    }
+]

@@ -1,0 +1,54 @@
+[
+    {
+        "category_name": "Living Room furniture",
+        "image_path": "assets/icons/furniture_icon.png"
+    },
+    {
+        "category_name": "Dining Room furniture",
+        "image_path": "assets/icons/furniture_icon.png"
+    },
+    {
+        "category_name": "Bedroom furniture",
+        "image_path": "assets/icons/furniture_icon.png"
+    },
+    {
+        "category_name": "Kitchen furniture",
+        "image_path": "assets/icons/furniture_icon.png"
+    },
+    {
+        "category_name": "Office furniture",
+        "image_path": "assets/icons/furniture_icon.png"
+    },
+    {
+        "category_name": "Outdoor furniture",
+        "image_path": "assets/icons/furniture_icon.png"
+    },
+    {
+        "category_name": "Entertainment furniture",
+        "image_path": "assets/icons/furniture_icon.png"
+    },
+    {
+        "category_name": "Education furniture",
+        "image_path": "assets/icons/furniture_icon.png"
+    },
+    {
+        "category_name": "Kids furniture",
+        "image_path": "assets/icons/furniture_icon.png"
+    },
+    {
+        "category_name": "Seating furniture",
+        "image_path": "assets/icons/furniture_icon.png"
+    },
+    {
+        "category_name": "Laying furniture",
+        "image_path": "assets/icons/furniture_icon.png"
+    },
+    {
+        "category_name": "Storage furniture",
+        "image_path": "assets/icons/furniture_icon.png"
+    },
+    {
+        "category_name": "Other",
+        "image_path": "assets/icons/other.png"
+    }
+]

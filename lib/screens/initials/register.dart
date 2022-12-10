@@ -20,10 +20,38 @@ class _RegisterState extends State<Register> {
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController username = TextEditingController();
+  String selectedDistrict = "Colombo";
   bool secureText = true;
   AuthServcies _authServcies = AuthServcies();
   ProgressDialog pr;
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  var _districtsList = [
+    "Ampara",
+    "Anuradhapura",
+    "Badulla",
+    "Batticaloa",
+    "Colombo",
+    "Galle",
+    "Gampaha",
+    "Hambantota",
+    "Jaffna",
+    "Kalutara",
+    "Kandy",
+    "Kegalle",
+    "Kilinochchi",
+    "Kurunegala",
+    "Mannar",
+    "Matale",
+    "Matara",
+    "Moneragala",
+    "Mullaitivu",
+    "Nuwara Eliya",
+    "Polonnaruwa",
+    "Puttalam",
+    "Ratnapura",
+    "Trincomalee",
+    "Vavuniya"
+  ];
 
   @override
   void initState() {
@@ -72,51 +100,60 @@ class _RegisterState extends State<Register> {
                   r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
               .hasMatch(email.text.trim())) {
             if (password.text.length > 6) {
-              try {
-                pr.show();
-                String usernameS = username.text.trim();
+              if (selectedDistrict != null) {
+                try {
+                  pr.show();
+                  String usernameS = username.text.trim();
 
-                QuerySnapshot snapUser =
-                    await _authServcies.usernameCheckSe(usernameS);
-                QuerySnapshot snapEmail =
-                    await _authServcies.emailCheckSe(email.text.trim());
+                  QuerySnapshot snapUser =
+                      await _authServcies.usernameCheckSe(usernameS);
+                  QuerySnapshot snapEmail =
+                      await _authServcies.emailCheckSe(email.text.trim());
 
-                if (snapEmail.documents.isEmpty) {
-                  if (snapUser.documents.isEmpty) {
-                    AuthResult result =
-                        await _authServcies.createUserWithEmailAndPasswordSe(
-                            email.text.trim(), password.text.trim());
-                    await _authServcies.createUserInDatabaseSe(result.user.uid,
-                        username.text.trim(), email.text.trim());
-
-                    _firebaseMessaging.getToken().then((token) {
-                      print("Firebase Messaging Token: $token\n");
-                      _authServcies.createMessagingToken(
-                          token, result.user.uid);
-                    });
-
-                    pr.hide().whenComplete(() {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Home()),
+                  if (snapEmail.documents.isEmpty) {
+                    if (snapUser.documents.isEmpty) {
+                      AuthResult result =
+                          await _authServcies.createUserWithEmailAndPasswordSe(
+                              email.text.trim(), password.text.trim());
+                      await _authServcies.createUserInDatabaseSe(
+                        result.user.uid,
+                        username.text.trim(),
+                        email.text.trim(),
+                        selectedDistrict,
                       );
-                    });
+
+                      _firebaseMessaging.getToken().then((token) {
+                        print("Firebase Messaging Token: $token\n");
+                        _authServcies.createMessagingToken(
+                            token, result.user.uid);
+                      });
+
+                      pr.hide().whenComplete(() {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Home()),
+                        );
+                      });
+                    } else {
+                      pr.hide();
+                      GradientSnackBar.showMessage(
+                          context, "Username already used!");
+                    }
                   } else {
                     pr.hide();
                     GradientSnackBar.showMessage(
-                        context, "Username already used!");
+                        context, "Email address already used!");
                   }
-                } else {
-                  pr.hide();
-                  GradientSnackBar.showMessage(
-                      context, "Email address already used!");
+                } catch (e) {
+                  if (e.code == "ERROR_WEAK_PASSWORD") {
+                    pr.hide();
+                    GradientSnackBar.showMessage(context,
+                        "Weak password, password should be at least 6 characters!");
+                  }
                 }
-              } catch (e) {
-                if (e.code == "ERROR_WEAK_PASSWORD") {
-                  pr.hide();
-                  GradientSnackBar.showMessage(context,
-                      "Weak password, password should be at least 6 characters!");
-                }
+              } else {
+                GradientSnackBar.showMessage(
+                    context, "Please select your district!");
               }
             } else {
               GradientSnackBar.showMessage(context,
@@ -257,6 +294,59 @@ class _RegisterState extends State<Register> {
                             color: Pallete.mainAppColor,
                           )),
                     ),
+                  ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    decoration:
+                        BoxDecoration(borderRadius: BorderRadius.circular(10)),
+                    child: FormField<String>(
+                      builder: (FormFieldState<String> state) {
+                        return InputDecorator(
+                          decoration: InputDecoration(
+                            labelText: "District",
+                            hintText: 'District',
+                            labelStyle: TextStyle(
+                                fontSize: 18, color: Colors.grey.shade800),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(3),
+                              borderSide: BorderSide(
+                                color: Colors.grey.shade700,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(3),
+                                borderSide: BorderSide(
+                                  color: Pallete.mainAppColor,
+                                )),
+                          ),
+                          isEmpty: selectedDistrict == '',
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              value: selectedDistrict,
+                              isDense: true,
+                              onChanged: (String newValue) {
+                                setState(() {
+                                  selectedDistrict = newValue;
+                                  state.didChange(newValue);
+                                });
+                              },
+                              items: _districtsList.map((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    height: 16,
                   ),
                   SizedBox(height: 30.0),
                   GestureDetector(

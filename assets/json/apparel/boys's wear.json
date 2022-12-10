@@ -1,0 +1,78 @@
+[
+    {
+        "category_name": "Denim",
+        "image_path": "assets/icons/pant.png"
+    },
+    {
+        "category_name": "Shirt",
+        "image_path": "assets/icons/casual_shirt.png"
+    },
+    {
+        "category_name": "Pant",
+        "image_path": "assets/icons/pant.png"
+    },
+    {
+        "category_name": "T-Shirt",
+        "image_path": "assets/icons/apparel.png"
+    },
+    {
+        "category_name": "Shorts",
+        "image_path": "assets/icons/short.png"
+    },
+    {
+        "category_name": "Frock",
+        "image_path": "assets/icons/frock.png"
+    },
+    {
+        "category_name": "Skirt",
+        "image_path": "assets/icons/skirt.png"
+    },
+    {
+        "category_name": "Hoodies",
+        "image_path": "assets/icons/hoodie.png"
+    },
+    {
+        "category_name": "Kurta",
+        "image_path": "assets/icons/kurta.png"
+    },
+    {
+        "category_name": "Shoes",
+        "image_path": "assets/icons/sneaker.png"
+    },
+    {
+        "category_name": "Slippers",
+        "image_path": "assets/icons/slippers.png"
+    },
+    {
+        "category_name": "Bags",
+        "image_path": "assets/icons/boy_bag.png"
+    },
+    {
+        "category_name": "Hair Accessories",
+        "image_path": "assets/icons/hair_Acc.png"
+    },
+    {
+        "category_name": "Watches",
+        "image_path": "assets/icons/watch.png"
+    },
+    {
+        "category_name": "Hats & caps",
+        "image_path": "assets/icons/cap.png"
+    },
+    {
+        "category_name": "Socks",
+        "image_path": "assets/icons/socks.png"
+    },
+    {
+        "category_name": "Sports wear",
+        "image_path": "assets/icons/sports_wear.png"
+    },
+    {
+        "category_name": "Toys",
+        "image_path": "assets/icons/toys.png"
+    },
+    {
+        "category_name": "Other",
+        "image_path": "assets/icons/other.png"
+    }
+]

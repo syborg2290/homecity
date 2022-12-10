@@ -1,0 +1,114 @@
+[
+    {
+        "category_name": "Free breakfast",
+        "image_path": "assets/icons/night_Rest.png"
+    },
+    {
+        "category_name": "Free lunch",
+        "image_path": "assets/icons/night_Rest.png"
+    },
+    {
+        "category_name": "Free dinner",
+        "image_path": "assets/icons/night_Rest.png"
+    },
+    {
+        "category_name": "Bar",
+        "image_path": "assets/icons/bar.png"
+    },
+    {
+        "category_name": "Air conditioning",
+        "image_path": "assets/icons/air-conditioner.png"
+    },
+    {
+        "category_name": "Wifi",
+        "image_path": "assets/icons/wifi.png"
+    },
+    {
+        "category_name": "Garden",
+        "image_path": "assets/icons/garden.png"
+    },
+    {
+        "category_name": "Laundry",
+        "image_path": "assets/icons/laundery.png"
+    },
+    {
+        "category_name": "Gym",
+        "image_path": "assets/icons/gym.png"
+    },
+    {
+        "category_name": "Yoga",
+        "image_path": "assets/icons/meditaion.png"
+    },
+    {
+        "category_name": "Spa",
+        "image_path": "assets/icons/spa.png"
+    },
+    {
+        "category_name": "Aurvedic",
+        "image_path": "assets/icons/local.png"
+    },
+    {
+        "category_name": "Play room",
+        "image_path": "assets/icons/billiard-ball.png"
+    },
+    {
+        "category_name": "Bicycle",
+        "image_path": "assets/icons/bike.png"
+    },
+    {
+        "category_name": "Tv",
+        "image_path": "assets/icons/television.png"
+    },
+    {
+        "category_name": "Iorn",
+        "image_path": "assets/icons/iorn_board.png"
+    },
+    {
+        "category_name": "Heating",
+        "image_path": "assets/icons/heating.png"
+    },
+    {
+        "category_name": "Hot water",
+        "image_path": "assets/icons/shower.png"
+    },
+    {
+        "category_name": "Swimming pool",
+        "image_path": "assets/icons/pool.png"
+    },
+    {
+        "category_name": "Bath tub",
+        "image_path": "assets/icons/bath_tub.png"
+    },
+    {
+        "category_name": "Free parking",
+        "image_path": "assets/icons/parking.png"
+    },
+    {
+        "category_name": "Kitchen",
+        "image_path": "assets/icons/kitchen.png"
+    },
+    {
+        "category_name": "Microwave",
+        "image_path": "assets/icons/microwave.png"
+    },
+    {
+        "category_name": "BBQ grill",
+        "image_path": "assets/icons/bbq.png"
+    },
+    {
+        "category_name": "Refrigerator",
+        "image_path": "assets/icons/refrigerator.png"
+    },
+    {
+        "category_name": "Cooking basics",
+        "image_path": "assets/icons/cooking.png"
+    },
+    {
+        "category_name": "Washing machines",
+        "image_path": "assets/icons/laundery.png"
+    },
+    {
+        "category_name": "Other",
+        "image_path": "assets/icons/other.png"
+    }
+]

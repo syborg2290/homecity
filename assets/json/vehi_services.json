@@ -1,0 +1,18 @@
+[
+    {
+        "category_name": "Sell vehicles",
+        "image_path": "assets/icons/sell_car.png"
+    },
+    {
+        "category_name": "Rent vehicles",
+        "image_path": "assets/icons/rent_car.png"
+    },
+    {
+        "category_name": "Vehicle repairs & modifications",
+        "image_path": "assets/icons/repair.png"
+    },
+    {
+        "category_name": "Spare parts/accessories",
+        "image_path": "assets/icons/spare_parts.png"
+    }
+]
